@@ -1,0 +1,127 @@
+// this is the source meta model - ecore for the example here
+import ecore;
+// this is the target meta model; dot is the language to
+// create graphviz graphs
+import dot;
+
+// there's a number of utility functions for working with the
+// dot meta model
+extension dotlib;
+ 
+// top level, we create graphvizmodel which contains
+// a number of graphs, each eventually resulting in its
+// own dot file, and GIF image
+create dot::graphvizmodel toGraphVizmodel(EPackage p):
+	// you can add a number of graphs. Here, we add
+	// only one.
+	addGraph( toGraph(p) )
+; 
+
+// mapping a model element to a graph uses the mapToGraph
+// function from dotlib. All those mapping functions need 
+// to be cached to make sure that if they are called several
+// times they are evaluated only once. 
+cached toGraph(EPackage p):
+	// creates the actual graph object
+	p.mapToGraph() 
+		// each graph needs to have a name; 
+		// will result in the filename for the dot
+		// and gif files for the graph
+		.setName( "ecoremetamodel" )
+		// a graph contains statements. Statements
+		// can be nodes, edges or subgraphs. Here we
+		// add a subgraph for the package.
+		.addStatement( p.toSubgraph() )
+;
+		
+cached toSubgraph( EPackage p ):
+	// this call maps the package to a subgraph....
+	p.mapToSubgraph()
+		// every subgraph MUST have a name - very important!
+		.setName("ecore")
+		// this is the label shown in the diagram
+		.setLabel("ecore")
+		// again, we cann add statements to graphs:
+		// nodes, edges and additional subgraphs. 
+		// here we add a node for each class in the EPackage
+		.addStatements( p.classes().toNode() )
+		// and then we create an edge for each reference
+		// of an EClass to another EClass. 
+		.addStatements( p.classes().eReferences.select(r|EClass.isInstance(r.eType)).toRefEdge() )
+		// finally, we create an edge for the inheritance
+		// relationships. Note the difference in the coding
+		// between the implementation for the referneces
+		// and for the inheritance. The difference is that
+		// for the reference there's an object (an instance
+		// of EReference) in the source model. For the in-
+		// heritance thing, there isn't. 
+		.addStatements( p.classes().addSuperclassEdges() )
+;
+
+// create a Node for an EClass
+cached toNode( EClass c ):
+	// this one creates the actual node object
+	c.mapToNode()
+		// the record shape is special, it can have
+		// several "compartments", like the UML class
+		// symbol. That's what we need here.
+		.setShape("record")
+		// sets the label, using the special { and } character
+		// do define compartments in the record shape.
+		.setLabel( "{"+c.name+"|"+c.eAttributes.collect(a|a.name+": "+a.eType.name).toString("\\n")+"}" )
+		// sets the style to bold lines and filled
+		.setStyle("bold, filled")
+		// fill color, obviously
+		.setFillColor( c.abstract ? "white" : "grey")
+		// and line color.
+		.setLineColor( "black" )
+;
+
+// creates an edge for an EReference
+cached toRefEdge( EReference r ):
+	// creates the actual edge. Parameters
+	// are source node, target node, and the
+	// edge node itself
+	mapToDirectedEdge( r.eContainer, r.eType, r )
+		// the label on the edge
+		.setLabel( r.name )
+		// the label at the target end of the 
+		// line
+		.setHeadLabel( "       "+r.lowerBound.toString() + ".." + r.upperBound.toString() )
+		// set the arrow head type
+		.setArrowHead("vee")
+		// and use a diamond shape at the tail of 
+		// the arrow if it's a containment relaitonship
+		.setArrowTail( r.containment ? "diamond" : "none" )
+		// the higher the weight, the shorter and straighter the edge
+		.setWeight( r.containment ? "50" : "1" )
+;
+
+
+// this one is used to iterate over all the superclasses
+// for a given class. In a very real sense, the only
+// reson for this function is to declare a variable
+// name for base!
+addSuperclassEdges( EClass base ):
+	// call toSuperclassEdge for all supertypes of 
+	// a given base clas
+	base.eSuperTypes.toSuperclassEdge( base )
+;
+
+// creates a direct edge for an inheritance relationship
+cached toSuperclassEdge( EClass super, EClass child ):
+	// creates the actual edge. Parameters are
+	// source node, target node and the node for 
+	// the edge itself (here: null)
+	mapToDirectedEdge( super, child, null )
+		// sets the arrowhead to be the
+		// "UML inheritance arrow"
+		.setArrowTail("empty")
+		.setArrowHead("none")
+		.setWeight("100")
+; 
+
+// helper function returning all the EClasses
+// in an EPackage
+classes(EPackage p):
+	p.eClassifiers.typeSelect(EClass);

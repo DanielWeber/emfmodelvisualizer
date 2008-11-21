@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.openarchitectureware.graphviz.editor.DotEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="dot"
+            icon="icons/file.gif"
+            id="org.openarchitectureware.graphviz.editor.DotEditor"
+            name="dot Editor">
+      </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+         
+		<wizard
+			category="org.openarchitectureware.xtext.wizards"
+			class="org.openarchitectureware.graphviz.wizards.NewDotProjectWizard"
+			icon="icons/template.gif"
+			id="org.openarchitectureware.graphviz.wizards.NewDotProjectWizard"
+			name="dot Project"
+			project="true">
+		</wizard>
+         
+		<wizard
+			category="org.openarchitectureware.xtext.wizards"
+			class="org.openarchitectureware.graphviz.wizards.NewDotFileWizard"
+			icon="icons/file.gif"
+			id="org.openarchitectureware.graphviz.wizards.NewDotFileWizard"
+			name="dot Editor file">
+		</wizard>
+	</extension>
+</plugin>
