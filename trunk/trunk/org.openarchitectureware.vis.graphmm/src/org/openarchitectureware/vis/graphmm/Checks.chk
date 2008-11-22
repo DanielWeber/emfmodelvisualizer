@@ -1,0 +1,26 @@
+import graphmm;
+
+extension org::openarchitectureware::vis::graphmm::Extensions;
+/*
+ * This check file is used by the parser
+ * and by the editor. Add your constraints here!
+ */
+
+context SimpleNode ERROR "Write your constraint message here...!" :
+   true;
+
+context Edge ERROR "Write your constraint message here...!" :
+   true;
+
+context Node ERROR "Write your constraint message here...!" :
+   true;
+
+context GraphCollection ERROR "Write your constraint message here...!" :
+   true;
+
+context Graph ERROR "Write your constraint message here...!" :
+   true;
+
+context SimpleDirectedEdge ERROR "Write your constraint message here...!" :
+   true;
+

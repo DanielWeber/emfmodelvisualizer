@@ -1,0 +1,23 @@
+// specify your DSL grammar rules here ...
+// IMPORTANT: You should change the property 'overwrite.pluginresources=true' in the properties file to 'overwrite.pluginresources=false' AFTER first generation
+
+GraphCollection:
+	(graphs+=Graph)*;
+
+Graph:
+	"graph" name=ID "{"
+		( nodes+=Node
+	  	  edges+=Edge )*
+	"}";
+	  
+Node:
+	SimpleNode;
+
+SimpleNode:
+	"node" name=ID ("label" label=ID)?;
+	
+Edge:
+	SimpleDirectedEdge;
+
+SimpleDirectedEdge:
+	source=[Node] "->" target=[Node];

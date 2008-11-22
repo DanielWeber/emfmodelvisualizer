@@ -1,0 +1,9 @@
+import graphmm;
+
+extension org::openarchitectureware::vis::graphmm::Extensions;
+extension org::openarchitectureware::vis::graphmm::GenLinking reexport;
+
+/*
+ * If you need more sophisticated linking semantic just overwrite the linking extensions here and add your own logic.
+ * Have a look at the generated org::openarchitectureware::vis::graphmm::GenLinking (typically located in src-gen)
+ */
