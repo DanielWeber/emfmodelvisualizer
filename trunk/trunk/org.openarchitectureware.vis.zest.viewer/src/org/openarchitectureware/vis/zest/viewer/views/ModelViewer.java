@@ -19,6 +19,7 @@ import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
+import org.openarchitectureware.vis.zest.builder.graphmm.GraphMMBuilder;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
@@ -43,17 +44,17 @@ public class ModelViewer extends ViewPart {
 
 	private void createGraph(Composite parent) {
 		if ( graph != null ) graph.dispose();
-		graph = new Graph(parent, SWT.NONE);
-		GraphNode n = new GraphNode(graph, SWT.NONE, "Paper");
-		GraphNode n2 = new GraphNode(graph, SWT.NONE, "Rock");
-		GraphNode n3 = new GraphNode(graph, SWT.NONE, "Scissors");
-		new GraphConnection(graph, SWT.NONE, n, n2);
-		new GraphConnection(graph, SWT.NONE, n2, n3);
-		new GraphConnection(graph, SWT.NONE, n3, n);
+
+		String wfFile = "createModel.oaw";
+		Map properties = new HashMap();
+		Map slotContents = new HashMap();
+		WorkflowRunner runner = new WorkflowRunner();
+		runner.run(wfFile, new NullProgressMonitor(), properties, slotContents);
+		EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
+		
+		graph = new GraphMMBuilder(graphmodel).constructGraph(parent);
+		
 		graph.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
-		
-		
-		
 		
 	}
 	
@@ -66,13 +67,6 @@ public class ModelViewer extends ViewPart {
 	private void createActions() {
 		runWorkflowAction = new Action() {
 			public void run() {
-				String wfFile = "createModel.oaw";
-				Map properties = new HashMap();
-				Map slotContents = new HashMap();
-				WorkflowRunner runner = new WorkflowRunner();
-				runner.run(wfFile, new NullProgressMonitor(), properties, slotContents);
-				EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
-				System.err.println(graphmodel);
 				createGraph(parent);
 			}
 		};

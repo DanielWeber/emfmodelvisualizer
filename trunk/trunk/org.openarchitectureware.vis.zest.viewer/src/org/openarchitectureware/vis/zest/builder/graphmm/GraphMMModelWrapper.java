@@ -12,12 +12,16 @@ public class GraphMMModelWrapper {
 		this.model = graphmmModel;
 	}
 	
-	public Collection<EObject> getNodes() {
-		return (Collection<EObject>) getCollection(model, "nodes");
+	public Collection<EObject> getNodes(EObject graph) {
+		return (Collection<EObject>) getCollection(graph, "nodes");
 	}
 
+	public Collection<EObject> getEdges(EObject graph) {
+		return (Collection<EObject>) getCollection(graph, "edges");
+	}
+	
 	public Object getLabel(EObject node) {
-		return getString( node, "name" );
+		return getString( node, "label" );
 	}
 	
 	public EObject getEdgeSource(EObject edge) {
@@ -28,8 +32,8 @@ public class GraphMMModelWrapper {
 		return getElement( edge, "target" );
 	}
 
-	public Collection<EObject> getEdges() {
-		return (Collection<EObject>) getCollection(model, "edges");
+	public EObject getFirstGraph() {
+		return (EObject)getCollection(model, "graphs").iterator().next();
 	}
 	
 	private Collection<?> getCollection(EObject element, String featureName) {

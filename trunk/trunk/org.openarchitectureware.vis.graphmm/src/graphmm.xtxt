@@ -6,18 +6,22 @@ GraphCollection:
 
 Graph:
 	"graph" name=ID "{"
-		( nodes+=Node
-	  	  edges+=Edge )*
+		"nodes" "{"
+			(nodes+=Node)*
+		"}"
+		"edges" "{"
+			(edges+=Edge)*
+	  	"}"
 	"}";
 	  
 Node:
 	SimpleNode;
 
 SimpleNode:
-	"node" name=ID ("label" label=ID)?;
+	name=ID ("label" label=STRING)? ";";
 	
 Edge:
 	SimpleDirectedEdge;
 
 SimpleDirectedEdge:
-	source=[Node] "->" target=[Node];
+	source=[Node] "->" target=[Node] ";";

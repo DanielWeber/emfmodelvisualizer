@@ -26,12 +26,14 @@ public class GraphMMBuilder implements ZestModelBuiler {
 	@Override
 	public Graph constructGraph( Composite parent ) {
 		nodeMap = new HashMap<EObject, GraphNode>();
+		EObject firstgraph = model.getFirstGraph();
 		this.graph = new Graph(parent, SWT.NONE);
-		for (EObject node : model.getNodes()) {
+		for (EObject node : model.getNodes(firstgraph)) {
+			System.err.println(model.getLabel( node ));
 			GraphNode n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
 			nodeMap.put( node , n);
 		}
-		for (EObject edge : model.getEdges()) {
+		for (EObject edge : model.getEdges(firstgraph)) {
 			EObject sourceNode = model.getEdgeSource( edge );
 			EObject targetNode = model.getEdgeTarget( edge );
 			new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
