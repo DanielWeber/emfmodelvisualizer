@@ -2,7 +2,13 @@
 // IMPORTANT: You should change the property 'overwrite.pluginresources=true' in the properties file to 'overwrite.pluginresources=false' AFTER first generation
 
 GraphCollection:
+	(prolog=Prolog)?
 	(graphs+=Graph)*;
+
+Prolog:
+	"prolog" "{"
+		("iconbasepath" iconBasePath=STRING ";")?
+	"}";
 
 Graph:
 	"graph" name=ID "{"
@@ -18,7 +24,10 @@ Node:
 	SimpleNode;
 
 SimpleNode:
-	name=ID ("label" label=STRING)? ";";
+	name=ID 
+		("label" label=STRING)? 
+		("icon" icon=STRING)? 
+		";";
 	
 Edge:
 	SimpleDirectedEdge;
