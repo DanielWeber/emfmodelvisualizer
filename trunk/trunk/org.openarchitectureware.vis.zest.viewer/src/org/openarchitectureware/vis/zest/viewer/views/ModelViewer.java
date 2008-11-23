@@ -24,6 +24,7 @@ import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.openarchitectureware.vis.zest.builder.graphmm.GraphMMBuilder;
+import org.openarchitectureware.vis.zest.viewer.ImageRegistry;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
@@ -46,6 +47,7 @@ public class ModelViewer extends ViewPart {
 		IActionBars bars = getViewSite().getActionBars();
 		menuManager = bars.getMenuManager();
 		fillLocalPullDown();
+		setFilenameAndRedraw("de/voelter/zest/example/createModel.oaw");
 	}
 
 	private void fillLocalPullDown() {
@@ -80,8 +82,7 @@ public class ModelViewer extends ViewPart {
 			workflow = filename;
 			setText(filename);
 			setToolTipText("Rerun "+filename);
-			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-							   getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+			setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
 		}
 		public void run() {
         	setFilenameAndRedraw(workflow);
@@ -105,8 +106,8 @@ public class ModelViewer extends ViewPart {
 		};
 		runWorkflowAction.setText("Run Transformation Workflow...");
 		runWorkflowAction.setToolTipText("Run a workflow that creates a GraphMM model");
-		runWorkflowAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+		runWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
+
 		
 	}
 	

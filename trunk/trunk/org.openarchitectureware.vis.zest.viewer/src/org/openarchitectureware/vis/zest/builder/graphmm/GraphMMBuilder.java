@@ -2,16 +2,24 @@ package org.openarchitectureware.vis.zest.builder.graphmm;
 
 
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.openarchitectureware.vis.zest.builder.ZestModelBuiler;
+import org.osgi.framework.Bundle;
 
 public class GraphMMBuilder implements ZestModelBuiler {
 	
@@ -29,8 +37,20 @@ public class GraphMMBuilder implements ZestModelBuiler {
 		EObject firstgraph = model.getFirstGraph();
 		this.graph = new Graph(parent, SWT.NONE);
 		for (EObject node : model.getNodes(firstgraph)) {
-			System.err.println(model.getLabel( node ));
-			GraphNode n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
+			GraphNode n = null;
+			String icon = model.getIcon( node );
+			if ( icon != null ) {
+				try {
+					ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
+					Image i = desc.createImage();				
+					n = new GraphNode(graph, SWT.NONE, model.getLabel( node ), i);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
+				}
+			} else {
+				n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
+			}
 			nodeMap.put( node , n);
 		}
 		for (EObject edge : model.getEdges(firstgraph)) {

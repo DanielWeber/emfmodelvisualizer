@@ -20,8 +20,20 @@ public class GraphMMModelWrapper {
 		return (Collection<EObject>) getCollection(graph, "edges");
 	}
 	
-	public Object getLabel(EObject node) {
+	public String getLabel(EObject node) {
 		return getString( node, "label" );
+	}
+
+	public String getIcon(EObject node) {
+		String icon = getString( node, "icon" );
+		if ( icon == null ) return null;
+		if ( icon.toLowerCase().startsWith("platform:")) return icon;
+		EObject prolog = getElement(model, "prolog");
+		if ( prolog == null ) return null;
+		String iconPath = getString(prolog, "iconBasePath");
+		if ( !iconPath.endsWith("/") ) iconPath += "/";
+		return iconPath+icon;
+		
 	}
 	
 	public EObject getEdgeSource(EObject edge) {
@@ -40,13 +52,14 @@ public class GraphMMModelWrapper {
 		return (Collection<?>)element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
 	
-	private Object getString(EObject element, String featureName) {
+	private String getString(EObject element, String featureName) {
 		return (String)element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
 
 	private EObject getElement(EObject element, String featureName) {
 		return (EObject)element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
+
 
 
 	
