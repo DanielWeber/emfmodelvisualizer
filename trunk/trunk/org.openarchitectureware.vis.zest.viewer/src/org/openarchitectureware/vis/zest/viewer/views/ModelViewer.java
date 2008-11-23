@@ -3,6 +3,7 @@ package org.openarchitectureware.vis.zest.viewer.views;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +13,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -21,10 +28,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.openarchitectureware.vis.zest.builder.graphmm.GraphMMBuilder;
-import org.openarchitectureware.vis.zest.viewer.ImageRegistry;
+import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
@@ -65,6 +73,29 @@ public class ModelViewer extends ViewPart {
 		runner.run(filename, new NullProgressMonitor(), properties, slotContents);
 		EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
 		graph = new GraphMMBuilder(graphmodel).constructGraph(parent);
+
+//		graph.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				System.out.println(((Graph) e.widget).getSelection());
+//			}
+//		});
+		
+		graph.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				int sm = e.stateMask;
+				if ( (sm & SWT.SHIFT) != 0 ) {
+					List selected = graph.getSelection();
+					if ( selected.size() == 1 ) {
+						GraphNode n = (GraphNode)selected.get(0);
+						String location = (String)n.getData();
+						new EclipseSourceLocator().locate(location);
+					}
+				}
+			}
+		});
+
+		
 		graph.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 	}
 

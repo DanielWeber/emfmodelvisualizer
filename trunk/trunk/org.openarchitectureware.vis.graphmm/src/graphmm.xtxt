@@ -26,7 +26,8 @@ Node:
 SimpleNode:
 	name=ID 
 		("label" label=STRING)? 
-		("icon" icon=STRING)? 
+		("icon" icon=STRING)?
+		("source" source=STRING)? 
 		";";
 	
 Edge:

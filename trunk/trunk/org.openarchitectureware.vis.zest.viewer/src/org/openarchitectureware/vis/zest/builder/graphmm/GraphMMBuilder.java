@@ -51,6 +51,8 @@ public class GraphMMBuilder implements ZestModelBuiler {
 			} else {
 				n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
 			}
+			String sourceLocation = model.getSourceLocation( node );
+			n.setData( sourceLocation );
 			nodeMap.put( node , n);
 		}
 		for (EObject edge : model.getEdges(firstgraph)) {

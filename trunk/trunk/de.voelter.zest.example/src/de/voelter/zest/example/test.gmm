@@ -6,7 +6,7 @@ graph g1 {
 	nodes {
 		s1 label "S1" icon "icon1.gif";
 		s2 label "S2" icon "icon2.gif";
-		s3 label "S3";
+		s3 label "S3" source "platform:/resource/de.voelter.zest.example/src/de/voelter/zest/example/test.gmm,100,120";
 	}
 
 	edges {

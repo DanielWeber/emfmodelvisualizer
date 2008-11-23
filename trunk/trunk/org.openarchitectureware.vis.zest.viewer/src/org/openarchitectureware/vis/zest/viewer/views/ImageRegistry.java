@@ -1,4 +1,4 @@
-package org.openarchitectureware.vis.zest.viewer;
+package org.openarchitectureware.vis.zest.viewer.views;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.openarchitectureware.vis.zest.viewer.Activator;
 
 public class ImageRegistry {
 

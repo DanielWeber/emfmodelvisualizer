@@ -44,6 +44,10 @@ public class GraphMMModelWrapper {
 		return getElement( edge, "target" );
 	}
 
+	public String getSourceLocation(EObject node) {
+		return getString(node, "source");
+	}
+
 	public EObject getFirstGraph() {
 		return (EObject)getCollection(model, "graphs").iterator().next();
 	}
@@ -59,6 +63,7 @@ public class GraphMMModelWrapper {
 	private EObject getElement(EObject element, String featureName) {
 		return (EObject)element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
+
 
 
 
