@@ -73,13 +73,6 @@ public class ModelViewer extends ViewPart {
 		runner.run(filename, new NullProgressMonitor(), properties, slotContents);
 		EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
 		graph = new GraphMMBuilder(graphmodel).constructGraph(parent);
-
-//		graph.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				System.out.println(((Graph) e.widget).getSelection());
-//			}
-//		});
-		
 		graph.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -94,8 +87,6 @@ public class ModelViewer extends ViewPart {
 				}
 			}
 		});
-
-		
 		graph.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 	}
 

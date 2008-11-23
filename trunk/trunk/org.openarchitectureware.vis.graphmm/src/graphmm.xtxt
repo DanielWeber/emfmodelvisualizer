@@ -26,12 +26,36 @@ Node:
 SimpleNode:
 	name=ID 
 		("label" label=STRING)? 
+		("tooltip" tooltip=STRING)?
 		("icon" icon=STRING)?
+		("textcolor" textcolor=ColorEnum)?
+		("linecolor" linecolor=ColorEnum)?
+		("fillcolor" fillcolor=ColorEnum)?
 		("source" source=STRING)? 
-		";";
+	";";
 	
 Edge:
 	SimpleDirectedEdge;
 
 SimpleDirectedEdge:
-	source=[Node] "->" target=[Node] ";";
+	source=[Node] "->" target=[Node] 
+		("tooltip" tooltip=STRING)? 
+		("color" color=ColorEnum)? 
+	";";
+	
+Enum ColorEnum:
+	white = "white" |      
+	lightGray = "lightGray" |
+	gray = "gray" |      
+	darkGray = "darkGray" |
+	black = "black" |
+	red = "red" |
+	orange = "orange" |
+	yellow = "yellow" |
+	green = "green" |
+	lightGreen = "lightGreen" |
+	darkGreen = "darkGreen" |
+	cyan = "cyan" |
+	lightBlue = "lightBlue" |
+	blue = "blue" |
+	darkBlue = "darkBlue";

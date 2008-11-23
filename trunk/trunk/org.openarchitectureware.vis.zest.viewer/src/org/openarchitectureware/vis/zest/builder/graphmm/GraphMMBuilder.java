@@ -10,9 +10,13 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.zest.core.widgets.Graph;
@@ -52,13 +56,30 @@ public class GraphMMBuilder implements ZestModelBuiler {
 				n = new GraphNode(graph, SWT.NONE, model.getLabel( node ));
 			}
 			String sourceLocation = model.getSourceLocation( node );
-			n.setData( sourceLocation );
+			if ( sourceLocation != null) {
+				n.setData( sourceLocation );
+			}
+			String tooltip = model.getTooltip( node );
+			if ( tooltip != null ) {
+				IFigure label = new Label(tooltip);
+				n.setTooltip( label );
+			}
+			n.setBorderColor(model.getNodeLineColor( node ));
+			n.setForegroundColor(model.getTextColor( node ));
+			n.setBackgroundColor( model.getFillColor( node ) );
 			nodeMap.put( node , n);
 		}
 		for (EObject edge : model.getEdges(firstgraph)) {
 			EObject sourceNode = model.getEdgeSource( edge );
 			EObject targetNode = model.getEdgeTarget( edge );
-			new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+			GraphConnection c = new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+			String tooltip = model.getTooltip( edge );
+			if ( tooltip != null ) {
+				IFigure label = new Label(tooltip);
+				c.setTooltip( label );
+			}
+			c.setLineColor(model.getEdgeColor( edge ));
+			
 		}
 		return graph;
 	}
