@@ -2,21 +2,25 @@ package org.openarchitectureware.vis.zest.viewer.views;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
-import org.eclipse.zest.core.widgets.GraphConnection;
-import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.openarchitectureware.vis.zest.builder.graphmm.GraphMMBuilder;
@@ -30,6 +34,8 @@ public class ModelViewer extends ViewPart {
 	private Action runWorkflowAction;
 	private Composite parent = null;
 	private Graph graph;
+	private IMenuManager menuManager;
+	private Set recentWorkflowFiles = new HashSet();
 
 
 	public ModelViewer() {
@@ -38,39 +44,66 @@ public class ModelViewer extends ViewPart {
 	public void createPartControl(Composite parent) {
 		this.parent = parent;
 		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		createGraph(parent);
+		menuManager = bars.getMenuManager();
+		fillLocalPullDown();
 	}
 
-	private void createGraph(Composite parent) {
-		if ( graph != null ) graph.dispose();
+	private void fillLocalPullDown() {
+		createActions();
+		menuManager.add(runWorkflowAction);
+		menuManager.add(new Separator());
+	}
 
-		String wfFile = "createModel.oaw";
+	private void setFilenameAndRedraw(String filename) {
+		addRecentWorkflowFile( filename );
+		if ( graph != null ) graph.dispose();
 		Map properties = new HashMap();
 		Map slotContents = new HashMap();
 		WorkflowRunner runner = new WorkflowRunner();
-		runner.run(wfFile, new NullProgressMonitor(), properties, slotContents);
+		runner.run(filename, new NullProgressMonitor(), properties, slotContents);
 		EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
-		
 		graph = new GraphMMBuilder(graphmodel).constructGraph(parent);
-		
 		graph.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
-		
+	}
+
+	private void addRecentWorkflowFile(String filename) {
+		if ( recentWorkflowFiles.contains(filename)) {
+			return;
+		}
+		recentWorkflowFiles.add(filename);
+		menuManager.add( new RecentWorkflowAction(filename) );
 	}
 	
-	private void fillLocalPullDown(IMenuManager manager) {
-		createActions();
-		manager.add(runWorkflowAction);
-		manager.add(new Separator());
+	class RecentWorkflowAction extends Action {
+		String workflow = null;
+		public RecentWorkflowAction( String filename ) {
+			workflow = filename;
+			setText(filename);
+			setToolTipText("Rerun "+filename);
+			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+							   getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+		}
+		public void run() {
+        	setFilenameAndRedraw(workflow);
+		}
 	}
 
 	private void createActions() {
 		runWorkflowAction = new Action() {
 			public void run() {
-				createGraph(parent);
+				FileDialog fd = new FileDialog(new Shell(Display.getCurrent()), SWT.OPEN);
+		        fd.setText("Run Workflow");
+		        fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
+		        String[] filterExt = { "*.oaw" };
+		        fd.setFilterExtensions(filterExt);
+		        String selected = fd.open();
+		        if ( selected != null ) {
+		        	setFilenameAndRedraw(selected);
+		        }
 			}
+
 		};
-		runWorkflowAction.setText("Run Transformation Workflow");
+		runWorkflowAction.setText("Run Transformation Workflow...");
 		runWorkflowAction.setToolTipText("Run a workflow that creates a GraphMM model");
 		runWorkflowAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
