@@ -1,0 +1,17 @@
+prolog {
+	iconbasepath "platform:/plugin/de.voelter.zest.example/icons/";
+}
+
+graph g1 {
+	nodes {
+		s1 label "S1" icon "icon1.gif";
+		s2 label "S2" icon "icon2.gif";
+		s3 label "S3";
+	}
+
+	edges {
+		s1 -> s2;
+		s2 -> s3;
+		s3 -> s1;
+	}
+}
