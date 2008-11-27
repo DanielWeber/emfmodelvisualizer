@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Activator: de.voelter.zest.example.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.openarchitectureware.dependencies;bundle-version="4.3.1"
+ org.openarchitectureware.dependencies;bundle-version="4.3.1",
+ org.openarchitectureware.vis.graphmm;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.voelter.zest.example;x-friends:="org.openarchitectureware.vis.zest.viewer"
