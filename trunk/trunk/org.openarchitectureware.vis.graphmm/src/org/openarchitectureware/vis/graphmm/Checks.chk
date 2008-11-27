@@ -6,21 +6,12 @@ extension org::openarchitectureware::vis::graphmm::Extensions;
  * and by the editor. Add your constraints here!
  */
 
-context SimpleNode ERROR "Write your constraint message here...!" :
-   true;
-
-context Edge ERROR "Write your constraint message here...!" :
-   true;
-
-context Node ERROR "Write your constraint message here...!" :
-   true;
-
-context GraphCollection ERROR "Write your constraint message here...!" :
-   true;
-
-context Graph ERROR "Write your constraint message here...!" :
-   true;
-
-context SimpleDirectedEdge ERROR "Write your constraint message here...!" :
-   true;
+context Edge ERROR "weight must be between -100 and +100" :
+   weight >= -100 && weight <= 100;
+   
+context Graph ERROR "name must be specified":
+	name != null;
+	
+context Graph ERROR "graphs must be contained in GraphCollections":
+	eContainer != null && GraphCollection.isInstance( eContainer );
 

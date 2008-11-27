@@ -31,17 +31,42 @@ SimpleNode:
 		("textcolor" textcolor=ColorEnum)?
 		("linecolor" linecolor=ColorEnum)?
 		("fillcolor" fillcolor=ColorEnum)?
-		("source" source=STRING)? 
+		("source" sourceLocation=STRING)? 
+		("category" category=STRING)?
+		(userData = UserData)?
 	";";
 	
 Edge:
 	SimpleDirectedEdge;
 
 SimpleDirectedEdge:
-	source=[Node] "->" target=[Node] 
+	source=[Node] direction=DirectionEnum target=[Node] 
+		("label" label=STRING)? 
 		("tooltip" tooltip=STRING)? 
+		("icon" icon=STRING)?
 		("color" color=ColorEnum)? 
+		("weight" weight=INT)?
+		("width" width=INT)?
+		("style" style=LineStyleEnum)?
+		("category" category=STRING)?
+		(userData = UserData)?
 	";";
+
+UserData:
+	"data" "{"
+		(nvpairs+=NVPair)*
+	"}";
+
+
+NVPair:
+	name=ID ":" type=DataTypeEnum "=" value=STRING ";";
+	
+DataTypeEnum:
+	string = "string" | integer = "int" | boolean = "boolean";	
+	
+Enum DirectionEnum:
+	directed = "->" |
+	undirected = "--";	
 	
 Enum ColorEnum:
 	white = "white" |      
@@ -59,3 +84,13 @@ Enum ColorEnum:
 	lightBlue = "lightBlue" |
 	blue = "blue" |
 	darkBlue = "darkBlue";
+	
+	
+Enum LineStyleEnum:
+	solid = "solid" | // 1
+	dashed = "dashed" | // 2
+	dotted = "dotted" | // 3
+	dashDotted = "dashDotted" | // 4
+	dashDotDotted = "dashDotDotted"; // 5
+	
+	
