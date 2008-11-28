@@ -22,12 +22,12 @@ import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.ZestStyles;
 
-public class GraphMMBuilder {
+public class GraphBuilder {
 	
 	private GraphMMModelWrapper model = null;
 	private Map<EObject, GraphNode> nodeMap = null;
 
-	public GraphMMBuilder(EObject graphmmModel) {
+	public GraphBuilder(EObject graphmmModel) {
 		this.model = new GraphMMModelWrapper(graphmmModel);
 	}
 	
