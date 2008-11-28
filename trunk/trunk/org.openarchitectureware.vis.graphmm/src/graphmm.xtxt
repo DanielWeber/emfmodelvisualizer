@@ -12,6 +12,7 @@ Prolog:
 
 Graph:
 	"graph" name=ID "{"
+		("layoutHints" layoutHints = Properties )?
 		"nodes" "{"
 			(nodes+=Node)*
 		"}"
@@ -33,7 +34,7 @@ SimpleNode:
 		("fillcolor" fillcolor=ColorEnum)?
 		("source" sourceLocation=STRING)? 
 		("category" category=STRING)?
-		(userData = UserData)?
+		("userData" userData = Properties )?
 	";";
 	
 Edge:
@@ -49,20 +50,24 @@ SimpleDirectedEdge:
 		("width" width=INT)?
 		("style" style=LineStyleEnum)?
 		("category" category=STRING)?
-		(userData = UserData)?
+		("userData" userData = Properties )?
 	";";
 
-UserData:
-	"data" "{"
-		(nvpairs+=NVPair)*
-	"}";
+Properties:
+	(nvpairs+=NVPair)*;
 
 
 NVPair:
-	name=ID ":" type=DataTypeEnum "=" value=STRING ";";
+	name=ID ":" type=DataType "=" value=STRING ";";
 	
-DataTypeEnum:
-	string = "string" | integer = "int" | boolean = "boolean";	
+DataType:
+  	TextType | IntegerType | BooleanType;
+  	
+TextType: "text";
+
+IntegerType: "int";
+
+BooleanType: "boolean";	
 	
 Enum DirectionEnum:
 	directed = "->" |
