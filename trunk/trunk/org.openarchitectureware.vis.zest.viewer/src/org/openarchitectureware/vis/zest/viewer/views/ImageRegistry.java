@@ -12,6 +12,7 @@ import org.openarchitectureware.vis.zest.viewer.Activator;
 public class ImageRegistry {
 
 	public static final String WORKFLOWFILE = "workflowfile";
+	public static final String REFRESH = "refresh";
 	
 	private static Map<String, Image> imageCache = new HashMap<String, Image>();
 	private static Map<String, ImageDescriptor> imageDescriptorCache = new HashMap<String, ImageDescriptor>();

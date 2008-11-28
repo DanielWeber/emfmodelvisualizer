@@ -9,3 +9,5 @@
 * graphcontainer?
 * curved connections?
 * hints to Zest? Straight? Curved? Layout?
+
+* button um aktuellen Workflow zu refreshen

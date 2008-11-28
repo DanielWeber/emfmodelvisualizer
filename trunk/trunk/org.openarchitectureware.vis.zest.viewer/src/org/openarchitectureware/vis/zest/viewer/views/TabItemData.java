@@ -16,7 +16,7 @@ public class TabItemData {
 	public int getLayoutIndex() {
 		return layoutIndex;
 	}
-	public void setLayoutIndex(int layoutIndex) {
+	public void setLayoutId(int layoutIndex) {
 		this.layoutIndex = layoutIndex;
 	}
 	
