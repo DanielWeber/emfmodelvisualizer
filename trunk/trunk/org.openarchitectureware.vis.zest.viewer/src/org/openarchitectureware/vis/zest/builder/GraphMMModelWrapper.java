@@ -41,7 +41,7 @@ public class GraphMMModelWrapper {
 	}
 	
 
-	public Object getGraphName(EObject graphNode) {
+	public String getGraphName(EObject graphNode) {
 		return getString(graphNode, "name");
 	}
 	
@@ -111,7 +111,6 @@ public class GraphMMModelWrapper {
 		if ( cat != null ) {
 			res.put( "cat" , cat);
 		}
-		
 		if ( ud == null ) return res;
 		Collection<EObject> nvpairs = (Collection<EObject>)getCollection(ud, "nvpairs");
 		for (EObject nvp : nvpairs) {
@@ -197,6 +196,19 @@ public class GraphMMModelWrapper {
 		Color col = colorMap.get(c);
 		if ( col == null ) return defaultcolor;
 		return col;
+	}
+
+
+	public String getLayoutHint(EObject graphNode) {
+		EObject layoutHintProperties = getElement(graphNode, "layoutHints");
+		if ( layoutHintProperties == null ) return null;
+		Collection<EObject> nvpairs = (Collection<EObject>)getCollection(layoutHintProperties, "nvpairs");
+		for (EObject nvpair : nvpairs) {
+			String name = getString(nvpair, "name");
+			String value = getString(nvpair, "value");
+			if ( name.equals("zestlayout") ) return value;
+		}
+		return null;
 	}
 
 

@@ -24,14 +24,6 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 
 public class GraphMMBuilder {
 	
-	public static final String NODEDATA_USERDATA = "userdata";
-	public static final String EDGEDATA_USERDATA = "userdata";
-	public static final String GRAPHDATA_NAME = "name";
-	public static final String GRAPHDATA_MODELNODE = "modelnode";
-	public static final String GRAPHDATA_FILTERLIST = "filterlist";
-	public static final String NODEDATA_CATEGORY = "category";
-	public static final String EDGEDATA_CATEGORY = "category";
-	
 	private GraphMMModelWrapper model = null;
 	private Map<EObject, GraphNode> nodeMap = null;
 
@@ -42,10 +34,14 @@ public class GraphMMBuilder {
 	public Graph constructGraph( Composite parent, EObject graphNode, Collection<String> checkedCategories ) {
 		nodeMap = new HashMap<EObject, GraphNode>();
 		Graph graph = new Graph(parent, SWT.NONE);
-		graph.setData(GRAPHDATA_NAME, model.getGraphName( graphNode ) );
-		graph.setData(GRAPHDATA_MODELNODE, graphNode );
-		Set<String> filterList = new HashSet<String>();
-		graph.setData(GRAPHDATA_FILTERLIST, filterList );
+		GraphData graphData = new GraphData();
+		graph.setData( graphData );
+		graphData.setName( model.getGraphName( graphNode ) );
+		graphData.setModelNode( graphNode );
+		String suggestedLayout = model.getLayoutHint( graphNode );
+		if ( suggestedLayout != null ) {
+			graphData.setSuggestedLayout( suggestedLayout );
+		}
 		for (EObject node : model.getNodes(graphNode)) {
 			String cat = model.getNodeOrEdgeCategory(node);
 			if ( isInGraph( node, checkedCategories, cat )) {
@@ -63,6 +59,8 @@ public class GraphMMBuilder {
 				} else {
 					n = new GraphNode(graph, SWT.NONE, model.getNodeOrEdgeLabel( node ));
 				}
+				NodeData nodeData = new NodeData();
+				n.setData( nodeData );
 				String sourceLocation = model.getNodeSourceLocation( node );
 				if ( sourceLocation != null) {
 					n.setData( sourceLocation );
@@ -76,14 +74,12 @@ public class GraphMMBuilder {
 				n.setForegroundColor(model.getNodeTextColor( node ));
 				n.setBackgroundColor( model.getNodeFillColor( node ) );
 				Map userDataMap = model.getUserDataMap( node );
-				n.setData( NODEDATA_USERDATA, userDataMap );
+				nodeData.getUserData().putAll(userDataMap);
 				nodeMap.put( node , n);
-				if ( cat != null ) {
-					n.setData( NODEDATA_CATEGORY, cat );
-				}
+				nodeData.setCategory( cat );
 			}
 			if ( cat != null ) {
-				filterList.add( cat );
+				graphData.getCategories().add( cat );
 			}
 		}
 		for (EObject edge : model.getEdges(graphNode)) {
@@ -92,6 +88,8 @@ public class GraphMMBuilder {
 			String cat = model.getNodeOrEdgeCategory(edge);
 			if ( isInGraph(edge, checkedCategories, cat)) {
 				GraphConnection c = new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+				EdgeData edgeData = new EdgeData();
+				c.setData( edgeData );
 				String tooltip = model.getTooltip( edge );
 				if ( tooltip != null ) {
 					IFigure label = new Label(tooltip);
@@ -116,14 +114,12 @@ public class GraphMMBuilder {
 				if ( model.isEdgeDirected( edge ) ) {
 					c.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 				}
-				if ( cat != null ) {
-					c.setData( EDGEDATA_CATEGORY, cat );
-				}
+				edgeData.setCategory(cat);
 				Map userDataMap = model.getUserDataMap( edge );
-				c.setData( EDGEDATA_USERDATA, userDataMap );
+				edgeData.getUserData().putAll( userDataMap );
 			}
 			if ( cat != null ) {
-				filterList.add( cat );
+				graphData.getCategories().add( cat );
 			}
 		}
 		return graph;

@@ -22,7 +22,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -46,11 +45,13 @@ import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.openarchitectureware.vis.zest.builder.EdgeData;
+import org.openarchitectureware.vis.zest.builder.GraphData;
 import org.openarchitectureware.vis.zest.builder.GraphMMBuilder;
+import org.openarchitectureware.vis.zest.builder.NodeData;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
-
 
 
 public class ModelViewer extends ViewPart {
@@ -59,10 +60,6 @@ public class ModelViewer extends ViewPart {
 	private static final int LAYOUT_TREE = 2;
 	private static final int LAYOUT_SPRING = 1;
 	private static final int LAYOUT_RADIAL = 0;
-	private static final String TABITEMDATA_LAYOUT = "layout";
-	private static final String TABITEMDATA_GRAPH = "graph";
-	private static final String TABITEMDATA_GRAPHMODEL = "graphmodel";
-	private static final String TABITEMDATA_CHECKEDFILTERS = "checkedfilters";
 	private Set recentWorkflowFiles = new HashSet();
 	private Action runWorkflowAction;
 	private Composite topLevelComposite;
@@ -74,7 +71,6 @@ public class ModelViewer extends ViewPart {
 	private Composite rightSideComposite;
 	private Table filterTable;
 	private GraphMMBuilder graphbuilder;
-
 
 	public ModelViewer() {
 	}
@@ -100,8 +96,9 @@ public class ModelViewer extends ViewPart {
 		graphbuilder = new GraphMMBuilder(graphmodel);
 		deleteAllViewContent();
 		topLevelSashForm = new SashForm(topLevelComposite,SWT.HORIZONTAL);
-		createTabFolderForGraphs();
+		tabFolderForGraphs = new TabFolder (topLevelSashForm, SWT.NONE);
 		createRightSideComposite();
+		populateTabFolderWithGraphs();
 		topLevelSashForm.setWeights(new int[] {90,10});
 		topLevelComposite.layout(true, true);
 	}
@@ -126,8 +123,6 @@ public class ModelViewer extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				onLayoutComboSelectionChanged();
 			}
-
-
 		} );
 		
 		SashForm rightSash = new SashForm(rightSideComposite,SWT.VERTICAL);
@@ -140,7 +135,6 @@ public class ModelViewer extends ViewPart {
 		
 		filterTable = new Table(rightSash, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL );
 
-		
 		nameValueTable = new Table( rightSash, SWT.BORDER | SWT.FULL_SELECTION);
 		nameValueTable.setHeaderVisible(true);
 		nameValueTable.setLinesVisible(false);
@@ -155,20 +149,16 @@ public class ModelViewer extends ViewPart {
 		rightSash.setWeights(new int[] {60,40});
 		rightSideComposite.pack();
 		
-		updateFilterTable();
-		updateLayoutCombo();
-		setLayout( getCurrentlySelectedTabItem(), LAYOUT_RADIAL);
 	}
 
 	private void onLayoutComboSelectionChanged() {
-		TabItem tabItem = getCurrentlySelectedTabItem();
 		final int layoutIndex = layoutCombo.getSelectionIndex();
-		setLayout(tabItem, layoutIndex);
+		setLayout(currTabItem(), layoutIndex);
 	}
 	
 	private void setLayout(TabItem tabItem, final int layoutIndex) {
-		tabItem.setData(TABITEMDATA_LAYOUT, layoutIndex);
-		Graph g = (Graph)tabItem.getData(TABITEMDATA_GRAPH);
+		getData(tabItem).setLayoutIndex(layoutIndex);
+		Graph g = getData(tabItem).getGraph();
 		AbstractLayoutAlgorithm graphlayout = null;
 		switch (layoutIndex) {
 		case LAYOUT_RADIAL:
@@ -189,17 +179,16 @@ public class ModelViewer extends ViewPart {
 		graphlayout.setFilter(new Filter() {
 			@Override
 			public boolean isObjectFiltered(LayoutItem item) {
-				TabItem tabItem = getCurrentlySelectedTabItem();
-				Collection<String> filteredCategories = (Collection<String>)tabItem.getData(TABITEMDATA_CHECKEDFILTERS);
+				Collection<String> filteredCategories = getData(currTabItem()).getCheckedFilters();
 				String itemCategory = null;
 				Object object = item.getGraphData();
 				if  (object instanceof GraphNode) {
 					GraphNode node = (GraphNode) object;
-					itemCategory = (String)node.getData(GraphMMBuilder.NODEDATA_CATEGORY);
+					itemCategory = getData(node).getCategory(); 
 				}
 				if  (object instanceof GraphConnection ) {
 					GraphConnection connection = (GraphConnection) object;
-					itemCategory = (String)connection.getData(GraphMMBuilder.EDGEDATA_CATEGORY);
+					itemCategory = getData(connection).getCategory(); 
 				}
 				if ( itemCategory == null ) return false;
 				if ( filteredCategories.contains(itemCategory) ) return false;
@@ -209,21 +198,22 @@ public class ModelViewer extends ViewPart {
 		g.setLayoutAlgorithm(graphlayout, true);
 	} 
 	
-	
-	private void createTabFolderForGraphs() {
+	private void populateTabFolderWithGraphs() {
 		Collection<EObject> graphs = graphbuilder.getGraphs();
-		tabFolderForGraphs = new TabFolder (topLevelSashForm, SWT.NONE);
 		for (EObject gm: graphs) {
 			TabItem item = new TabItem (tabFolderForGraphs, SWT.NONE);
 			createGraphIntoTabItem(gm, item);
 		}
-		tabFolderForGraphs.pack();
+		tabFolderForGraphs.layout();
+		updateFilterTable();
+		updateLayoutCombo();
+		setLayout( currTabItem(), LAYOUT_RADIAL);
 		tabFolderForGraphs.addSelectionListener(new SelectionAdapter()  {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				onTabFolderSelectionChanged();
 			}
-		});
+		});		
 	}
 
 	private void onTabFolderSelectionChanged() {
@@ -232,28 +222,43 @@ public class ModelViewer extends ViewPart {
 	}
 	
 	private void createGraphIntoTabItem(EObject gm, TabItem item) {
-		Graph old = (Graph)item.getData(TABITEMDATA_GRAPH);
+		Graph old = getData(item).getGraph();
 		if ( old != null ) {
 			item.setControl(null);
 			old.dispose();
 		}
-		Collection<String> checkedCategories = (Collection<String>)item.getData( TABITEMDATA_CHECKEDFILTERS );
-		Graph newGraph = constructGraph(gm, checkedCategories);
-		item.setText( (String)newGraph.getData(GraphMMBuilder.GRAPHDATA_NAME) );
+		Set<String> checkedFilters = getData(item).getCheckedFilters();
+		Graph newGraph = constructGraph(gm, checkedFilters);
+		item.setText( getData(newGraph).getName() );
 		item.setControl(newGraph);
-		item.setData(TABITEMDATA_GRAPH, newGraph);
-		item.setData(TABITEMDATA_GRAPHMODEL, gm);
-		Collection<String> categories = (Collection<String>)newGraph.getData( GraphMMBuilder.GRAPHDATA_FILTERLIST );
-		if ( checkedCategories == null ) {
-			checkedCategories = new HashSet<String>();
-			checkedCategories.addAll( categories );
-			item.setData( TABITEMDATA_CHECKEDFILTERS, checkedCategories );
+		getData(item).setGraph(newGraph);
+		getData(item).setGraphModel(gm);
+		if ( checkedFilters == null ) {
+			checkedFilters = new HashSet<String>();
+			checkedFilters.addAll(getData(newGraph).getCategories());
+			getData(item).setCheckedFilters(checkedFilters);
 		}
-		if ( layoutCombo != null ) {
-			setLayout(item, layoutCombo.getSelectionIndex());
+		String layoutHint = getData(newGraph).getSuggestedLayout();
+		int layoutHintAsInt = layoutHintToConstant( layoutHint );
+		if ( layoutHintAsInt >= 0 ) {
+			setLayout(item, layoutHintAsInt );
+			updateLayoutCombo();
 		} else {
-			setLayout(item, LAYOUT_RADIAL);
+			if ( layoutCombo != null ) {
+				setLayout(item, layoutCombo.getSelectionIndex());
+			} else {
+				setLayout(item, LAYOUT_RADIAL);
+			}
 		}
+	}
+
+	private int layoutHintToConstant(String layoutHint) {
+		if ( layoutHint == null ) return LAYOUT_RADIAL;
+		if ( layoutHint.equals("radial")) return LAYOUT_RADIAL;
+		if ( layoutHint.equals("spring")) return LAYOUT_SPRING;
+		if ( layoutHint.equals("tree")) return LAYOUT_TREE;
+		if ( layoutHint.equals("htree")) return LAYOUT_TREE_HORI;
+		return LAYOUT_RADIAL;
 	}
 
 	private void deleteAllViewContent() {
@@ -264,16 +269,16 @@ public class ModelViewer extends ViewPart {
 	}
 
 	private void updateLayoutCombo() {
-		Integer data = (Integer)getCurrentlySelectedTabItem().getData(TABITEMDATA_LAYOUT);
-		layoutCombo.select( data.intValue() );
+		int index = getData(currTabItem()).getLayoutIndex();
+		layoutCombo.select(index);
 	}
 
-	private TabItem getCurrentlySelectedTabItem() {
+	private TabItem currTabItem() {
 		return tabFolderForGraphs.getSelection()[0];
 	}
 	
-	private Graph getCurrentlySelectedGraph() {
-		return (Graph)getCurrentlySelectedTabItem().getData(TABITEMDATA_GRAPH);
+	private Graph currGraph() {
+		return getData(currTabItem()).getGraph();
 	}
 	
 	private void updateFilterTable() {
@@ -281,11 +286,10 @@ public class ModelViewer extends ViewPart {
 		for (int i = itemcount-1; i >= 0; i--) {
 			filterTable.getItems()[i].dispose();
 		}
-		final TabItem selectedTabItem = getCurrentlySelectedTabItem();
-		Graph g = getCurrentlySelectedGraph();
-		final Collection<String> categories = (Collection<String>)g.getData(GraphMMBuilder.GRAPHDATA_FILTERLIST);
-		final Collection<String> checked = (Collection<String>)selectedTabItem.getData(TABITEMDATA_CHECKEDFILTERS);
-		final EObject graphmodel = (EObject)selectedTabItem.getData(TABITEMDATA_GRAPHMODEL);
+		if ( currTabItem() == null ) return;
+		final Collection<String> categories = getData(currGraph()).getCategories();
+		final Collection<String> checked = getData(currTabItem()).getCheckedFilters();
+		final EObject graphmodel = getData(currTabItem()).getGraphModel();
 		for (String category : categories) {
 			TableItem t = new TableItem( filterTable, SWT.NONE );
 			t.setText( category );
@@ -294,7 +298,7 @@ public class ModelViewer extends ViewPart {
 		filterTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				onFilterTableSelectionChanged(selectedTabItem, graphmodel);
+				onFilterTableSelectionChanged(currTabItem(), graphmodel);
 			}
 
 		});
@@ -308,8 +312,7 @@ public class ModelViewer extends ViewPart {
 
 	private void updateFilterList() {
 		System.err.println("");
-		TabItem selectedTabItem = getCurrentlySelectedTabItem();
-		Collection<String> checked = (Collection<String>)selectedTabItem.getData(TABITEMDATA_CHECKEDFILTERS);
+		Collection<String> checked = getData(currTabItem()).getCheckedFilters();
 		checked.clear();
 		TableItem [] filterItems = filterTable.getItems();
 		for (TableItem item : filterItems) {
@@ -318,24 +321,19 @@ public class ModelViewer extends ViewPart {
 	}
 	
 	private Graph constructGraph(EObject graphModel, Collection<String> checkedCategories) {
-		System.err.println("");
 		final Graph g = graphbuilder.constructGraph(tabFolderForGraphs, graphModel, checkedCategories);
 		g.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				onGraphMouseEvent(g, e);
 			}
-
 		});
 		g.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				onGraphSelectionChanged(g);
 			}
-
-
 		});
-		g.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 		return g;
 	}
 
@@ -367,7 +365,7 @@ public class ModelViewer extends ViewPart {
 		for (TableItem item : nameValueTable.getItems()) {
 			item.dispose();
 		}
-		Map<String, String> userDataMap = (Map<String, String>)selectedNode.getData( GraphMMBuilder.NODEDATA_USERDATA );
+		Map<String, String> userDataMap = getData(selectedNode).getUserData();
 		for (String name : userDataMap.keySet()) {
 			TableItem i1 = new TableItem(nameValueTable, SWT.NULL);
 			i1.setText( new String[]{name, userDataMap.get(name)});
@@ -418,7 +416,6 @@ public class ModelViewer extends ViewPart {
 		runWorkflowAction.setText("Run Transformation Workflow...");
 		runWorkflowAction.setToolTipText("Run a workflow that creates a GraphMM model");
 		runWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
-		
 	}
 
 	private void onRunNewWorkflow() {
@@ -436,4 +433,27 @@ public class ModelViewer extends ViewPart {
 
 	public void setFocus() {
 	}
+	
+	
+	private NodeData getData(GraphNode n) {
+		return (NodeData)n.getData();
+	}
+	
+	private EdgeData getData(GraphConnection c) {
+		return (EdgeData)c.getData();
+	}
+	
+	private GraphData getData(Graph g) {
+		return (GraphData)g.getData();
+	}
+	
+	private TabItemData getData( TabItem item ) {
+		TabItemData d = (TabItemData)item.getData();
+		if ( d == null ) {
+			d = new TabItemData();
+			item.setData(d);
+		}
+		return d;
+	}
+	
 }
