@@ -132,6 +132,8 @@ public class ModelViewer extends ViewPart {
 	 * creates the pull down menu on the view
 	 */
 	private void fillLocalToolBar() {
+		// select and run a workflow
+		toolBarManager.add( runWorkflowAction );
 		// the action to rerun the current workflow
 		toolBarManager.add( refreshCurrentWorkflowAction );
 	}
