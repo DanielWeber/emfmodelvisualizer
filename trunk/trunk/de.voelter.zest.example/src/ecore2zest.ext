@@ -1,6 +1,7 @@
 import ecore;
 import graphmm;
 
+extension graphmmlib;
  
 Object top(EPackage p):
 	toCollection(p); 
@@ -21,6 +22,7 @@ create Graph toAssocGraph(EPackage p):
 
 create Graph toInheritGraph(EPackage p):
 	setName( "inheritance" ) ->
+	addLayoutHint( "zestlayout", "tree" ) ->
 	nodes.add( p.toNode("i") ) ->
 	nodes.addAll( p.eClassifiers.typeSelect(EClass).toNode("i") ) ->
 	edges.addAll( p.eClassifiers.typeSelect(EClass).iterateSuperTypes("i") );

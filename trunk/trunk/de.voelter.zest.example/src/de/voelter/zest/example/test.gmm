@@ -5,11 +5,11 @@ prolog {
 graph g1 {
 	nodes {
 		s1 label "S1" tooltip "S1 Tooltip" icon "icon1.gif" category "a"
-			data {
-				test : string = "This is a test";
+			userData 
+				test : text = "This is a test";
 				test2 : int = "2";
 				test3 : boolean = "true";
-			};
+			;
 		s2 label "S2" icon "icon2.gif" category "a";
 		s3 label "shift click here" source "platform:/resource/de.voelter.zest.example/src/de/voelter/zest/example/test.gmm,100,120";
 		s4 label "S4" linecolor red category "b";
