@@ -1,0 +1,17 @@
+<workflow abstract="true">
+
+	<property name="modelFile"/>
+	<property name="targetDir"/>
+
+	<component id="read" class="org.eclipse.mwe.emf.Reader">
+		<useSingleGlobalResourceSet value="true"/>
+		<modelSlot value="model"/>
+		<uri value="${modelFile}"/>
+	</component>	
+
+	<cartridge file="model2dotfile.oaw" 
+		targetDir="${targetDir}"
+		topFunctionCallExpression="ecore2dot::toGraphVizmodel(model)"
+		inheritAll="true"/>
+
+</workflow>
