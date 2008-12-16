@@ -22,7 +22,7 @@ Graph:
 	"}";
 	  
 Node:
-	SimpleNode;
+	SimpleNode | ContainerNode;
 
 SimpleNode:
 	name=ID 
@@ -35,6 +35,20 @@ SimpleNode:
 		("source" sourceLocation=STRING)? 
 		("category" category=STRING)?
 		("userData" userData = Properties )?
+	";";
+	
+ContainerNode:
+	"container" name=ID 
+		("label" label=STRING)? 
+		("tooltip" tooltip=STRING)?
+		("icon" icon=STRING)?
+		("textcolor" textcolor=ColorEnum)?
+		("linecolor" linecolor=ColorEnum)?
+		("fillcolor" fillcolor=ColorEnum)?
+		("source" sourceLocation=STRING)? 
+		("category" category=STRING)?
+		("userData" userData = Properties )?
+		("contained" containedGraph=Graph )?
 	";";
 	
 Edge:
