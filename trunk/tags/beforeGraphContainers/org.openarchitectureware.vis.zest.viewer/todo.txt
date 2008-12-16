@@ -1,0 +1,11 @@
+* How can I set different arrow heads/tails?
+* Seems to me the arrow heads only show up 
+  after I select a connection... bug?
+* what does the node style fisheye do?
+* is there an algorithm that avoid edges
+  "running over" other nodes?
+  
+* drill down... with breadcrumbs for the way back
+* graphcontainer?
+* curved connections?
+* hints to Zest? Straight? Curved? Layout?
