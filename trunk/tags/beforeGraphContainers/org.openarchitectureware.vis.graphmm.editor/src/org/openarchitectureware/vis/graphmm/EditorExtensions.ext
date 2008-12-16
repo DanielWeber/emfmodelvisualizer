@@ -1,0 +1,9 @@
+import graphmm;
+
+extension org::openarchitectureware::vis::graphmm::Extensions reexport;
+extension org::openarchitectureware::vis::graphmm::GenEditorExtensions reexport;
+
+/*
+ * use this file to overwrite the label() and the image()
+ * extension for your model elements
+ */
