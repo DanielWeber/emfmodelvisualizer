@@ -8,4 +8,13 @@
 * drill down... with breadcrumbs for the way back
 * graphcontainer?
 * curved connections?
-* hints to Zest? Straight? Curved? Layout?
+* Position festhalten
+* Compartments
+* Hightlight alle Dependencies nach Klick auf Node, und die Knoten am anderen Ende.
+
+
+Asked Ian:
+
+* Why are graph containers bigger than normal nodes? This is rather ugly...
+* Can I change the size of the area created "under" a graph container?
+* Can I zoom somehow generally? And specifically, into a container?

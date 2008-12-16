@@ -212,6 +212,16 @@ public class GraphMMModelWrapper {
 	}
 
 
+	public boolean isContainerNode(EObject node) {
+		return node.eClass().getName().endsWith("ContainerNode");
+	}
+
+
+	public EObject getContainedGraph(EObject containerNode) {
+		return getElement(containerNode, "containedGraph");
+	}
+
+
 
 
 

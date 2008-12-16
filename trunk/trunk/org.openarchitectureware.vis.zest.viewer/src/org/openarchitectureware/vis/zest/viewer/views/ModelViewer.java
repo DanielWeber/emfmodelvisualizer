@@ -52,6 +52,8 @@ import org.openarchitectureware.vis.zest.builder.GraphBuilder;
 import org.openarchitectureware.vis.zest.builder.NodeData;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.workflow.WorkflowRunner;
+import org.openarchitectureware.workflow.issues.Issues;
+import org.openarchitectureware.workflow.issues.IssuesImpl;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
 /**
@@ -113,7 +115,7 @@ public class ModelViewer extends ViewPart {
 		fillLocalPullDown();
 		fillLocalToolBar();
 		// the following is for testing purposes.
-		//setFilenameAndRedraw("de/voelter/zest/example/createModel.oaw");
+		//setFilenameAndRedraw("de/voelter/zest/example/createBwin.oaw");
 		//setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
 	}
 
@@ -558,9 +560,15 @@ public class ModelViewer extends ViewPart {
 		Map properties = new HashMap();
 		Map slotContents = new HashMap();
 		WorkflowRunner runner = new WorkflowRunner();
-		runner.run(workflowFileName, new NullProgressMonitor(), properties, slotContents);
-		EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
-		return graphmodel;
+		final boolean configOK = runner.prepare(workflowFileName, new NullProgressMonitor(), properties);
+		final Issues issues = new IssuesImpl();
+		if (configOK) {
+			runner.executeWorkflow(slotContents, issues);
+			EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
+			return graphmodel;
+		} else {
+			return null;
+		}
 	}
 
 	/**

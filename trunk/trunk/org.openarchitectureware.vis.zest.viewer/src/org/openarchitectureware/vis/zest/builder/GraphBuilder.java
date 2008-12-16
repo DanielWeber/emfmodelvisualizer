@@ -19,13 +19,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphContainer;
 import org.eclipse.zest.core.widgets.GraphNode;
+import org.eclipse.zest.core.widgets.IContainer;
 import org.eclipse.zest.core.widgets.ZestStyles;
 
 public class GraphBuilder {
 	
 	private GraphMMModelWrapper model = null;
 	private Map<EObject, GraphNode> nodeMap = null;
+	private GraphData graphData;
+	private Graph graph;
 
 	public GraphBuilder(EObject graphmmModel) {
 		this.model = new GraphMMModelWrapper(graphmmModel);
@@ -33,8 +37,8 @@ public class GraphBuilder {
 	
 	public Graph constructGraph( Composite parent, EObject graphNode, Collection<String> checkedCategories ) {
 		nodeMap = new HashMap<EObject, GraphNode>();
-		Graph graph = new Graph(parent, SWT.NONE);
-		GraphData graphData = new GraphData();
+		graph = new Graph(parent, SWT.NONE);
+		graphData = new GraphData();
 		graph.setData( graphData );
 		graphData.setName( model.getGraphName( graphNode ) );
 		graphData.setModelNode( graphNode );
@@ -42,41 +46,58 @@ public class GraphBuilder {
 		if ( suggestedLayout != null ) {
 			graphData.setSuggestedLayout( suggestedLayout );
 		}
+		try {
+			populateContainer( graph, graphNode, checkedCategories);
+		} catch ( Throwable t ) {
+			t.printStackTrace();
+			return null;
+		}
+		return graph;
+	}
+	
+	private void populateContainer( IContainer container, EObject graphNode, Collection<String> checkedCategories ) {
+		Collection<EObject> nodes = model.getNodes(graphNode);
+		Collection<EObject> edges = model.getEdges(graphNode); 
 		for (EObject node : model.getNodes(graphNode)) {
+			boolean isContainerNode = model.isContainerNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);
 			if ( isInGraph( node, checkedCategories, cat )) {
-				GraphNode n = null;
+				GraphNode zestNode = null;
 				String icon = model.getNodeIcon( node );
 				if ( icon != null ) {
 					try {
 						ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
-						Image i = desc.createImage();				
-						n = new GraphNode(graph, SWT.NONE, model.getNodeOrEdgeLabel( node ), i);
+						Image i = desc.createImage();	
+						zestNode = createGraphNode(container, node, isContainerNode, i);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
-						n = new GraphNode(graph, SWT.NONE, model.getNodeOrEdgeLabel( node ));
+						zestNode = createGraphNode(container, node, isContainerNode, null);
 					}
 				} else {
-					n = new GraphNode(graph, SWT.NONE, model.getNodeOrEdgeLabel( node ));
+					zestNode = createGraphNode(container, node, isContainerNode, null);
 				}
 				NodeData nodeData = new NodeData();
-				n.setData( nodeData );
+				zestNode.setData( nodeData );
 				String sourceLocation = model.getNodeSourceLocation( node );
 				if ( sourceLocation != null) {
-					n.setData( sourceLocation );
+					zestNode.setData( sourceLocation );
 				}
 				String tooltip = model.getTooltip( node );
 				if ( tooltip != null ) {
 					IFigure label = new Label(tooltip);
-					n.setTooltip( label );
+					zestNode.setTooltip( label );
 				}
-				n.setBorderColor(model.getNodeLineColor( node ));
-				n.setForegroundColor(model.getNodeTextColor( node ));
-				n.setBackgroundColor( model.getNodeFillColor( node ) );
+				zestNode.setBorderColor(model.getNodeLineColor( node ));
+				zestNode.setForegroundColor(model.getNodeTextColor( node ));
+				zestNode.setBackgroundColor( model.getNodeFillColor( node ) );
 				Map userDataMap = model.getUserDataMap( node );
 				nodeData.getUserData().putAll(userDataMap);
-				nodeMap.put( node , n);
+				nodeMap.put( node , zestNode);
 				nodeData.setCategory( cat );
+				if ( isContainerNode ) {
+					EObject childgraph = model.getContainedGraph(node);
+					if ( childgraph != null ) populateContainer( (GraphContainer)zestNode, childgraph, checkedCategories);
+				}
 			}
 			if ( cat != null ) {
 				graphData.getCategories().add( cat );
@@ -87,32 +108,32 @@ public class GraphBuilder {
 			EObject targetNode = model.getEdgeTarget( edge );
 			String cat = model.getNodeOrEdgeCategory(edge);
 			if ( isInGraph(edge, checkedCategories, cat)) {
-				GraphConnection c = new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+				GraphConnection zestConnection = new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
 				EdgeData edgeData = new EdgeData();
-				c.setData( edgeData );
+				zestConnection.setData( edgeData );
 				String tooltip = model.getTooltip( edge );
 				if ( tooltip != null ) {
 					IFigure label = new Label(tooltip);
-					c.setTooltip( label );
+					zestConnection.setTooltip( label );
 				}
 				String text = model.getNodeOrEdgeLabel( edge );
-				if ( text != null ) c.setText(text); 
+				if ( text != null ) zestConnection.setText(text); 
 				String icon = model.getEdgeIcon( edge );
 				if ( icon != null ) {
 					try {
 						ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
 						Image i = desc.createImage();				
-						c.setImage(i);
+						zestConnection.setImage(i);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					}
 				}
-				c.setLineColor(model.getEdgeLineColor( edge ));
-				c.setLineWidth( model.getEdgeLineWidth(edge) );
-				c.setWeight( model.getEdgeLineWeight(edge) ); 
-				c.setLineStyle(model.getEdgeStyle( edge ));
+				zestConnection.setLineColor(model.getEdgeLineColor( edge ));
+				zestConnection.setLineWidth( model.getEdgeLineWidth(edge) );
+				zestConnection.setWeight( model.getEdgeLineWeight(edge) ); 
+				zestConnection.setLineStyle(model.getEdgeStyle( edge ));
 				if ( model.isEdgeDirected( edge ) ) {
-					c.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
+					zestConnection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 				}
 				edgeData.setCategory(cat);
 				Map userDataMap = model.getUserDataMap( edge );
@@ -122,7 +143,16 @@ public class GraphBuilder {
 				graphData.getCategories().add( cat );
 			}
 		}
-		return graph;
+	}
+
+	private GraphNode createGraphNode(IContainer container, EObject node, boolean isContainerNode, Image icon) {
+		GraphNode n;
+		if ( isContainerNode ) {
+			n = new GraphContainer(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
+		} else {
+			n = new GraphNode(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
+		}
+		return n;
 	}
 
 	private boolean isInGraph(EObject node, Collection<String> checkedCategories, String cat) {
