@@ -18,9 +18,22 @@ graph g1 {
 		s7 label "S7" textcolor green fillcolor blue;
 		s8 label "S8" textcolor darkBlue;
 		s9 label "S9" textcolor red;
+		container sc label "SC"
+			contained graph scchild {
+				nodes { 
+					sc1 label "sc1";
+					sc2 label "sc2";
+				}
+				edges {
+					sc1 -> sc2;
+					sc1 -> s6;
+				}		
+			}
+		;
 	}
 
 	edges {
+		s1 -- sc label "containeredge";
 		s1 -- s2 label "Hallo!" tooltip "s1 -> s2" icon "icon2.gif" color black weight -50;
 		s2 -- s3 tooltip "s2 -> s3" color cyan weight 0;
 		s3 -> s1 tooltip "s3 -> s1" color darkGreen weight 50;

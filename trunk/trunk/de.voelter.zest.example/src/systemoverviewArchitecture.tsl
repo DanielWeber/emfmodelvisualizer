@@ -1,0 +1,4150 @@
+
+
+       architecture SystemOverview {   
+           
+        subsystem bwin{
+
+        subsystem B2B{
+
+        subsystem Clients{
+            uses GameServers
+
+            uses PokerNetwork
+            uses PaymentService
+            uses Pokerroom
+            uses Pokerroom
+    
+        interface IJacksQuestClient CPI {}
+        component JacksQuestClient{
+            requires IBackOffice aBackOffice
+            requires IJacksQuest aJacksQuest
+            provides IJacksQuestClient aJacksQuestClient
+        }
+        
+        interface IRouletteClient CPI {}
+        component RouletteClient{
+            requires IRoulette aRoulette
+            requires IBackOffice aBackOffice
+            provides IRouletteClient aRouletteClient
+        }
+        
+        interface IMilleniumRideClient CPI {}
+        component MilleniumRideClient{
+            requires IBackOffice aBackOffice
+            requires IMilleniumRide aMilleniumRide
+            provides IMilleniumRideClient aMilleniumRideClient
+        }
+        
+        interface IDeucesWildClient CPI {}
+        component DeucesWildClient{
+            requires IBackOffice aBackOffice
+            requires IDeucesWild aDeucesWild
+            provides IDeucesWildClient aDeucesWildClient
+        }
+        
+        interface IPaiGowClient CPI {}
+        component PaiGowClient{
+            requires IBackOffice aBackOffice
+            requires IPaiGow aPaiGow
+            provides IPaiGowClient aPaiGowClient
+        }
+        
+        interface IMobilePokerClient CPI {}
+        component MobilePokerClient{
+            requires IBackOffice aBackOffice
+            requires IMobilePokerProxy aMobilePokerProxy
+            provides IMobilePokerClient aMobilePokerClient
+        }
+        
+        interface IBlackjackClient CPI {}
+        component BlackjackClient{
+            requires IBlackjack aBlackjack
+            requires IBackOffice aBackOffice
+            provides IBlackjackClient aBlackjackClient
+        }
+        
+        interface ICaribbeanPiratePokerClient CPI {}
+        component CaribbeanPiratePokerClient{
+            requires ICaribbeanPiratePoker aCaribbeanPiratePoker
+            requires IBackOffice aBackOffice
+            provides ICaribbeanPiratePokerClient aCaribbeanPiratePokerClient
+        }
+        
+        interface IAsgaardClient CPI {}
+        component AsgaardClient{
+            requires IBackOffice aBackOffice
+            requires IAsgaard aAsgaard
+            provides IAsgaardClient aAsgaardClient
+        }
+        
+        interface IJavaPokerClient CPI {}
+        component JavaPokerClient{
+            requires ITournament4 aTournament4
+            requires IBackOffice aBackOffice
+            provides IJavaPokerClient aJavaPokerClient
+        }
+        
+        interface IWindowsPokerClient CPI {}
+        component WindowsPokerClient{
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            requires IBackOffice aBackOffice
+            requires IPoker4 aPoker4
+            requires IEuroPokercom aEuroPokercom
+            requires IPCIMGFProxy aPCIMGFProxy
+            provides IWindowsPokerClient aWindowsPokerClient
+        }
+        
+        interface ICrapsClient CPI {}
+        component CrapsClient{
+            requires IBackOffice aBackOffice
+            requires ICraps aCraps
+            provides ICrapsClient aCrapsClient
+        }
+        
+        interface ISoccerManiaClient CPI {}
+        component SoccerManiaClient{
+            requires ISoccerMania aSoccerMania
+            requires IBackOffice aBackOffice
+            provides ISoccerManiaClient aSoccerManiaClient
+        }
+        
+        interface ISicBoClient CPI {}
+        component SicBoClient{
+            requires ISicBo aSicBo
+            requires IBackOffice aBackOffice
+            provides ISicBoClient aSicBoClient
+        }
+        
+        interface IMobileBlackjackClient CPI {}
+        component MobileBlackjackClient{
+            requires IMobileBlackjackProxy aMobileBlackjackProxy
+            provides IMobileBlackjackClient aMobileBlackjackClient
+        }
+        
+        interface ISultansTreasureClient CPI {}
+        component SultansTreasureClient{
+            requires IBackOffice aBackOffice
+            requires ISultansTreasure aSultansTreasure
+            provides ISultansTreasureClient aSultansTreasureClient
+        }
+    
+        }
+    
+        subsystem GameServers{
+            uses PokerNetwork
+            uses PokerNetwork
+            uses PokerNetwork
+            uses CasinoFrontend
+    
+        interface IRoulette CPI {}
+        component Roulette{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IRoulette aRoulette
+        }
+        
+        interface IBlackjack CPI {}
+        component Blackjack{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IBlackjack aBlackjack
+        }
+        
+        interface IPaiGow CPI {}
+        component PaiGow{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IPaiGow aPaiGow
+        }
+        
+        interface IPoker4 CPI {}
+        component Poker4{
+            requires IMainDatabase aMainDatabase
+            provides IPoker4 aPoker4
+        }
+        
+        interface ISicBo CPI {}
+        component SicBo{
+            requires ICasinoDatabase aCasinoDatabase
+            provides ISicBo aSicBo
+        }
+        
+        interface ITournament4 CPI {}
+        component Tournament4{
+            requires IMainDatabase aMainDatabase
+            provides ITournament4 aTournament4
+        }
+        
+        interface ISoccerMania CPI {}
+        component SoccerMania{
+            requires ICasinoDatabase aCasinoDatabase
+            provides ISoccerMania aSoccerMania
+        }
+        
+        interface IMobilePokerProxy CPI {}
+        component MobilePokerProxy{
+            requires IPoker4 aPoker4
+            requires IBackOffice aBackOffice
+            provides IMobilePokerProxy aMobilePokerProxy
+        }
+        
+        interface IJacksQuest CPI {}
+        component JacksQuest{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IJacksQuest aJacksQuest
+        }
+        
+        interface IMobileBlackjackProxy CPI {}
+        component MobileBlackjackProxy{
+            requires IBlackjack aBlackjack
+            requires IBackOffice aBackOffice
+            provides IMobileBlackjackProxy aMobileBlackjackProxy
+        }
+        
+        interface IMilleniumRide CPI {}
+        component MilleniumRide{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IMilleniumRide aMilleniumRide
+        }
+        
+        interface ICaribbeanPiratePoker CPI {}
+        component CaribbeanPiratePoker{
+            requires ICasinoDatabase aCasinoDatabase
+            provides ICaribbeanPiratePoker aCaribbeanPiratePoker
+        }
+        
+        interface ICraps CPI {}
+        component Craps{
+            requires ICasinoDatabase aCasinoDatabase
+            provides ICraps aCraps
+        }
+        
+        interface ISultansTreasure CPI {}
+        component SultansTreasure{
+            requires ICasinoDatabase aCasinoDatabase
+            provides ISultansTreasure aSultansTreasure
+        }
+        
+        interface IDeucesWild CPI {}
+        component DeucesWild{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IDeucesWild aDeucesWild
+        }
+        
+        interface IAsgaard CPI {}
+        component Asgaard{
+            requires ICasinoDatabase aCasinoDatabase
+            provides IAsgaard aAsgaard
+        }
+    
+        }
+    
+        subsystem PokerNetwork{
+            uses BwinPokerFrontend
+            uses External
+            uses LoyaltyMarket
+            uses Pokerroom
+            uses Pokerroom
+            uses BGI
+    
+        interface INAPS CPI {}
+        component NAPS{
+            requires IMainDatabase aMainDatabase
+            requires ITXN aTXN
+            requires IBackOffice aBackOffice
+            provides INAPS aNAPS
+        }
+        
+        interface IMainDatabase CPI {}
+        component MainDatabase{
+            requires IPointsCounter aPointsCounter
+            requires IPointsBonus aPointsBonus
+            provides IMainDatabase aMainDatabase
+        }
+        
+        interface IOperatorAPI CPI {}
+        component OperatorAPI{
+            requires INAPS aNAPS
+            requires IMainDatabase aMainDatabase
+            requires IOBBTService aOBBTService
+            requires IPokerWeb aPokerWeb
+            requires ITAS aTAS
+            requires IHypercubeSchedulerService aHypercubeSchedulerService
+            requires IExternalOperators aExternalOperators
+            requires IGameHistoryService aGameHistoryService
+            requires ITXN aTXN
+            requires IBGI aBGI
+            provides IOperatorAPI aOperatorAPI
+        }
+        
+        interface ICasinoDatabase CPI {}
+        component CasinoDatabase{
+            provides ICasinoDatabase aCasinoDatabase
+        }
+        
+        interface ITAS CPI {}
+        component TAS{
+            requires ITournamentAdminServerDatabase aTournamentAdminServerDatabase
+            requires IBackOffice aBackOffice
+            provides ITAS aTAS
+        }
+        
+        interface IGameHistoryService CPI {}
+        component GameHistoryService{
+          
+            requires IGameHistoryDatabase aGameHistoryDatabase
+            provides IGameHistoryService aGameHistoryService
+        }
+        
+        interface IPointsBonus CPI {}
+        component PointsBonus{
+            requires ITXN aTXN
+            provides IPointsBonus aPointsBonus
+        }
+        
+        interface ITournamentAdminServerDatabase CPI {}
+        component TournamentAdminServerDatabase{
+            provides ITournamentAdminServerDatabase aTournamentAdminServerDatabase
+        }
+        
+        interface IOIQServer CPI {}
+        component OIQServer{
+            requires IExternalOperators aExternalOperators
+            requires IChronicleETL aChronicleETL
+            provides IOIQServer aOIQServer
+        }
+        
+        interface IGameHistoryDatabase CPI {}
+        component GameHistoryDatabase{
+            provides IGameHistoryDatabase aGameHistoryDatabase
+        }
+        
+        interface IPusher CPI {}
+        component Pusher{
+            requires IPusher aPusher
+            
+            provides IPusher aPusher
+        }
+        
+        interface IBackOffice CPI {}
+        component BackOffice{
+            requires IMainDatabase aMainDatabase
+            requires IGameHistoryService aGameHistoryService
+            provides IBackOffice aBackOffice
+        }
+        
+        interface ITXN CPI {}
+        component TXN{
+            requires ITAS aTAS
+            requires IBackOffice aBackOffice
+            requires ITXNDatabase aTXNDatabase
+            provides ITXN aTXN
+        }
+        
+        interface IOnlineFraud CPI {}
+        component OnlineFraud{
+            requires INAPS aNAPS
+            requires IMainDatabase aMainDatabase
+            requires IOnlineFraudDatabase aOnlineFraudDatabase
+            provides IOnlineFraud aOnlineFraud
+        }
+        
+        interface ITXNDatabase CPI {}
+        component TXNDatabase{
+            provides ITXNDatabase aTXNDatabase
+        }
+        
+        interface IOnlineFraudDatabase CPI {}
+        component OnlineFraudDatabase{
+            provides IOnlineFraudDatabase aOnlineFraudDatabase
+        }
+        
+        interface IPLOP CPI {}
+        component PLOP{
+            requires INAPS aNAPS
+            requires IMainDatabase aMainDatabase
+            requires IOperatorAPI aOperatorAPI
+            requires IBackOffice aBackOffice
+            provides IPLOP aPLOP
+        }
+        
+        interface IPointsCounter CPI {}
+        component PointsCounter{
+            provides IPointsCounter aPointsCounter
+        }
+    
+        }
+    
+        }
+    
+        subsystem BettingEngine{
+
+        subsystem BetMonitor{
+            uses BetAndWinDatabase
+    
+        interface IBetMonitor CPI {}
+        component BetMonitor{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IBetMonitor aBetMonitor
+        }
+    
+        }
+    
+        subsystem BetPlacement{
+            uses BetAndWinDatabase
+    
+        interface IBetPlacementService CPI {}
+        component BetPlacementService{
+            requires IBetStatusStore aBetStatusStore
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IBetDelayWFStore aBetDelayWFStore
+            provides IBetPlacementService aBetPlacementService
+        }
+        
+        interface IBetStatusStore CPI {}
+        component BetStatusStore{
+            provides IBetStatusStore aBetStatusStore
+        }
+        
+        interface IBetDelayWFStore CPI {}
+        component BetDelayWFStore{
+            provides IBetDelayWFStore aBetDelayWFStore
+        }
+    
+        }
+    
+        subsystem BwinItaly{
+            uses Sportsbook
+            uses BCM
+            uses External
+            uses BetAndWinDatabase
+    
+        interface IBWIDataV2Database CPI {}
+        component BWIDataV2Database{
+            requires IBWIDataReceiver2Database aBWIDataReceiver2Database
+            provides IBWIDataV2Database aBWIDataV2Database
+        }
+        
+        interface IExaLogicWebService CPI {}
+        component ExaLogicWebService{
+            requires IGameArena aGameArena
+            provides IExaLogicWebService aExaLogicWebService
+        }
+        
+        interface IServiceWorker CPI {}
+        component ServiceWorker{
+            requires IBWIDataV2Database aBWIDataV2Database
+            provides IServiceWorker aServiceWorker
+        }
+        
+        interface IPayoutService CPI {}
+        component PayoutService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IPayoutService aPayoutService
+        }
+        
+        interface IInformationClient CPI {}
+        component InformationClient{
+            provides IInformationClient aInformationClient
+        }
+        
+        interface ISorgeiWSLog CPI {}
+        component SorgeiWSLog{
+            provides ISorgeiWSLog aSorgeiWSLog
+        }
+        
+        interface IFeedService CPI {}
+        component FeedService{
+            requires IServiceWorker aServiceWorker
+            requires IMulticastReceiver aMulticastReceiver
+            provides IFeedService aFeedService
+        }
+        
+        interface IBookieWeb CPI {}
+        component BookieWeb{
+            requires IBWIDataV2Database aBWIDataV2Database
+            provides IBookieWeb aBookieWeb
+        }
+        
+        interface ISorgeiWebService CPI {}
+        component SorgeiWebService{
+            requires IBWIDataV2Database aBWIDataV2Database
+            requires IPayoutService aPayoutService
+            requires IInformationClient aInformationClient
+            requires ISorgeiWSLog aSorgeiWSLog
+            requires IBookieWeb aBookieWeb
+            requires ISportsbookWeb aSportsbookWeb
+            provides ISorgeiWebService aSorgeiWebService
+        }
+        
+        interface IMulticastReceiver CPI {}
+        component MulticastReceiver{
+            requires IBWIDataV2Database aBWIDataV2Database
+            provides IMulticastReceiver aMulticastReceiver
+        }
+        
+        interface IBWIDataReceiver2Database CPI {}
+        component BWIDataReceiver2Database{
+            requires IInformationClient aInformationClient
+            requires IBookieWeb aBookieWeb
+            provides IBWIDataReceiver2Database aBWIDataReceiver2Database
+        }
+    
+        }
+    
+        subsystem CSS{
+            uses Sportsbook
+            uses Sportsbook
+            uses CSM
+    
+        interface ICSSDatabase CPI {}
+        component CSSDatabase{
+            requires ICSSArchiveDB aCSSArchiveDB
+            requires IBetSlipRepository aBetSlipRepository
+            provides ICSSDatabase aCSSDatabase
+        }
+        
+        interface IBetSlipRepository CPI {}
+        component BetSlipRepository{
+            requires ICSSArchiveDB aCSSArchiveDB
+            requires IMyBetsFacade aMyBetsFacade
+            requires ICSMWeb aCSMWeb
+            requires ISportsbookWeb aSportsbookWeb
+            provides IBetSlipRepository aBetSlipRepository
+        }
+        
+        interface IResultUpdater CPI {}
+        component ResultUpdater{
+            requires ICSSDatabase aCSSDatabase
+            requires ICSSStatusPage aCSSStatusPage
+            provides IResultUpdater aResultUpdater
+        }
+        
+        interface ICSSStatusPage CPI {}
+        component CSSStatusPage{
+            provides ICSSStatusPage aCSSStatusPage
+        }
+        
+        interface ICSSArchiveDB CPI {}
+        component CSSArchiveDB{
+            provides ICSSArchiveDB aCSSArchiveDB
+        }
+        
+        interface IBetSlipGate CPI {}
+        component BetSlipGate{
+            requires ICSSDatabase aCSSDatabase
+            provides IBetSlipGate aBetSlipGate
+        }
+    
+        }
+    
+        subsystem ParallelPayout{
+            uses BCM
+            uses BetAndWinDatabase
+    
+        interface IParallelPayout CPI {}
+        component ParallelPayout{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IParallelPayout aParallelPayout
+        }
+    
+        }
+    
+        subsystem RiskUpdate{
+            uses BetAndWinDatabase
+    
+        interface IRiskUpdate CPI {}
+        component RiskUpdate{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IRiskUpdate aRiskUpdate
+        }
+    
+        }
+    
+        }
+    
+        subsystem BettingPOS{
+
+        subsystem BetCache{
+            uses Sportsbook
+            uses LBAI
+            uses AdServer
+            uses AdServer
+            uses MobileMessaging
+            uses MobileMessaging
+            uses MobileMessaging
+            uses WAP
+            uses WAP
+            uses ContentManagement
+    
+        interface IBetCacheDatabase CPI {}
+        component BetCacheDatabase{
+            requires IMAAT aMAAT
+            requires ISBCBackend aSBCBackend
+            requires IPartnerFeed aPartnerFeed
+            requires ILBReplicator aLBReplicator
+            requires IUeTool aUeTool
+            requires IWAPWeb aWAPWeb
+            requires ISportsbookWeb aSportsbookWeb
+            requires ISMSApplication aSMSApplication
+            requires IPartnerfeedXMLGenerator aPartnerfeedXMLGenerator
+            requires ISMSScheduler aSMSScheduler
+            provides IBetCacheDatabase aBetCacheDatabase
+        }
+    
+        }
+    
+        subsystem Chat{
+            uses CSM
+            uses BetAndWinDatabase
+    
+        interface IMediaServer CPI {}
+        component MediaServer{
+            requires IChatStorageDB aChatStorageDB
+            requires IChatAdmin aChatAdmin
+            provides IMediaServer aMediaServer
+        }
+        
+        interface IChatAdmin CPI {}
+        component ChatAdmin{
+            provides IChatAdmin aChatAdmin
+        }
+        
+        interface IInspectorGaChat CPI {}
+        component InspectorGaChat{
+            provides IInspectorGaChat aInspectorGaChat
+        }
+        
+        interface ILiveCommunityCSMWS CPI {}
+        component LiveCommunityCSMWS{
+            requires ICSMWeb aCSMWeb
+            requires IChatStorageDB aChatStorageDB
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides ILiveCommunityCSMWS aLiveCommunityCSMWS
+        }
+        
+        interface IChatStorageDB CPI {}
+        component ChatStorageDB{
+            requires IInspectorGaChat aInspectorGaChat
+            provides IChatStorageDB aChatStorageDB
+        }
+    
+        }
+    
+        subsystem livebwincom{
+            uses MobileMessaging
+            uses WAP
+            uses WAP
+    
+        interface Ilivebwincom CPI {}
+        component livebwincom{
+            requires ISMSApplication aSMSApplication
+            requires ISBCBackend aSBCBackend
+            requires IWAPWeb aWAPWeb
+
+            provides Ilivebwincom alivebwincom
+        }
+    
+        }
+    
+        subsystem Replicator{
+    
+        interface IBetCacheReplicator CPI {}
+        component BetCacheReplicator{
+
+            provides IBetCacheReplicator aBetCacheReplicator
+        }
+    
+        }
+    
+        subsystem Sportsbook{
+            uses BCM
+            uses Mail
+            uses Newsletter
+            uses PaymentService
+            uses ContentManagement
+            uses Help
+            uses SEOService
+            uses BetAndWinDatabase
+    
+        interface IMyBetsFacade CPI {}
+        component MyBetsFacade{
+            provides IMyBetsFacade aMyBetsFacade
+        }
+        
+        interface ISportsbookWeb CPI {}
+        component SportsbookWeb{
+   
+            requires IContentWeb aContentWeb
+            requires IBookmakingDatabase aBookmakingDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IRedirectPayments aRedirectPayments
+            requires INewsletterDatabase aNewsletterDatabase
+
+            requires IHelpWeb aHelpWeb
+            requires IFussballManschaftDatabase aFussballManschaftDatabase
+            requires IMailService aMailService
+            provides ISportsbookWeb aSportsbookWeb
+        }
+        
+        interface IFussballManschaftDatabase CPI {}
+        component FussballManschaftDatabase{
+            provides IFussballManschaftDatabase aFussballManschaftDatabase
+        }
+    
+        }
+    
+        subsystem SportsbookAccountService{
+            uses BetAndWinDatabase
+    
+        interface ISportsbookAccountService CPI {}
+        component SportsbookAccountService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides ISportsbookAccountService aSportsbookAccountService
+        }
+    
+        }
+    
+        subsystem Video{
+            uses External
+    
+        interface IVP6Encoder CPI {}
+        component VP6Encoder{
+            requires ILimeLight aLimeLight
+            requires IVideoApplication aVideoApplication
+            provides IVP6Encoder aVP6Encoder
+        }
+        
+        interface IMediaConfig CPI {}
+        component MediaConfig{
+            provides IMediaConfig aMediaConfig
+        }
+        
+        interface IVideoApplication CPI {}
+        component VideoApplication{
+            provides IVideoApplication aVideoApplication
+        }
+    
+        }
+    
+        }
+    
+        subsystem Bookmaking{
+
+        subsystem BCM{
+            uses LBAI
+            uses LBAI
+            uses MobileMessaging
+            uses BetAndWinDatabase
+    
+        interface IBookieToolWeb CPI {}
+        component BookieToolWeb{
+            requires IBookmakingDatabase aBookmakingDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IBookieToolWeb aBookieToolWeb
+        }
+        
+        interface IBookmakingDatabase CPI {}
+        component BookmakingDatabase{
+            requires IMediaToolPublisher aMediaToolPublisher
+            requires IMediaTool aMediaTool
+            provides IBookmakingDatabase aBookmakingDatabase
+        }
+        
+        interface IStoplossAlerter CPI {}
+        component StoplossAlerter{
+            requires IBookmakingDatabase aBookmakingDatabase
+            requires ISMSCallback aSMSCallback
+            provides IStoplossAlerter aStoplossAlerter
+        }
+        
+        interface IGameManagementWS CPI {}
+        component GameManagementWS{
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IGameManagementWS aGameManagementWS
+        }
+        
+        interface Iitsfogoweb CPI {}
+        component itsfogoweb{
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides Iitsfogoweb aitsfogoweb
+        }
+        
+        interface IResultMapper CPI {}
+        component ResultMapper{
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IResultMapper aResultMapper
+        }
+        
+        interface IBetCorrection CPI {}
+        component BetCorrection{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IBetCorrection aBetCorrection
+        }
+        
+        interface IBetContentTranslationTool CPI {}
+        component BetContentTranslationTool{
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IBetContentTranslationTool aBetContentTranslationTool
+        }
+        
+        interface IResultPublisher CPI {}
+        component ResultPublisher{
+
+            provides IResultPublisher aResultPublisher
+        }
+        
+        interface IBookieToolBWIWS CPI {}
+        component BookieToolBWIWS{
+            requires IBookmakingDatabase aBookmakingDatabase
+            provides IBookieToolBWIWS aBookieToolBWIWS
+        }
+    
+        }
+    
+        subsystem LBAI{
+    
+        interface IMediaTool CPI {}
+        component MediaTool{
+            provides IMediaTool aMediaTool
+        }
+        
+        interface ILBAIService CPI {}
+        component LBAIService{
+
+            requires IScoreBoardsDatabase aScoreBoardsDatabase
+            provides ILBAIService aLBAIService
+        }
+        
+        interface IMediaToolPublisher CPI {}
+        component MediaToolPublisher{
+
+            provides IMediaToolPublisher aMediaToolPublisher
+        }
+        
+        interface ILBReplicator CPI {}
+        component LBReplicator{
+            
+            provides ILBReplicator aLBReplicator
+        }
+        
+        interface IScoreBoardsDatabase CPI {}
+        component ScoreBoardsDatabase{
+            provides IScoreBoardsDatabase aScoreBoardsDatabase
+        }
+        
+        interface ILBAIClient CPI {}
+        component LBAIClient{
+            requires ILBAIService aLBAIService
+            provides ILBAIClient aLBAIClient
+        }
+    
+        }
+    
+        subsystem RNG{
+    
+        interface ISignalBrowser CPI {}
+        component SignalBrowser{
+            provides ISignalBrowser aSignalBrowser
+        }
+        
+        interface IMessageStoreDB CPI {}
+        component MessageStoreDB{
+            requires ISignalBrowser aSignalBrowser
+            provides IMessageStoreDB aMessageStoreDB
+        }
+        
+        interface IEventStatusDB CPI {}
+        component EventStatusDB{
+            provides IEventStatusDB aEventStatusDB
+        }
+        
+        interface IRNGBackend CPI {}
+        component RNGBackend{
+           
+            requires IMessageStoreDB aMessageStoreDB
+            requires IEventStatusDB aEventStatusDB
+           
+            provides IRNGBackend aRNGBackend
+        }
+    
+        }
+    
+        subsystem YYSecurity{
+
+        }
+    
+        }
+    
+        subsystem Casino{
+
+        subsystem CasinoFrontend{
+            uses PokerNetwork
+            uses Help
+            uses PaymentsIntegration
+            uses BetAndWinDatabase
+    
+        interface ICasinoWeb CPI {}
+        component CasinoWeb{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+           
+            requires ICasinoDatabase aCasinoDatabase
+            
+            requires IHelpWeb aHelpWeb
+            requires IPaymentFacade aPaymentFacade
+            provides ICasinoWeb aCasinoWeb
+        }
+        
+        interface ICasinoDatabase CPI {}
+        component CasinoDatabase{
+            provides ICasinoDatabase aCasinoDatabase
+        }
+    
+        }
+    
+        subsystem ChartwellCasino{
+            uses RPP
+    
+        interface IChartwellCasino CPI {}
+        component ChartwellCasino{
+            requires IChartwellCasinoDatabase aChartwellCasinoDatabase
+            provides IChartwellCasino aChartwellCasino
+        }
+        
+        interface IChartwellCasinoDatabase CPI {}
+        component ChartwellCasinoDatabase{
+            requires IRPPCalculationService aRPPCalculationService
+            provides IChartwellCasinoDatabase aChartwellCasinoDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem Poker{
+
+        subsystem BwinPokerFrontend{
+            uses PaymentService
+            uses Help
+            uses BetAndWinDatabase
+    
+        interface IPokerWeb CPI {}
+        component PokerWeb{
+            
+            requires IHelpWeb aHelpWeb
+            requires IRedirectPayments aRedirectPayments
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IPokerWeb aPokerWeb
+        }
+        
+        interface IDownloadClientWeb CPI {}
+        component DownloadClientWeb{
+            provides IDownloadClientWeb aDownloadClientWeb
+        }
+    
+        }
+    
+        }
+    
+        subsystem CustomerSupport{
+
+        subsystem AGSupport{
+            uses CSM
+            uses Mail
+            uses Newsletter
+            uses MarketingService
+            uses BetAndWinDatabase
+    
+        interface IAGSupportWeb CPI {}
+        component AGSupportWeb{
+            requires INewsletterDatabase aNewsletterDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IMarketingService aMarketingService
+            requires ICSMDatabase aCSMDatabase
+            requires IMailService aMailService
+            provides IAGSupportWeb aAGSupportWeb
+        }
+    
+        }
+    
+        subsystem CSM{
+            uses Mail
+            uses Newsletter
+            uses Newsletter
+            uses LoyaltyService
+            uses MarketingService
+            uses MobileMessaging
+            uses bwinch
+            uses ContentManagement
+            uses BetAndWinDatabase
+    
+        interface ICSMWeb CPI {}
+        component CSMWeb{
+          
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IloyaltyWebservicesEA aloyaltyWebservicesEA
+            requires INewsletterDatabase aNewsletterDatabase
+            requires ICSMDatabase aCSMDatabase
+            requires IMarketingService aMarketingService
+            requires ICIDS aCIDS
+            requires ISMSCallback aSMSCallback
+            requires IMailService aMailService
+            provides ICSMWeb aCSMWeb
+        }
+        
+        interface IAutoReplyService CPI {}
+        component AutoReplyService{
+            requires ICSMDatabase aCSMDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IAutoReplyService aAutoReplyService
+        }
+        
+        interface ICIDS CPI {}
+        component CIDS{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires ICSMDatabase aCSMDatabase
+            provides ICIDS aCIDS
+        }
+        
+        interface ICSMDatabase CPI {}
+        component CSMDatabase{
+            requires ICMSWeb aCMSWeb
+            requires IMarketingService aMarketingService
+            requires IMarketingScheduler aMarketingScheduler
+            requires IbwinchWeb abwinchWeb
+            provides ICSMDatabase aCSMDatabase
+        }
+    
+        }
+    
+        subsystem Mail{
+            uses Newsletter
+    
+        interface IMailService CPI {}
+        component MailService{
+            requires INewsletterDatabase aNewsletterDatabase
+            provides IMailService aMailService
+        }
+    
+        }
+    
+        subsystem Newsletter{
+            uses PromoLogic
+            uses MobileMessaging
+            uses bwinag
+            uses BetAndWinDatabase
+    
+        interface INewsletterDatabase CPI {}
+        component NewsletterDatabase{
+            requires IbwinagWeb abwinagWeb
+            requires INotificationService aNotificationService
+            requires IMarketingScheduler aMarketingScheduler
+            requires IMailContentService aMailContentService
+            requires IPromotionAdminTool aPromotionAdminTool
+            provides INewsletterDatabase aNewsletterDatabase
+        }
+        
+        interface IMailingsIntranet CPI {}
+        component MailingsIntranet{
+            requires INewsletterDatabase aNewsletterDatabase
+            provides IMailingsIntranet aMailingsIntranet
+        }
+        
+        interface IQueueScheduler CPI {}
+        component QueueScheduler{
+            requires INewsletterDatabase aNewsletterDatabase
+            provides IQueueScheduler aQueueScheduler
+        }
+        
+        interface INewsletter_TempDatabase CPI {}
+        component Newsletter_TempDatabase{
+            provides INewsletter_TempDatabase aNewsletter_TempDatabase
+        }
+        
+        interface IMailContentService CPI {}
+        component MailContentService{
+            provides IMailContentService aMailContentService
+        }
+        
+        interface IMarketingScheduler CPI {}
+        component MarketingScheduler{
+            requires INewsletter_TempDatabase aNewsletter_TempDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires INewsletterContentDatabase aNewsletterContentDatabase
+            provides IMarketingScheduler aMarketingScheduler
+        }
+        
+        interface INewsletterContentDatabase CPI {}
+        component NewsletterContentDatabase{
+            provides INewsletterContentDatabase aNewsletterContentDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem External{
+            uses PaymentService
+            uses PaymentService
+            uses Pokerroom
+            uses bwinag
+            uses BGI
+            uses DWH
+    
+        interface IExternalUserVerificationServiceProvider CPI {}
+        component ExternalUserVerificationServiceProvider{
+            requires IPaymentService aPaymentService
+            provides IExternalUserVerificationServiceProvider aExternalUserVerificationServiceProvider
+        }
+        
+        interface IBetRadarStatistics CPI {}
+        component BetRadarStatistics{
+            provides IBetRadarStatistics aBetRadarStatistics
+        }
+        
+        interface IBetRadarPages CPI {}
+        component BetRadarPages{
+            provides IBetRadarPages aBetRadarPages
+        }
+        
+        interface ILimeLight CPI {}
+        component LimeLight{
+            provides ILimeLight aLimeLight
+        }
+        
+        interface ISorgeiMulticastUDP CPI {}
+        component SorgeiMulticastUDP{
+            provides ISorgeiMulticastUDP aSorgeiMulticastUDP
+        }
+        
+        interface IPaymenyProtocols CPI {}
+        component PaymenyProtocols{
+            provides IPaymenyProtocols aPaymenyProtocols
+        }
+        
+        interface IExternalOperators CPI {}
+        component ExternalOperators{
+            provides IExternalOperators aExternalOperators
+        }
+        
+        interface ISorgeiUDPServer CPI {}
+        component SorgeiUDPServer{
+            provides ISorgeiUDPServer aSorgeiUDPServer
+        }
+        
+        interface ISASMarketAutomation CPI {}
+        component SASMarketAutomation{
+            requires IDWH aDWH
+            provides ISASMarketAutomation aSASMarketAutomation
+        }
+        
+        interface IExternalServiceProviders CPI {}
+        component ExternalServiceProviders{
+            requires IExternalPaymentBatchingService aExternalPaymentBatchingService
+            provides IExternalServiceProviders aExternalServiceProviders
+        }
+        
+        interface IBossMedia CPI {}
+        component BossMedia{
+            requires IBGI aBGI
+            provides IBossMedia aBossMedia
+        }
+        
+        interface INetEntertainment CPI {}
+        component NetEntertainment{
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            provides INetEntertainment aNetEntertainment
+        }
+        
+        interface IMaxMind CPI {}
+        component MaxMind{
+            provides IMaxMind aMaxMind
+        }
+        
+        interface IMGF CPI {}
+        component MGF{
+            provides IMGF aMGF
+        }
+        
+        interface IVerifyMe CPI {}
+        component VerifyMe{
+            provides IVerifyMe aVerifyMe
+        }
+        
+        interface ISorgeiTCPServer CPI {}
+        component SorgeiTCPServer{
+            provides ISorgeiTCPServer aSorgeiTCPServer
+        }
+        
+        interface IGameArena CPI {}
+        component GameArena{
+            requires IBGI aBGI
+            provides IGameArena aGameArena
+        }
+        
+        interface IExternalRiskServiceProvider CPI {}
+        component ExternalRiskServiceProvider{
+            requires IPaymentService aPaymentService
+            provides IExternalRiskServiceProvider aExternalRiskServiceProvider
+        }
+        
+        interface Ixmlttweb2net CPI {}
+        component xmlttweb2net{
+            requires IbwinagWeb abwinagWeb
+            provides Ixmlttweb2net axmlttweb2net
+        }
+    
+        }
+    
+        subsystem Games{
+
+        subsystem FootballGames{
+            uses BGI
+    
+        interface IFootball1x2EUROChampionDatabase CPI {}
+        component Football1x2EUROChampionDatabase{
+            provides IFootball1x2EUROChampionDatabase aFootball1x2EUROChampionDatabase
+        }
+        
+        interface IFootball1x2VirtualWorldCupDatabase CPI {}
+        component Football1x2VirtualWorldCupDatabase{
+            provides IFootball1x2VirtualWorldCupDatabase aFootball1x2VirtualWorldCupDatabase
+        }
+        
+        interface IFootball1x2EUROChampion CPI {}
+        component Football1x2EUROChampion{
+            requires IFootball1x2EUROChampionDatabase aFootball1x2EUROChampionDatabase
+            requires IBGI aBGI
+            provides IFootball1x2EUROChampion aFootball1x2EUROChampion
+        }
+        
+        interface IFootball1x2Database CPI {}
+        component Football1x2Database{
+            requires IFootball1x2KickOff aFootball1x2KickOff
+            provides IFootball1x2Database aFootball1x2Database
+        }
+        
+        interface IFootball1x2VirtualWorldCup CPI {}
+        component Football1x2VirtualWorldCup{
+            requires IFootball1x2VirtualWorldCupDatabase aFootball1x2VirtualWorldCupDatabase
+            requires IBGI aBGI
+            provides IFootball1x2VirtualWorldCup aFootball1x2VirtualWorldCup
+        }
+        
+        interface IFootball1x2VCDatabase CPI {}
+        component Football1x2VCDatabase{
+            provides IFootball1x2VCDatabase aFootball1x2VCDatabase
+        }
+        
+        interface IFootball1x2KickOff CPI {}
+        component Football1x2KickOff{
+            requires IBGI aBGI
+            provides IFootball1x2KickOff aFootball1x2KickOff
+        }
+        
+        interface IFootball1x2VirtualChampionship CPI {}
+        component Football1x2VirtualChampionship{
+            requires IFootball1x2VCDatabase aFootball1x2VCDatabase
+            requires IBGI aBGI
+            provides IFootball1x2VirtualChampionship aFootball1x2VirtualChampionship
+        }
+    
+        }
+    
+        subsystem FortuneGames{
+            uses MarketingService
+            uses PaymentService
+            uses Help
+            uses BetAndWinDatabase
+    
+        interface IGamesWeb CPI {}
+        component GamesWeb{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IHelpWeb aHelpWeb
+            requires IRedirectPayments aRedirectPayments
+            requires IbwinGamesDatabase abwinGamesDatabase
+    
+            provides IGamesWeb aGamesWeb
+        }
+        
+        interface IbwinGamesDatabase CPI {}
+        component bwinGamesDatabase{
+            requires IMarketingService aMarketingService
+            provides IbwinGamesDatabase abwinGamesDatabase
+        }
+    
+        }
+    
+        subsystem VSGaming{
+            uses BGI
+    
+        interface IVSGamingDB CPI {}
+        component VSGamingDB{
+            requires IVSGaming aVSGaming
+            provides IVSGamingDB aVSGamingDB
+        }
+        
+        interface IVSGaming CPI {}
+        component VSGaming{
+            requires IBGI aBGI
+            provides IVSGaming aVSGaming
+        }
+    
+        }
+    
+        }
+    
+        subsystem Marketing{
+
+        subsystem AdServer{
+            uses RPP
+            uses bwinch
+            uses BetAndWinDatabase
+    
+        interface IAdXmlGenerator CPI {}
+        component AdXmlGenerator{
+            requires IAdServer aAdServer
+            provides IAdXmlGenerator aAdXmlGenerator
+        }
+        
+        interface IAdServerDatabase CPI {}
+        component AdServerDatabase{
+            requires IAdXmlGenerator aAdXmlGenerator
+            provides IAdServerDatabase aAdServerDatabase
+        }
+        
+        interface IPartnerFeed CPI {}
+        component PartnerFeed{
+            requires IbwinchWeb abwinchWeb
+            provides IPartnerFeed aPartnerFeed
+        }
+        
+        interface IPartnerfeedXMLGenerator CPI {}
+        component PartnerfeedXMLGenerator{
+            requires IPartnerFeed aPartnerFeed
+            provides IPartnerfeedXMLGenerator aPartnerfeedXMLGenerator
+        }
+        
+        interface IAdImpressionAggregation CPI {}
+        component AdImpressionAggregation{
+            requires IAdServerLoggingDatabase aAdServerLoggingDatabase
+            provides IAdImpressionAggregation aAdImpressionAggregation
+        }
+        
+        interface IAdServerLoggingDatabase CPI {}
+        component AdServerLoggingDatabase{
+            requires IRPPCalculationService aRPPCalculationService
+            provides IAdServerLoggingDatabase aAdServerLoggingDatabase
+        }
+        
+        interface IAdServer CPI {}
+        component AdServer{
+            requires IAdImpressionImporter aAdImpressionImporter
+            provides IAdServer aAdServer
+        }
+        
+        interface IAdImpressionImporter CPI {}
+        component AdImpressionImporter{
+            requires IAdServerLoggingDatabase aAdServerLoggingDatabase
+            provides IAdImpressionImporter aAdImpressionImporter
+        }
+        
+        interface IAdAdmin CPI {}
+        component AdAdmin{
+            requires IAdServerDatabase aAdServerDatabase
+            requires IAdServerLoggingDatabase aAdServerLoggingDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IAdAdmin aAdAdmin
+        }
+    
+        }
+    
+        subsystem CommunicationService{
+    
+        interface ICommunicationDB CPI {}
+        component CommunicationDB{
+            provides ICommunicationDB aCommunicationDB
+        }
+        
+        interface ILoyatlyCommunicationService CPI {}
+        component LoyatlyCommunicationService{
+       
+            requires ICommunicationDB aCommunicationDB
+            provides ILoyatlyCommunicationService aLoyatlyCommunicationService
+        }
+    
+        }
+    
+        subsystem LoyaltyMarket{
+            uses LoyaltyService
+            uses BetAndWinDatabase
+    
+        interface ILoyaltyShopDatabase CPI {}
+        component LoyaltyShopDatabase{
+            provides ILoyaltyShopDatabase aLoyaltyShopDatabase
+        }
+        
+        interface IHypercubeService CPI {}
+        component HypercubeService{
+            requires ILoyaltyShopDatabase aLoyaltyShopDatabase
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IloyaltyWebservicesEA aloyaltyWebservicesEA
+            provides IHypercubeService aHypercubeService
+        }
+        
+        interface IHypercubeQueueService CPI {}
+        component HypercubeQueueService{
+            requires ILoyaltyShopDatabase aLoyaltyShopDatabase
+            provides IHypercubeQueueService aHypercubeQueueService
+        }
+        
+        interface ILoyaltyMarketWeb CPI {}
+        component LoyaltyMarketWeb{
+            requires IHypercubeService aHypercubeService
+    
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides ILoyaltyMarketWeb aLoyaltyMarketWeb
+        }
+        
+        interface IHypercubeSchedulerService CPI {}
+        component HypercubeSchedulerService{
+            requires ILoyaltyShopDatabase aLoyaltyShopDatabase
+            provides IHypercubeSchedulerService aHypercubeSchedulerService
+        }
+    
+        }
+    
+        subsystem LoyaltyService{
+            uses WAP
+            uses PortalFrontend
+            uses BetAndWinDatabase
+    
+        interface IloyaltyEA CPI {}
+        component loyaltyEA{
+      
+            requires ILoyaltyDatabase aLoyaltyDatabase
+            provides IloyaltyEA aloyaltyEA
+        }
+        
+        interface ILoyaltyDatabase CPI {}
+        component LoyaltyDatabase{
+            provides ILoyaltyDatabase aLoyaltyDatabase
+        }
+        
+        interface Iv5Adapter CPI {}
+        component v5Adapter{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides Iv5Adapter av5Adapter
+        }
+        
+        interface IloyaltyWebservicesEA CPI {}
+        component loyaltyWebservicesEA{
+            requires ILoyaltyDatabase aLoyaltyDatabase
+            requires IWAPWeb aWAPWeb
+            requires IPortal aPortal
+            provides IloyaltyWebservicesEA aloyaltyWebservicesEA
+        }
+    
+        }
+    
+        subsystem MarketingService{
+    
+        interface IMarketingService CPI {}
+        component MarketingService{
+            provides IMarketingService aMarketingService
+        }
+    
+        }
+    
+        subsystem PrepaidCardAdmin{
+            uses BetAndWinDatabase
+    
+        interface IPrepaidCardAdminTool CPI {}
+        component PrepaidCardAdminTool{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IPrepaidCardAdminTool aPrepaidCardAdminTool
+        }
+        
+        interface IPrepaidCardCRMApplication CPI {}
+        component PrepaidCardCRMApplication{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IPrepaidCardCRMApplication aPrepaidCardCRMApplication
+        }
+    
+        }
+    
+        subsystem PromoLogic{
+            uses BetAndWinDatabase
+    
+        interface IPromotionAdminTool CPI {}
+        component PromotionAdminTool{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IPromotionAdminTool aPromotionAdminTool
+        }
+    
+        }
+    
+        subsystem RPP{
+            uses BetAndWinDatabase
+    
+        interface IRPPCalculationService CPI {}
+        component RPPCalculationService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IRPPDatabase aRPPDatabase
+            provides IRPPCalculationService aRPPCalculationService
+        }
+        
+        interface IRPPPublicWeb CPI {}
+        component RPPPublicWeb{
+            provides IRPPPublicWeb aRPPPublicWeb
+        }
+        
+        interface IRPPAdminWeb CPI {}
+        component RPPAdminWeb{
+            requires IRPPDatabase aRPPDatabase
+            provides IRPPAdminWeb aRPPAdminWeb
+        }
+        
+        interface IRPPDatabase CPI {}
+        component RPPDatabase{
+            requires IRPPPublicWeb aRPPPublicWeb
+            provides IRPPDatabase aRPPDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem Mobile{
+
+        subsystem MobileGames{
+            uses BetAndWinDatabase
+    
+        interface IBwinMobileSession CPI {}
+        component BwinMobileSession{
+            provides IBwinMobileSession aBwinMobileSession
+        }
+        
+        interface IMobileAccount CPI {}
+        component MobileAccount{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+
+            provides IMobileAccount aMobileAccount
+        }
+    
+        }
+    
+        subsystem MobileMessaging{
+            uses WAP
+            uses BetAndWinDatabase
+    
+        interface IMAAT CPI {}
+        component MAAT{
+            requires ISMSCallback aSMSCallback
+            provides IMAAT aMAAT
+        }
+        
+        interface INotificationService CPI {}
+        component NotificationService{
+            requires ISMSCallback aSMSCallback
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IBetNotificationDatabase aBetNotificationDatabase
+            provides INotificationService aNotificationService
+        }
+        
+        interface ISMSExecutiveService CPI {}
+        component SMSExecutiveService{
+            requires ISMSScheduler aSMSScheduler
+            provides ISMSExecutiveService aSMSExecutiveService
+        }
+        
+        interface ISMSApplication CPI {}
+        component SMSApplication{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires ISMSCallback aSMSCallback
+            provides ISMSApplication aSMSApplication
+        }
+        
+        interface ISMSScheduler CPI {}
+        component SMSScheduler{
+            requires ISMSCallback aSMSCallback
+            provides ISMSScheduler aSMSScheduler
+        }
+        
+        interface ISMSCallback CPI {}
+        component SMSCallback{
+            requires IBawSMSDatabase aBawSMSDatabase
+            provides ISMSCallback aSMSCallback
+        }
+        
+        interface IBawSMSDatabase CPI {}
+        component BawSMSDatabase{
+            requires IMAAT aMAAT
+            requires ISMSApplication aSMSApplication
+            requires ISMSScheduler aSMSScheduler
+            requires IWAPWeb aWAPWeb
+            provides IBawSMSDatabase aBawSMSDatabase
+        }
+        
+        interface IBetNotificationDatabase CPI {}
+        component BetNotificationDatabase{
+            provides IBetNotificationDatabase aBetNotificationDatabase
+        }
+    
+        }
+    
+        subsystem WAP{
+            uses BetAndWinDatabase
+    
+        interface IMatchboxDatabase CPI {}
+        component MatchboxDatabase{
+            provides IMatchboxDatabase aMatchboxDatabase
+        }
+        
+        interface IGameService CPI {}
+        component GameService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IGameService aGameService
+        }
+        
+        interface IOTAWebService CPI {}
+        component OTAWebService{
+            requires IWAPWeb aWAPWeb
+            provides IOTAWebService aOTAWebService
+        }
+        
+        interface IMatchbox CPI {}
+        component Matchbox{
+            requires IMatchboxDatabase aMatchboxDatabase
+            provides IMatchbox aMatchbox
+        }
+        
+        interface ISBCBackend CPI {}
+        component SBCBackend{
+            provides ISBCBackend aSBCBackend
+        }
+        
+        interface IBawImportDatabase CPI {}
+        component BawImportDatabase{
+            requires IWAPWeb aWAPWeb
+            provides IBawImportDatabase aBawImportDatabase
+        }
+        
+        interface IWAPWeb CPI {}
+        component WAPWeb{
+            requires IMatchbox aMatchbox
+            requires IBetAndWinDatabase aBetAndWinDatabase
+          
+            provides IWAPWeb aWAPWeb
+        }
+        
+        interface ISesamDataImporter CPI {}
+        component SesamDataImporter{
+            requires IBawImportDatabase aBawImportDatabase
+            provides ISesamDataImporter aSesamDataImporter
+        }
+    
+        }
+    
+        }
+    
+        subsystem Payment{
+
+        subsystem CQRPortal{
+
+        }
+    
+        subsystem IAMService{
+            uses PaymentService
+            uses IAM
+    
+        interface IIAMAdminTool CPI {}
+        component IAMAdminTool{
+            requires IIAMDatabase aIAMDatabase
+            provides IIAMAdminTool aIAMAdminTool
+        }
+        
+        interface IIAMDatabase CPI {}
+        component IAMDatabase{
+            requires IPaymentService aPaymentService
+            provides IIAMDatabase aIAMDatabase
+        }
+    
+        }
+    
+        subsystem IP2LocationService{
+            uses PaymentService
+    
+        interface IIP2LocationDatabase CPI {}
+        component IP2LocationDatabase{
+            requires IIP2LocationWebService aIP2LocationWebService
+            provides IIP2LocationDatabase aIP2LocationDatabase
+        }
+        
+        interface IIP2LocationWebService CPI {}
+        component IP2LocationWebService{
+            requires IPaymentService aPaymentService
+            provides IIP2LocationWebService aIP2LocationWebService
+        }
+    
+        }
+    
+        subsystem PaymentService{
+            uses PaymentsIntegration
+            uses PaymentsIntegration
+    
+        interface IPCIMGFProxy CPI {}
+        component PCIMGFProxy{
+            requires IPaymentService aPaymentService
+            provides IPCIMGFProxy aPCIMGFProxy
+        }
+        
+        interface IPaymentServiceAdmin CPI {}
+        component PaymentServiceAdmin{
+            requires ISecurityCheckService aSecurityCheckService
+            requires INotifications aNotifications
+            requires IBAWPayments aBAWPayments
+            provides IPaymentServiceAdmin aPaymentServiceAdmin
+        }
+        
+        interface IRedirectPayments CPI {}
+        component RedirectPayments{
+            requires IPaymentService aPaymentService
+            provides IRedirectPayments aRedirectPayments
+        }
+        
+        interface IMonitoring CPI {}
+        component Monitoring{
+            requires IBAWPayments aBAWPayments
+            provides IMonitoring aMonitoring
+        }
+        
+        interface IExternalPaymentBatchingService CPI {}
+        component ExternalPaymentBatchingService{
+            requires IBAWPayments aBAWPayments
+            provides IExternalPaymentBatchingService aExternalPaymentBatchingService
+        }
+        
+        interface IProviderListeners CPI {}
+        component ProviderListeners{
+            requires IBAWPayments aBAWPayments
+            provides IProviderListeners aProviderListeners
+        }
+        
+        interface IPop3EmailService CPI {}
+        component Pop3EmailService{
+            provides IPop3EmailService aPop3EmailService
+        }
+        
+        interface IPaymentService CPI {}
+        component PaymentService{
+            requires INotifications aNotifications
+            requires IBAWPayments aBAWPayments
+            requires ISecurityCheckService aSecurityCheckService
+            provides IPaymentService aPaymentService
+        }
+        
+        interface ICQRPortal CPI {}
+        component CQRPortal{
+            provides ICQRPortal aCQRPortal
+        }
+        
+        interface IUserProfileLoadingService CPI {}
+        component UserProfileLoadingService{
+            provides IUserProfileLoadingService aUserProfileLoadingService
+        }
+        
+        interface IScheduledTaskProcessingService CPI {}
+        component ScheduledTaskProcessingService{
+            requires INotifications aNotifications
+            requires IBAWPayments aBAWPayments
+            provides IScheduledTaskProcessingService aScheduledTaskProcessingService
+        }
+        
+        interface IPaymentCancellingService CPI {}
+        component PaymentCancellingService{
+            requires IBAWPayments aBAWPayments
+            provides IPaymentCancellingService aPaymentCancellingService
+        }
+        
+        interface IPaysafecardDepositCapturingService CPI {}
+        component PaysafecardDepositCapturingService{
+            requires IBAWPayments aBAWPayments
+            provides IPaysafecardDepositCapturingService aPaysafecardDepositCapturingService
+        }
+        
+        interface IBAWPayments CPI {}
+        component BAWPayments{
+            requires IPop3EmailService aPop3EmailService
+            provides IBAWPayments aBAWPayments
+        }
+    
+        }
+    
+        subsystem Vincento{
+
+        }
+    
+        }
+    
+        subsystem BwinGamesB2C{
+
+        subsystem Pokerroom{
+    
+        interface IPokerRoomAPIs CPI {}
+        component PokerRoomAPIs{
+            requires IPokerRoomDatabase aPokerRoomDatabase
+            provides IPokerRoomAPIs aPokerRoomAPIs
+        }
+        
+        interface IWarehouseService CPI {}
+        component WarehouseService{
+            requires IWarehouseDatabase aWarehouseDatabase
+            provides IWarehouseService aWarehouseService
+        }
+        
+        interface IfunPokerRoomAdmin CPI {}
+        component funPokerRoomAdmin{
+            requires IfunPokerroomDatabase afunPokerroomDatabase
+            provides IfunPokerRoomAdmin afunPokerRoomAdmin
+        }
+        
+        interface IPokerAffiliateAdmin CPI {}
+        component PokerAffiliateAdmin{
+            requires IPokerAffiliateDatabase aPokerAffiliateDatabase
+            provides IPokerAffiliateAdmin aPokerAffiliateAdmin
+        }
+        
+        interface IChronicleDatabase CPI {}
+        component ChronicleDatabase{
+            provides IChronicleDatabase aChronicleDatabase
+        }
+        
+        interface IWarehouseDatabase CPI {}
+        component WarehouseDatabase{
+            provides IWarehouseDatabase aWarehouseDatabase
+        }
+        
+        interface IPokerAffiliateDatabase CPI {}
+        component PokerAffiliateDatabase{
+            provides IPokerAffiliateDatabase aPokerAffiliateDatabase
+        }
+        
+        interface IWarehouseEXTAdmin CPI {}
+        component WarehouseEXTAdmin{
+            requires IWarehouseDatabase aWarehouseDatabase
+            provides IWarehouseEXTAdmin aWarehouseEXTAdmin
+        }
+        
+        interface IPokerAcademyDatabase CPI {}
+        component PokerAcademyDatabase{
+            provides IPokerAcademyDatabase aPokerAcademyDatabase
+        }
+        
+        interface ILoginDatabase CPI {}
+        component LoginDatabase{
+            provides ILoginDatabase aLoginDatabase
+        }
+        
+        interface IPokerRoomDirectClient CPI {}
+        component PokerRoomDirectClient{
+            requires IPokerRoomDirectPatcher aPokerRoomDirectPatcher
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            provides IPokerRoomDirectClient aPokerRoomDirectClient
+        }
+        
+        interface IEuroPokercomDatabase CPI {}
+        component EuroPokercomDatabase{
+            provides IEuroPokercomDatabase aEuroPokercomDatabase
+        }
+        
+        interface IOBBTAdmin CPI {}
+        component OBBTAdmin{
+            requires IOBBTDatabase aOBBTDatabase
+            provides IOBBTAdmin aOBBTAdmin
+        }
+        
+        interface IB2CTXN CPI {}
+        component B2CTXN{
+            requires IEuroPokercom aEuroPokercom
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            requires IPokerRoomAdmin aPokerRoomAdmin
+            requires IB2CTXNDatabase aB2CTXNDatabase
+            provides IB2CTXN aB2CTXN
+        }
+        
+        interface IPokerAffiliateWeb CPI {}
+        component PokerAffiliateWeb{
+            requires IPokerAffiliateDatabase aPokerAffiliateDatabase
+            provides IPokerAffiliateWeb aPokerAffiliateWeb
+        }
+        
+        interface IOBBTDatabase CPI {}
+        component OBBTDatabase{
+            provides IOBBTDatabase aOBBTDatabase
+        }
+        
+        interface IPokerRoomDirectPatcher CPI {}
+        component PokerRoomDirectPatcher{
+            provides IPokerRoomDirectPatcher aPokerRoomDirectPatcher
+        }
+        
+        interface IPokerAcademy CPI {}
+        component PokerAcademy{
+            requires IPokerAcademyDatabase aPokerAcademyDatabase
+            provides IPokerAcademy aPokerAcademy
+        }
+        
+        interface IEuroPokernet CPI {}
+        component EuroPokernet{
+            requires IPokerAffiliateAPIs aPokerAffiliateAPIs
+            requires IEuroPokernetDatabase aEuroPokernetDatabase
+            provides IEuroPokernet aEuroPokernet
+        }
+        
+        interface ILoginService CPI {}
+        component LoginService{
+            requires ILoginDatabase aLoginDatabase
+            provides ILoginService aLoginService
+        }
+        
+        interface IB2CTXNAdmin CPI {}
+        component B2CTXNAdmin{
+            requires IB2CTXNDatabase aB2CTXNDatabase
+            provides IB2CTXNAdmin aB2CTXNAdmin
+        }
+        
+        interface IEuroPokernetAdmin CPI {}
+        component EuroPokernetAdmin{
+            requires IEuroPokernetDatabase aEuroPokernetDatabase
+            provides IEuroPokernetAdmin aEuroPokernetAdmin
+        }
+        
+        interface IWarehouseAdmin CPI {}
+        component WarehouseAdmin{
+            requires IWarehouseDatabase aWarehouseDatabase
+            provides IWarehouseAdmin aWarehouseAdmin
+        }
+        
+        interface IPokerAffiliateAPIs CPI {}
+        component PokerAffiliateAPIs{
+            requires IPokerAffiliateDatabase aPokerAffiliateDatabase
+            requires IEuroPokercom aEuroPokercom
+            requires IPokerRoomAdmin aPokerRoomAdmin
+            provides IPokerAffiliateAPIs aPokerAffiliateAPIs
+        }
+        
+        interface IfunPokerroomDatabase CPI {}
+        component funPokerroomDatabase{
+            provides IfunPokerroomDatabase afunPokerroomDatabase
+        }
+        
+        interface IChroniclePlugins CPI {}
+        component ChroniclePlugins{
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            provides IChroniclePlugins aChroniclePlugins
+        }
+        
+        interface IOBBTService CPI {}
+        component OBBTService{
+            requires IOBBTDatabase aOBBTDatabase
+            provides IOBBTService aOBBTService
+        }
+        
+        interface IB2CTXNDatabase CPI {}
+        component B2CTXNDatabase{
+            provides IB2CTXNDatabase aB2CTXNDatabase
+        }
+        
+        interface IPokerRoomDatabase CPI {}
+        component PokerRoomDatabase{
+            requires IPokerRoomAdmin aPokerRoomAdmin
+            provides IPokerRoomDatabase aPokerRoomDatabase
+        }
+        
+        interface ICRM CPI {}
+        component CRM{
+            requires IPokerRoomAdmin aPokerRoomAdmin
+            provides ICRM aCRM
+        }
+        
+        interface IChronicleETL CPI {}
+        component ChronicleETL{
+            
+            provides IChronicleETL aChronicleETL
+        }
+        
+        interface IfunPokerRoom CPI {}
+        component funPokerRoom{
+            requires ILoginService aLoginService
+            requires IfunPokerroomDatabase afunPokerroomDatabase
+            requires IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+            provides IfunPokerRoom afunPokerRoom
+        }
+        
+        interface IChroniclePersist CPI {}
+        component ChroniclePersist{
+            requires IChronicleDatabase aChronicleDatabase
+        
+            provides IChroniclePersist aChroniclePersist
+        }
+        
+        interface IPokerRoomCasinoRoomWeb CPI {}
+        component PokerRoomCasinoRoomWeb{
+            requires ILoginService aLoginService
+            requires IPokerAffiliateAPIs aPokerAffiliateAPIs
+            requires IPokerRoomDatabase aPokerRoomDatabase
+            requires ICRM aCRM
+            requires ICRMDatabase aCRMDatabase
+            provides IPokerRoomCasinoRoomWeb aPokerRoomCasinoRoomWeb
+        }
+        
+        interface IEuroPokercom CPI {}
+        component EuroPokercom{
+            requires IEuroPokercomDatabase aEuroPokercomDatabase
+            requires IEuroPokernet aEuroPokernet
+            provides IEuroPokercom aEuroPokercom
+        }
+        
+        interface IPokerRoomAdmin CPI {}
+        component PokerRoomAdmin{
+            provides IPokerRoomAdmin aPokerRoomAdmin
+        }
+        
+        interface IEuroPokercomAdmin CPI {}
+        component EuroPokercomAdmin{
+            requires IEuroPokercomDatabase aEuroPokercomDatabase
+            provides IEuroPokercomAdmin aEuroPokercomAdmin
+        }
+        
+        interface ICRMDatabase CPI {}
+        component CRMDatabase{
+            requires ICRM aCRM
+            provides ICRMDatabase aCRMDatabase
+        }
+        
+        interface IEuroPokernetDatabase CPI {}
+        component EuroPokernetDatabase{
+            provides IEuroPokernetDatabase aEuroPokernetDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem Portal{
+
+        subsystem bwinag{
+    
+        interface IbwinagWeb CPI {}
+        component bwinagWeb{
+            provides IbwinagWeb abwinagWeb
+        }
+    
+        }
+    
+        subsystem bwinch{
+    
+        interface IbwinFunSitesDatabase CPI {}
+        component bwinFunSitesDatabase{
+            requires IbwinchWeb abwinchWeb
+            provides IbwinFunSitesDatabase abwinFunSitesDatabase
+        }
+        
+        interface IbwinchWeb CPI {}
+        component bwinchWeb{
+            provides IbwinchWeb abwinchWeb
+        }
+    
+        }
+    
+        subsystem ContentManagement{
+            uses PortalFrontend
+            uses BetAndWinDatabase
+    
+        interface ICMSWeb CPI {}
+        component CMSWeb{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides ICMSWeb aCMSWeb
+        }
+        
+        interface IUeTool CPI {}
+        component UeTool{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IUeTool aUeTool
+        }
+        
+        interface IContentWeb CPI {}
+        component ContentWeb{
+            requires IPortal aPortal
+            provides IContentWeb aContentWeb
+        }
+        
+        interface ISitecore4Database CPI {}
+        component Sitecore4Database{
+            requires IContentWeb aContentWeb
+            requires ISiteCore4 aSiteCore4
+            provides ISitecore4Database aSitecore4Database
+        }
+        
+        interface ISiteCore4 CPI {}
+        component SiteCore4{
+            requires IContentWeb aContentWeb
+            provides ISiteCore4 aSiteCore4
+        }
+    
+        }
+    
+        subsystem Customer{
+            uses BetAndWinDatabase
+    
+        interface ICustomerService CPI {}
+        component CustomerService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides ICustomerService aCustomerService
+        }
+        
+        interface IFundFacadeService CPI {}
+        component FundFacadeService{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IFundFacadeService aFundFacadeService
+        }
+    
+        }
+    
+        subsystem Help{
+    
+        interface ISitecore5Database CPI {}
+        component Sitecore5Database{
+            provides ISitecore5Database aSitecore5Database
+        }
+        
+        interface ISitecore5 CPI {}
+        component Sitecore5{
+            requires ISitecore5Database aSitecore5Database
+            requires ISitecoreWebDatabase aSitecoreWebDatabase
+            requires IHelpWeb aHelpWeb
+            provides ISitecore5 aSitecore5
+        }
+        
+        interface IHelpWeb CPI {}
+        component HelpWeb{
+            provides IHelpWeb aHelpWeb
+        }
+        
+        interface ISitecoreWebDatabase CPI {}
+        component SitecoreWebDatabase{
+            requires IHelpWeb aHelpWeb
+            provides ISitecoreWebDatabase aSitecoreWebDatabase
+        }
+    
+        }
+    
+        subsystem OfflineWebs{
+    
+        interface IOfflineWebs CPI {}
+        component OfflineWebs{
+            provides IOfflineWebs aOfflineWebs
+        }
+    
+        }
+    
+        subsystem PaymentsIntegration{
+            uses PortalFrontend
+            uses BetAndWinDatabase
+    
+        interface IPaymentServiceInterface CPI {}
+        component PaymentServiceInterface{
+            provides IPaymentServiceInterface aPaymentServiceInterface
+        }
+        
+        interface IPaymentFacade CPI {}
+        component PaymentFacade{
+            requires IPortal aPortal
+            provides IPaymentFacade aPaymentFacade
+        }
+        
+        interface INotifications CPI {}
+        component Notifications{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+
+            provides INotifications aNotifications
+        }
+        
+        interface ISecurityCheckService CPI {}
+        component SecurityCheckService{
+            provides ISecurityCheckService aSecurityCheckService
+        }
+        
+        interface IUserPaymentLimitService CPI {}
+        component UserPaymentLimitService{
+            provides IUserPaymentLimitService aUserPaymentLimitService
+        }
+        
+        interface IPFMonitoring CPI {}
+        component PFMonitoring{
+            provides IPFMonitoring aPFMonitoring
+        }
+        
+        interface IMerchantPaymentsReconciliationService CPI {}
+        component MerchantPaymentsReconciliationService{
+            provides IMerchantPaymentsReconciliationService aMerchantPaymentsReconciliationService
+        }
+    
+        }
+    
+        subsystem PortalFrontend{
+            uses SEOService
+            uses BetAndWinDatabase
+    
+        interface IPortal CPI {}
+        component Portal{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires IRedirectWeb aRedirectWeb
+            provides IPortal aPortal
+        }
+    
+        }
+    
+        subsystem SEOService{
+    
+        interface IRedirectWeb CPI {}
+        component RedirectWeb{
+            provides IRedirectWeb aRedirectWeb
+        }
+        
+        interface IRdwAdmin CPI {}
+        component RdwAdmin{
+            provides IRdwAdmin aRdwAdmin
+        }
+    
+        }
+    
+        subsystem SurveyService{
+    
+        interface IBwinSurvey CPI {}
+        component BwinSurvey{
+            provides IBwinSurvey aBwinSurvey
+        }
+        
+        interface IHavardToolkitWeb CPI {}
+        component HavardToolkitWeb{
+            requires IBwinSurvey aBwinSurvey
+            provides IHavardToolkitWeb aHavardToolkitWeb
+        }
+    
+        }
+    
+        }
+    
+        subsystem ProductIntegration{
+
+        subsystem BGI{
+            uses BetAndWinDatabase
+    
+        interface IBGI CPI {}
+        component BGI{
+     
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            requires ITransactionAnalyzerDatabase aTransactionAnalyzerDatabase
+            provides IBGI aBGI
+        }
+        
+        interface ITransactionAnalyzerDatabase CPI {}
+        component TransactionAnalyzerDatabase{
+            provides ITransactionAnalyzerDatabase aTransactionAnalyzerDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem Security{
+
+        subsystem AuthIntranet{
+    
+        interface IAuthIntranetWeb CPI {}
+        component AuthIntranetWeb{
+            provides IAuthIntranetWeb aAuthIntranetWeb
+        }
+    
+        }
+    
+        subsystem EPT{
+            uses BetAndWinDatabase
+    
+        interface IEmployeePermissionTool CPI {}
+        component EmployeePermissionTool{
+            requires IBetAndWinDatabase aBetAndWinDatabase
+            provides IEmployeePermissionTool aEmployeePermissionTool
+        }
+    
+        }
+    
+        subsystem IAM{
+            uses IAMService
+    
+        interface IIAMAdminTool CPI {}
+        component IAMAdminTool{
+            provides IIAMAdminTool aIAMAdminTool
+        }
+        
+        interface IIAMDatabase CPI {}
+        component IAMDatabase{
+            requires IIAMAdminTool aIAMAdminTool
+            provides IIAMDatabase aIAMDatabase
+        }
+    
+        }
+    
+        }
+    
+        subsystem Support{
+
+        subsystem BetAndWinDatabase{
+    
+        interface IBetAndWinDatabase CPI {}
+        component BetAndWinDatabase{
+            provides IBetAndWinDatabase aBetAndWinDatabase
+        }
+    
+        }
+    
+        subsystem DWH{
+    
+        interface IDWH CPI {}
+        component DWH{
+            provides IDWH aDWH
+        }
+        
+        interface IOracleDWH CPI {}
+        component OracleDWH{
+            provides IOracleDWH aOracleDWH
+        }
+    
+        }
+    
+        subsystem IP2Location{
+    
+        interface IIP2Location CPI {}
+        component IP2Location{
+            provides IIP2Location aIP2Location
+        }
+        
+        interface IIP2LocationDatabase CPI {}
+        component IP2LocationDatabase{
+            requires IIP2Location aIP2Location
+            provides IIP2LocationDatabase aIP2LocationDatabase
+        }
+    
+        }
+    
+        subsystem LogService{
+    
+        interface ILogServerFetcher CPI {}
+        component LogServerFetcher{
+            requires ILogServerDatabase aLogServerDatabase
+            provides ILogServerFetcher aLogServerFetcher
+        }
+        
+        interface IRemotingServer CPI {}
+        component RemotingServer{
+            requires IRemotingClient aRemotingClient
+            provides IRemotingServer aRemotingServer
+        }
+        
+        interface IRemotingClient CPI {}
+        component RemotingClient{
+            provides IRemotingClient aRemotingClient
+        }
+        
+        interface ILogServerDatabase CPI {}
+        component LogServerDatabase{
+            requires IRemotingServer aRemotingServer
+            provides ILogServerDatabase aLogServerDatabase
+        }
+    
+        }
+    
+        }
+    
+        }
+    
+       }
+       
+       system Bwin : SystemOverview auto{
+       
+       }
+    
+      
+    
+    
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      
+    
+    
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  
+  
+  
+    
+  
