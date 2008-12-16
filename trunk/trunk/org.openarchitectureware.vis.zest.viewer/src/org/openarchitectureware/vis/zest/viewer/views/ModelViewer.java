@@ -1,9 +1,11 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,8 +14,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -27,6 +31,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -34,12 +39,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.core.widgets.GraphNode;
-import org.eclipse.zest.layouts.Filter;
-import org.eclipse.zest.layouts.LayoutItem;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
@@ -47,8 +52,8 @@ import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.openarchitectureware.vis.zest.builder.EdgeData;
-import org.openarchitectureware.vis.zest.builder.GraphData;
 import org.openarchitectureware.vis.zest.builder.GraphBuilder;
+import org.openarchitectureware.vis.zest.builder.GraphData;
 import org.openarchitectureware.vis.zest.builder.NodeData;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.workflow.WorkflowRunner;
@@ -86,6 +91,7 @@ public class ModelViewer extends ViewPart {
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
 
+
 	/**
 	 * constructor - do nothing
 	 */
@@ -116,7 +122,7 @@ public class ModelViewer extends ViewPart {
 		fillLocalToolBar();
 		// the following is for testing purposes.
 		//setFilenameAndRedraw("de/voelter/zest/example/createBwin.oaw");
-		//setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
+		setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
 	}
 
 	/**
@@ -482,7 +488,121 @@ public class ModelViewer extends ViewPart {
 				onGraphSelectionChanged(g);
 			}
 		});
+		
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		fillContextMenu(menuMgr);
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(manager);
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(g);
+		g.setMenu(menu);
+		//getSite().registerContextMenu(menuMgr, viewer);		
+		
 		return g;
+	}
+
+	
+	abstract class SelectRelatedAction extends Action {
+		public SelectRelatedAction(String label) {
+			super( label );
+		}
+		@Override
+		public void run() {
+			Graph g = currGraph();
+			List currentSelection = g.getSelection();
+			Set<GraphItem> newSelection = new HashSet();
+			newSelection.addAll(currentSelection);
+			for (Iterator nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
+				GraphNode n = (GraphNode) nodeIter.next();
+				List downstreamConnections = n.getSourceConnections();
+				for (Iterator connIter = downstreamConnections.iterator(); connIter.hasNext();) {
+					GraphConnection c = (GraphConnection) connIter.next();
+					handleDownstreamConnection( c, newSelection );
+				}
+				List upstreamConnections = n.getTargetConnections();
+				for (Iterator connIter = upstreamConnections.iterator(); connIter.hasNext();) {
+					GraphConnection c = (GraphConnection) connIter.next();
+					handleUpstreamConnection( c, newSelection );
+				}
+			}
+			g.setSelection( (GraphItem[])newSelection.toArray(new GraphItem[]{}) );
+		}
+		protected abstract void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection);
+		protected abstract void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection);
+	}
+	
+	class SelectDownstreamRelatedNodeAction extends SelectRelatedAction {
+		public SelectDownstreamRelatedNodeAction() {
+			super( "Select Related Nodes (downstream)");
+		}
+		@Override
+		protected void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+		}
+		@Override
+		protected void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c.getDestination() );
+		}
+	}
+	
+	class SelectUpstreamRelatedNodeAction extends SelectRelatedAction {
+		public SelectUpstreamRelatedNodeAction() {
+			super( "Select Related Nodes (upstream)");
+		}
+		@Override
+		protected void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c.getSource() );
+		}
+		@Override
+		protected void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+		}
+	}
+	
+	class SelectAllRelatedNodeAction extends SelectRelatedAction {
+		public SelectAllRelatedNodeAction() {
+			super( "Select Related Nodes");
+		}
+		@Override
+		protected void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c.getSource() );
+		}
+		@Override
+		protected void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c.getDestination() );
+		}
+	}
+	
+	class SelectConnectionsAction extends SelectRelatedAction {
+		public SelectConnectionsAction() {
+			super( "Select Connections");
+		}
+		@Override
+		protected void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c );
+		}
+		@Override
+		protected void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
+			newSelection.add( c );
+		}
+	}
+	
+	private void fillContextMenu(IMenuManager menuMgr) {
+		menuMgr.add( new Action("Reset") {
+			@Override
+			public void run() {
+				setFilenameAndRedraw(currentWorkflowFileName);
+			}
+		});
+		if ( (currGraph() != null) && (currGraph().getSelection().size() != 0) ) {
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+			menuMgr.add( new SelectAllRelatedNodeAction() );
+			menuMgr.add( new SelectDownstreamRelatedNodeAction() );
+			menuMgr.add( new SelectUpstreamRelatedNodeAction() );
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+			menuMgr.add( new SelectConnectionsAction() );
+		}
 	}
 
 	/**
@@ -502,6 +622,9 @@ public class ModelViewer extends ViewPart {
 				// location associated to the node
 				locateSource(nodeClickedOn);
 			}
+		}
+		if ( ( (stateMask & SWT.SHIFT ) != 0) && ((stateMask & SWT.CTRL) != 0) )  {
+			System.err.println("HALLO");
 		}
 	}
 

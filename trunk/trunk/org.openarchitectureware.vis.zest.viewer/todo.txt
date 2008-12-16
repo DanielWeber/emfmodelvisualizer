@@ -11,7 +11,8 @@
 * Position festhalten
 * Compartments
 * Hightlight alle Dependencies nach Klick auf Node, und die Knoten am anderen Ende.
-
+* How can I select a connection as opposed to a node?
+* Is there a "Lasso" selection?
 
 Asked Ian:
 
