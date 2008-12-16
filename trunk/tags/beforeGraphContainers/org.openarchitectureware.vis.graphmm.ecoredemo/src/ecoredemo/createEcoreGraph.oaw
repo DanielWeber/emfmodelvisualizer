@@ -1,0 +1,6 @@
+<workflow>
+	
+	<component file="ecoredemo/createMetamodelGraph" 
+		modelUri="platform:/plugin/org.openarchitectureware.vis.graphmm.ecoredemo/src/Ecore.ecore"/>
+	
+</workflow>
