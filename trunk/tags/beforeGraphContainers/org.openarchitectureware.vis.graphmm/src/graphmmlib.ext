@@ -1,0 +1,26 @@
+import graphmm;
+
+addUserData( Node node, String name, String value ):
+	( node.userData == null ? node.setUserData( createProperties(node) ) : null ) ->
+	node.userData.nvpairs.add( createNVPair(name,value) );
+	
+addUserData( Edge edge, String name, String value ):
+	( edge.userData == null ? edge.setUserData( createProperties(edge) ) : null ) ->
+	edge.userData.nvpairs.add( createNVPair(name,value) );
+	
+addLayoutHint( Graph graph, String name, String value ):
+	( graph.layoutHints == null ? graph.setLayoutHints( createProperties(graph) ) : null ) ->
+	graph.layoutHints.nvpairs.add( createNVPair(name,value) );
+	
+create Properties createProperties( emf::EObject node ):
+	this;
+	
+create NVPair createNVPair( String n, String v ):
+	setName( n ) -> setValue( v ) -> setType( texttype() );
+	
+create TextType texttype(): this;   
+
+create IntegerType inttype(): this;   
+
+create BooleanType booleantype(): this;   
+

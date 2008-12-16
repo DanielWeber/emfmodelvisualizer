@@ -1,0 +1,17 @@
+import graphmm;
+
+extension org::openarchitectureware::vis::graphmm::Extensions;
+/*
+ * This check file is used by the parser
+ * and by the editor. Add your constraints here!
+ */
+
+context Edge ERROR "weight must be between -100 and +100" :
+   weight >= -100 && weight <= 100;
+   
+context Graph ERROR "name must be specified":
+	name != null;
+	
+context Graph ERROR "graphs must be contained in GraphCollections":
+	eContainer != null && GraphCollection.isInstance( eContainer );
+
