@@ -1,0 +1,18 @@
+import dot;
+import tree;
+
+extension org::openarchitectureware::graphviz::EditorExtensions;
+extension org::openarchitectureware::graphviz::GenOutline reexport;
+
+/*
+ * overwrite the extension
+ * ''create UIContentNode outlineTree(emf::EObject model)''
+ * from org::openarchitectureware::graphviz::GenOutline.ext in order to control the construction of the default outline tree
+ *
+ * overwrite the extension
+ * 'List[String] viewpoints()'
+ * from org::openarchitectureware::graphviz::GenOutline.ext in order to add other viewPoints to your Outline. 
+ * For each given name there must be a 'outlineTree_NAME(emf::EObject model)' which is called then.
+ * Whitespaces in the name are replaced by '_'
+ */
+
