@@ -1,0 +1,56 @@
+import dot;
+
+extension org::openarchitectureware::graphviz::Extensions;
+/*
+ * This check file is used by the parser
+ * and by the editor. Add your constraints here!
+ */
+
+context graphvizmodel ERROR "Write your constraint message here...!" :
+   true;
+
+context graph ERROR "Write your constraint message here...!" :
+   true;
+
+context stmt ERROR "Write your constraint message here...!" :
+   true;
+
+context edge_stmt_node ERROR "Write your constraint message here...!" :
+   true;
+
+context edge_stmt_subgraph ERROR "Write your constraint message here...!" :
+   true;
+
+context node_stmt ERROR "Write your constraint message here...!" :
+   true;
+
+context attribute ERROR "Write your constraint message here...!" :
+   true;
+
+context attr_stmt ERROR "Write your constraint message here...!" :
+   true;
+
+context attr_list ERROR "Write your constraint message here...!" :
+   true;
+
+context a_list ERROR "Write your constraint message here...!" :
+   true;
+
+context subgraph ERROR "Write your constraint message here...!" :
+   true;
+
+context port ERROR "Write your constraint message here...!" :
+   true;
+
+context edgeRHS ERROR "Write your constraint message here...!" :
+   true;
+
+context edgeRHS_node ERROR "Write your constraint message here...!" :
+   true;
+
+context edgeRHS_subgraph ERROR "Write your constraint message here...!" :
+   true;
+
+context node_id ERROR "Write your constraint message here...!" :
+   true;
+
