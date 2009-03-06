@@ -19,7 +19,6 @@ create Graph toAssocGraph(EPackage p):
 	nodes.addAll( p.eClassifiers.typeSelect(EClass).eAttributes.toNode("ass") ) ->
 	edges.addAll( p.eClassifiers.typeSelect(EClass).eAttributes.toEdge("ass") );
 
-
 create Graph toInheritGraph(EPackage p):
 	setName( "inheritance" ) ->
 	addLayoutHint( "zestlayout", "tree" ) ->
