@@ -26,14 +26,11 @@ create dot::subgraph mapToSubgraph( Object source ):
 create dot::subgraph mapToSubgraph( Object source, Object uniqueToken ):
     this;
 
-
 create dot::edge_stmt_node mapToEdge( Object source, Object target, Object token ):
 	setNode_id(source.toNodeId()) ->
 	edgeRHS.add(target.toRHS(token, source)) -> 
 	this; 
 
-	
-	
 create dot::edgeRHS_node toRHS( Object o, Object source, Object token ):
 	setOp(dot::edgeop::directed) -> 
 	setNode( o.toNodeId() ) ->
@@ -127,7 +124,8 @@ setName( dot::subgraph g, String name ):
 addStatements( dot::subgraph g, List[dot::stmt] s ): 
 	g.stmts.addAll( s ) -> g;
  
-addStatements( dot::graph g, List[dot::stmt] s ): 
+addStatements( dot::graph g, List[dot::stmt] s ):
+	s.exists(e|e == null) ? "el null".syserr() : null ->
 	g.stmts.addAll( s ) -> g;
  
 addStatement( dot::subgraph g, dot::stmt s ): 
