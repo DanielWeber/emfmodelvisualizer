@@ -649,7 +649,7 @@ public class ModelViewer extends ViewPart {
 	 * @param nodeClickedOn the node on which the user had clicked
 	 */
 	private void locateSource(GraphNode nodeClickedOn) {
-		String location = (String)nodeClickedOn.getData();
+		String location = ((NodeData)nodeClickedOn.getData()).getSourceLocation();
 		if ( location != null ) {
 			eclipseSourceLocator.locate(location);
 		}

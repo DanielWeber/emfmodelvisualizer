@@ -6,6 +6,7 @@ import java.util.Map;
 public class NodeData {
 
 	private String category;
+	private String              sourceLocation;
 	private Map<String, String> userData;
 	
 	public String getCategory() {
@@ -21,4 +22,14 @@ public class NodeData {
 		return userData;
 	}
 
+   public String getSourceLocation()
+   {
+      return sourceLocation;
+   }
+
+   public void setSourceLocation(String sourceLoaction)
+   {
+      this.sourceLocation = sourceLoaction;
+   }
+	
 }

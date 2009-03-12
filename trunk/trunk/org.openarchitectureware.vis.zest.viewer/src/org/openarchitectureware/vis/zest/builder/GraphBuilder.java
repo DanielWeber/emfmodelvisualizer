@@ -80,7 +80,7 @@ public class GraphBuilder {
 				zestNode.setData( nodeData );
 				String sourceLocation = model.getNodeSourceLocation( node );
 				if ( sourceLocation != null) {
-					zestNode.setData( sourceLocation );
+				   nodeData.setSourceLocation(sourceLocation);
 				}
 				String tooltip = model.getTooltip( node );
 				if ( tooltip != null ) {
