@@ -1,6 +1,5 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +24,14 @@ public class ImageRegistry {
 		return i;
 	}
 	
-	public static ImageDescriptor getImageDescriptorFromPlugin( String name ) {
-		if ( imageDescriptorCache.containsKey(name)) return imageDescriptorCache.get(name);
-		try {
-			URL url = new URL( Activator.getDefault().getDescriptor().getInstallURL(), "icons/"+name+".gif" );
+	public static ImageDescriptor getImageDescriptorFromPlugin(String name)
+   {
+      if(imageDescriptorCache.containsKey(name))
+         return imageDescriptorCache.get(name);
+      URL url = Activator.getDefault().getBundle().getResource("icons/" + name + ".gif");
 			ImageDescriptor id = ImageDescriptor.createFromURL(url);
-			imageDescriptorCache.put( name, id);
+      imageDescriptorCache.put(name, id);
 			return id;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	public static Image getImageFromClasspath( String name ) {

@@ -1,7 +1,5 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,6 +58,7 @@ import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.issues.IssuesImpl;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
+
 
 /**
  * This class represents an Eclipse view that renders graphmm 
@@ -614,7 +613,9 @@ public class ModelViewer extends ViewPart {
 		List selectedNodeOrEdges = graph.getSelection();
 		int stateMask = event.stateMask;
 		// if we have one element only...
-		if ( selectedNodeOrEdges.size() == 1 ) {
+      if(selectedNodeOrEdges.size() == 1
+            && selectedNodeOrEdges.get(0) instanceof GraphNode)
+      {
 			GraphNode nodeClickedOn = (GraphNode)selectedNodeOrEdges.get(0);
 			// and we shift-clicked on it
 			if ( (stateMask & SWT.SHIFT) != 0 ) {
@@ -638,7 +639,7 @@ public class ModelViewer extends ViewPart {
 		// if there's one node selected only, then 
 		// update it's properties in the table
 		if ( selectedNodes.size() == 1 ) {
-			GraphNode n = (GraphNode)selectedNodes.get(0);
+			GraphItem n = (GraphItem)selectedNodes.get(0);
 			updatePropertiesTable(n);
 		}
 	}
@@ -656,23 +657,41 @@ public class ModelViewer extends ViewPart {
 	}
 	
 	/**
-	 * updates the table that shows a node's properties 
-	 * @param selectedNode the node whose properties must be shown
+    * updates the table that shows a node's properties
+    * 
+    * @param n the node whose properties must be shown
 	 */
-	private void updatePropertiesTable(GraphNode selectedNode) {
+	private void updatePropertiesTable(GraphItem n)
+   {
 		// delete all the existing children
 		for (TableItem item : nodePropertiesTable.getItems()) {
 			item.dispose();
 		}
 		// get all the property name-value pairs and add a
 		// table item for each of them
-		Map<String, String> userDataMap = getData(selectedNode).getUserData();
+      Map<String, String> userDataMap = getUserData(n);
 		for (String name : userDataMap.keySet()) {
 			TableItem i1 = new TableItem(nodePropertiesTable, SWT.NULL);
 			i1.setText( new String[]{name, userDataMap.get(name)});
 		}
 	}
 
+   /**
+    * @param i The item to retrieve user data for
+    * @return A user data map, if available. Null else.
+    */
+   private Map<String, String> getUserData(GraphItem item)
+   {
+      if(item instanceof GraphNode)
+      {
+         return getData((GraphNode)item).getUserData();
+      }
+      if(item instanceof GraphConnection)
+      {
+         return getData((GraphConnection)item).getUserData();
+      }
+      return null;
+   }
 	
 	/**
 	 * runs an oAW workflow to get hold of a graph model
