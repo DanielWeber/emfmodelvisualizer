@@ -22,10 +22,8 @@ public class EclipseSourceLocator implements SourceLocator {
 	private static final String PLATFORM_RESOURCE = "platform:/resource/";
 	private static final String PLATFORM_PLUGIN = "platform:/plugin/";
 	
-	@Override
 	public void locate(final String location) {
 		Display.getDefault().syncExec(new Runnable() {
-			@Override
 			public void run() {
 				// string has the format filename,startoffset,endoffset
 				String[] l = location.split(",");
