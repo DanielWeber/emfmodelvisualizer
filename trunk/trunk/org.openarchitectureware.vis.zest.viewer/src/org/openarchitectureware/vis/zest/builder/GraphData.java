@@ -1,8 +1,8 @@
 package org.openarchitectureware.vis.zest.builder;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -30,7 +30,7 @@ public class GraphData {
 	}
 	
 	public Collection<String> getCategories() {
-		if ( categories == null ) categories = new HashSet<String>();
+		if ( categories == null ) categories = new TreeSet<String>();
 		return categories;
 	}
 	
