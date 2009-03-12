@@ -15,8 +15,9 @@ addLayoutHint( Graph graph, String name, String value ):
 create Properties createProperties( emf::EObject node ):
 	this;
 	
-create NVPair createNVPair( String n, String v ):
-	setName( n ) -> setValue( v ) -> setType( texttype() );
+NVPair createNVPair( String n, String v ):
+    let this = new NVPair :
+	   setName( n ) -> setValue( v ) -> setType( texttype() ) -> this;
 	
 create TextType texttype(): this;   
 
