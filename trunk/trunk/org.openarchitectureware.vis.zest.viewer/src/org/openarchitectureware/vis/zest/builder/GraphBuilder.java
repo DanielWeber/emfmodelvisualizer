@@ -6,10 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.emf.ecore.EObject;
@@ -107,8 +106,16 @@ public class GraphBuilder {
 			EObject sourceNode = model.getEdgeSource( edge );
 			EObject targetNode = model.getEdgeTarget( edge );
 			String cat = model.getNodeOrEdgeCategory(edge);
-			if ( isInGraph(edge, checkedCategories, cat)) {
-				GraphConnection zestConnection = new GraphConnection( graph, SWT.NONE, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+			if(isEdgeInGraph(edge, checkedCategories, cat))
+         {
+			   int style = SWT.NONE;
+            if(model.isEdgeDirected(edge))
+            {
+               style = ZestStyles.CONNECTIONS_DIRECTED;
+            }
+            GraphConnection zestConnection = new GraphConnection(graph, style, nodeMap
+                  .get(sourceNode), nodeMap.get(targetNode));
+            zestConnection.setHighlightColor(ColorConstants.red);
 				EdgeData edgeData = new EdgeData();
 				zestConnection.setData( edgeData );
 				String tooltip = model.getTooltip( edge );
@@ -132,9 +139,6 @@ public class GraphBuilder {
 				zestConnection.setLineWidth( model.getEdgeLineWidth(edge) );
 				zestConnection.setWeight( model.getEdgeLineWeight(edge) ); 
 				zestConnection.setLineStyle(model.getEdgeStyle( edge ));
-				if ( model.isEdgeDirected( edge ) ) {
-					zestConnection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-				}
 				edgeData.setCategory(cat);
 				Map userDataMap = model.getUserDataMap( edge );
 				edgeData.getUserData().putAll( userDataMap );
@@ -145,7 +149,37 @@ public class GraphBuilder {
 		}
 	}
 
-	private GraphNode createGraphNode(IContainer container, EObject node, boolean isContainerNode, Image icon) {
+	/**
+    * @param edge
+    * @param checkedCategories
+    * @param cat
+    * @return
+    */
+   private boolean isEdgeInGraph(EObject edge, Collection<String> checkedCategories,
+         String cat)
+   {
+      EObject source = model.getEdgeSource(edge);
+      String sourceCat = model.getNodeOrEdgeCategory(source);
+      if(!isInGraph(source, checkedCategories, sourceCat))
+      {
+         return false;
+      }
+      EObject target = model.getEdgeTarget(edge);
+      String targetCat = model.getNodeOrEdgeCategory(target);
+      if(!isInGraph(target, checkedCategories, targetCat))
+      {
+         return false;
+      }
+      if(!isInGraph(edge, checkedCategories, cat))
+      {
+         return false;
+      }
+      return true;
+   }
+
+   private GraphNode createGraphNode(IContainer container, EObject node,
+         boolean isContainerNode, Image icon)
+   {
 		GraphNode n;
 		if ( isContainerNode ) {
 			n = new GraphContainer(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
