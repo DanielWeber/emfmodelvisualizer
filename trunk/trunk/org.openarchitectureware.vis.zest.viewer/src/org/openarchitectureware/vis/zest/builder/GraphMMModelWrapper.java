@@ -2,7 +2,6 @@ package org.openarchitectureware.vis.zest.builder;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;

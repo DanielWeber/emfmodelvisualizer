@@ -1,6 +1,5 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;

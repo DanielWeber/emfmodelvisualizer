@@ -55,8 +55,6 @@ public class GraphBuilder {
 	}
 	
 	private void populateContainer( IContainer container, EObject graphNode, Collection<String> checkedCategories ) {
-		Collection<EObject> nodes = model.getNodes(graphNode);
-		Collection<EObject> edges = model.getEdges(graphNode); 
 		for (EObject node : model.getNodes(graphNode)) {
 			boolean isContainerNode = model.isContainerNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);

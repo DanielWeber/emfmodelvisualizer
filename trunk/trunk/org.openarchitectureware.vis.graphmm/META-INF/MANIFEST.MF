@@ -7,7 +7,7 @@ Require-Bundle: org.openarchitectureware.dependencies;visibility:=reexport,
  org.antlr;visibility:=reexport,
  org.openarchitectureware.xtext.core.base;visibility:=reexport,
  org.openarchitectureware.xtext.generator
-Eclipse-LazyStart: true
 Export-Package: org.openarchitectureware.vis.graphmm,
                 org.openarchitectureware.vis.graphmm.parser
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
