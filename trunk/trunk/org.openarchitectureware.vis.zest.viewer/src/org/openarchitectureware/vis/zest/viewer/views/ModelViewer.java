@@ -18,11 +18,15 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -31,13 +35,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
@@ -65,6 +71,7 @@ import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
  * instances using ZEST.
  * 
  * @author MarkusVoelter
+ * @author DanielWeber
  */
 public class ModelViewer extends ViewPart {
 
@@ -81,7 +88,7 @@ public class ModelViewer extends ViewPart {
 	private IMenuManager menuManager;
 	private Table nodePropertiesTable;
 	private Combo layoutCombo;
-	private TabFolder tabFolderForGraphs;
+	private CTabFolder tabFolderForGraphs;
 	private SashForm topLevelSashForm;
 	private Composite rightSideComposite;
 	private Table filterTable;
@@ -89,6 +96,7 @@ public class ModelViewer extends ViewPart {
 	private IToolBarManager toolBarManager;
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
+   private FormToolkit toolkit;
 
 
 	/**
@@ -112,7 +120,15 @@ public class ModelViewer extends ViewPart {
 	 * a workflow has been run to create a graph. 
 	 */
 	public void createPartControl(Composite parent) {
-		this.topLevelComposite = parent;
+	   toolkit = new FormToolkit(parent.getDisplay());
+	   Form form = toolkit.createForm(parent);
+      FillLayout layout = new FillLayout();
+      layout.marginHeight = 10;
+      layout.marginWidth = 4;
+      form.getBody().setLayout(layout);
+      toolkit.decorateFormHeading(form);
+      this.topLevelComposite = form.getBody();
+		
 		IActionBars bars = getViewSite().getActionBars();
 		menuManager = bars.getMenuManager();
 		toolBarManager = bars.getToolBarManager();
@@ -120,7 +136,6 @@ public class ModelViewer extends ViewPart {
 		fillLocalPullDown();
 		fillLocalToolBar();
 		// the following is for testing purposes.
-		//setFilenameAndRedraw("de/voelter/zest/example/createBwin.oaw");
 		setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
 	}
 
@@ -168,7 +183,18 @@ public class ModelViewer extends ViewPart {
 			topLevelComposite.getChildren()[i].dispose();
 		}
 		topLevelSashForm = new SashForm(topLevelComposite,SWT.HORIZONTAL);
-		tabFolderForGraphs = new TabFolder (topLevelSashForm, SWT.NONE);
+		toolkit.adapt(topLevelSashForm,true,true);
+		Section graphSection = toolkit.createSection(topLevelSashForm, Section.TITLE_BAR);
+		graphSection.setText("Graphs");
+		tabFolderForGraphs = new CTabFolder (graphSection, SWT.NONE);
+		graphSection.setClient(tabFolderForGraphs);
+		
+		// Highlight the selected tab using a color gradient
+      toolkit.getColors().initializeSectionToolBarColors();
+      Color selectedColor = toolkit.getColors().getColor(IFormColors.TB_BG);
+      tabFolderForGraphs.setSelectionBackground(new Color[] { selectedColor,
+            toolkit.getColors().getBackground() }, new int[] { 100 }, true);
+		
 		createRightSideComposite();
 		populateTabFolderWithGraphs();
 		topLevelSashForm.setWeights(new int[] {90,10});
@@ -181,7 +207,10 @@ public class ModelViewer extends ViewPart {
 	 * filter categories as well as the properties table
 	 */
 	private void createRightSideComposite() {
-		rightSideComposite = new Composite(topLevelSashForm, SWT.NONE);
+	   Section section = toolkit.createSection(topLevelSashForm, Section.TITLE_BAR);
+		rightSideComposite = toolkit.createComposite(section, SWT.NONE);
+		section.setClient(rightSideComposite);
+		section.setText("Layout, Categories and Properties");   
 		rightSideComposite.setLayout( new GridLayout(1, true) );
 
 		// the layout combo box provides ZEST's four different
@@ -216,7 +245,7 @@ public class ModelViewer extends ViewPart {
 		
 		// this is the (as of yet empty) filter table
 		// the items will be checkbox style - to be added later
-		filterTable = new Table(rightSash, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL );
+		filterTable = toolkit.createTable(rightSash, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL );
 		filterTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -226,7 +255,7 @@ public class ModelViewer extends ViewPart {
 		
 		// this table is used to show a node's properties in a table
 		// two columns: name and value
-		nodePropertiesTable = new Table( rightSash, SWT.BORDER | SWT.FULL_SELECTION);
+		nodePropertiesTable = toolkit.createTable( rightSash, SWT.BORDER | SWT.FULL_SELECTION);
 		nodePropertiesTable.setHeaderVisible(true);
 		nodePropertiesTable.setLinesVisible(false);
 		nodePropertiesTable.setBackground(ColorConstants.tooltipBackground);
@@ -259,7 +288,7 @@ public class ModelViewer extends ViewPart {
 	 * @param tabItem the tab item containing the graph
 	 * @param layoutId the new layout ID
 	 */
-	private void setGraphLayout(TabItem tabItem, final int layoutId) {
+	private void setGraphLayout(CTabItem tabItem, final int layoutId) {
 		// we store the layout with the tab so we can 
 		// readjust the combo box when the tab is (re-)selected
 		getData(tabItem).setLayoutId(layoutId);
@@ -298,8 +327,13 @@ public class ModelViewer extends ViewPart {
 		// createGraphIntoTabItem method for each of them
 		// to actually populate the tab
 		for (EObject gm: graphs) {
-			TabItem item = new TabItem (tabFolderForGraphs, SWT.NONE);
+			CTabItem item = new CTabItem (tabFolderForGraphs, SWT.NONE);
+			tabFolderForGraphs.setSelection(item);
 			createGraphIntoTabItem(gm, item);
+		}
+		if (!graphs.isEmpty()) {
+		   // switch to the first tab (i.e. graph)
+		   tabFolderForGraphs.setSelection(0);
 		}
 		// force layout
 		tabFolderForGraphs.layout();
@@ -332,7 +366,7 @@ public class ModelViewer extends ViewPart {
 	 * @param graphModel the EObject model of the graph
 	 * @param item the item into which it should be rendered
 	 */
-	private void createGraphIntoTabItem(EObject graphModel, TabItem item) {
+	private void createGraphIntoTabItem(EObject graphModel, CTabItem item) {
 		// if there's already a graph in that item,
 		// delete it
 		Graph old = getData(item).getGraph();
@@ -405,12 +439,12 @@ public class ModelViewer extends ViewPart {
 	 * returns the currently selected tab item
 	 * @return the currently selected item
 	 */
-	private TabItem currTabItem() {
-		return tabFolderForGraphs.getSelection()[0];
+	private CTabItem currTabItem() {
+		return tabFolderForGraphs.getSelection();
 	}
 	
 	/**
-	 * returns the curerntly selected graph by 
+	 * returns the currently selected graph by 
 	 * using the GraphData of the currently selected
 	 * tab item 
 	 * @return the currently selected graph
@@ -836,7 +870,7 @@ public class ModelViewer extends ViewPart {
 	 *          shall be returned
 	 * @return the TabItemData object
 	 */
-	private TabItemData getData( TabItem item ) {
+	private TabItemData getData( CTabItem item ) {
 		TabItemData d = (TabItemData)item.getData();
 		if ( d == null ) {
 			d = new TabItemData();
