@@ -1,0 +1,22 @@
+«IMPORT graphmm»
+
+«EXTENSION org::openarchitectureware::vis::xmind::generator::utils»
+
+
+«DEFINE main FOR GraphCollection»
+«FILE "styles.xml"-»
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xmap-styles xmlns="urn:xmind:xmap:xmlns:style:2.0" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" version="2.0">
+<styles>
+	<style id="«proxyStyleId()»" type="topic">
+		<topic-properties fo:color="#C0C0C0" line-color="#C0C0C0"/>
+	</style>
+	«FOREACH styles().topicstyles AS s»
+		<style id="«s.uuid()»" type="topic">
+			<topic-properties svg:fill="«s.fillColor»"/>
+		</style>
+	«ENDFOREACH»
+</styles>
+</xmap-styles>
+«ENDFILE» 
+«ENDDEFINE»

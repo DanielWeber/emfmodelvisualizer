@@ -1,0 +1,4 @@
+import graphmm;
+
+context Graph WARNING "no top node specified":
+	topnode != null;

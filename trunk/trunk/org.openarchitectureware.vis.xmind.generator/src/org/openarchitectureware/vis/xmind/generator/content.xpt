@@ -1,0 +1,51 @@
+«IMPORT graphmm»
+
+«EXTENSION org::openarchitectureware::vis::xmind::generator::utils»
+
+«DEFINE main FOR GraphCollection»
+«FILE "content.xml"-»
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xmap-content xmlns="urn:xmind:xmap:xmlns:content:2.0" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
+«FOREACH graphs AS g»
+<sheet id="«g.uuid()»" >
+	<title>«g.name»</title> 
+«EXPAND topic FOR g.topnode»
+
+«IF !g.nonContainmentEdges().isEmpty»
+<relationships>
+«FOREACH g.nonContainmentEdges().reject(e|e.proxied) AS edge»
+<relationship end1="«edge.source.uuid()»" end2="«edge.target.uuid()»" id="«edge.uuid()»">
+	<title>«edge.label»</title>
+</relationship>
+«ENDFOREACH»
+</relationships>
+«ENDIF»
+
+</sheet>
+«ENDFOREACH»
+</xmap-content>
+«ENDFILE» 
+«ENDDEFINE»
+
+
+«DEFINE topic FOR Node»
+<topic id="«uuid()»" style-id="«topicstyle(mapColor(fillcolor)).uuid()»">
+	<title>«label»</title>
+	«IF hasChildren()» 
+		<children>
+			<topics type="attached">
+			«EXPAND topic FOREACH children()»
+			«EXPAND proxyTopic FOREACH outgoingEdges().select(e|e.proxied)»
+			</topics>
+		</children>
+	«ENDIF»
+</topic>
+«ENDDEFINE»
+
+«DEFINE proxyTopic FOR SimpleDirectedEdge»
+<topic id="«uuid()»" style-id="«proxyStyleId()»" xlink:href="xmind:#«target.uuid()»">
+	<title>[«label»] «target.label»</title>
+</topic>
+«ENDDEFINE»
+
+

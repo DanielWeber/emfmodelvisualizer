@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.openarchitectureware.dependencies,
- org.openarchitectureware.vis.graphmm;bundle-version="1.0.0"
-Export-Package: ecoredemo;x-friends:="org.openarchitectureware.vis.zest.viewer"
+ org.openarchitectureware.vis.graphmm;bundle-version="1.0.0",
+ org.openarchitectureware.vis.xmind.generator;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

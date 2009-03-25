@@ -11,7 +11,7 @@ Prolog:
 	"}";
 
 Graph:
-	"graph" name=ID "{"
+	"graph" name=ID ("top" "=" topnode=[Node])? "{"
 		("layoutHints" layoutHints = Properties )?
 		"nodes" "{"
 			(nodes+=Node)*
@@ -55,7 +55,7 @@ Edge:
 	SimpleDirectedEdge;
 
 SimpleDirectedEdge:
-	source=[Node] direction=DirectionEnum target=[Node] 
+	source=[Node] direction=DirectionEnum target=[Node] (containment?="containment")? (proxied?="proxied")?  
 		("label" label=STRING)? 
 		("tooltip" tooltip=STRING)? 
 		("icon" icon=STRING)?

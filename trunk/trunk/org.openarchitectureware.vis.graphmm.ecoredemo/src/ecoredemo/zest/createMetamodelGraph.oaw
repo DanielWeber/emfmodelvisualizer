@@ -5,8 +5,8 @@
 	<bean class="org.eclipse.mwe.emf.StandaloneSetup">
     	<platformUri value=".."/>
 	</bean>
-    <bean class="org.openarchitectureware.vis.graphmm.MetaModelRegistration"/>
 	
+    <bean class="org.openarchitectureware.vis.graphmm.MetaModelRegistration"/>
   
 	<component id="read" class="org.eclipse.mwe.emf.Reader">
 		<useSingleGlobalResourceSet value="true"/>
@@ -16,7 +16,7 @@
   
 	<component class="oaw.xtend.XtendComponent">
 		<metaModel id="mm" class="org.eclipse.m2t.type.emf.EmfRegistryMetaModel"/>
-		<invoke value="ecoredemo::ecore2zest::top(model)" />
+		<invoke value="ecoredemo::zest::ecore2graph::top(model)" />
 		<outputSlot value="graphmodel" />
 	</component>
 	
@@ -26,5 +26,5 @@
 	   <checkFile value="org::openarchitectureware::vis::graphmm::GenChecks"/>
 	   <checkFile value="org::openarchitectureware::vis::graphmm::Checks"/>
 	</component>
-  	
+	
 </workflow>

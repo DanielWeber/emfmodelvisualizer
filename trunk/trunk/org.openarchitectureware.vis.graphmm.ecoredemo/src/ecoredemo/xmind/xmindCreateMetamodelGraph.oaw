@@ -1,0 +1,26 @@
+<workflow abstract="true">
+
+	<property name='modelUri'/>
+	
+	<bean class="org.eclipse.mwe.emf.StandaloneSetup">
+    	<platformUri value=".."/>
+	</bean>
+	
+    <bean class="org.openarchitectureware.vis.graphmm.MetaModelRegistration"/>
+  
+	<component id="read" class="org.eclipse.mwe.emf.Reader">
+		<useSingleGlobalResourceSet value="true"/>
+		<modelSlot value="model"/>
+		<uri value="${modelUri}"/>
+	</component>	
+  
+	<component class="oaw.xtend.XtendComponent">
+		<metaModel id="mm" class="org.eclipse.m2t.type.emf.EmfRegistryMetaModel"/>
+		<invoke value="ecoredemo::xmind::ecore2graphXmind::top(model)" />
+		<outputSlot value="graphmodel" />
+	</component>
+	
+	<component file="xmindgenerator.oaw" 
+		targetDir="src-gen" filename="test" graphmodelslot="graphmodel"/>
+  	
+</workflow>

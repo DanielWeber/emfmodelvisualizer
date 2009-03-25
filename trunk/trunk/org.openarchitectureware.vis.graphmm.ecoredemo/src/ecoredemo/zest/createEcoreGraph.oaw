@@ -1,0 +1,6 @@
+<workflow>
+	
+	<component file="ecoredemo/zest/createMetamodelGraph" 
+		modelUri="src/Ecore.ecore"/>
+	
+</workflow>

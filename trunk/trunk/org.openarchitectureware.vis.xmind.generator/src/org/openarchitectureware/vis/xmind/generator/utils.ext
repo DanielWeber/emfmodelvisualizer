@@ -1,0 +1,55 @@
+import graphmm;
+import xmindstyles;
+
+extension org::openarchitectureware::util::stdlib::io;
+
+needsStyles( GraphCollection this ): false;
+
+outgoingEdges( Node this ):
+	owningGraph().edges.typeSelect(SimpleDirectedEdge).select(e|e.source == this);
+
+children( Node this ): 
+	outgoingEdges().select(e|e.containment).target;
+
+nonContainmentEdges( Graph this ):
+	edges.select(e|e.containment == false);
+	
+	
+proxyStyleId(): "__proxystyle";
+	
+hasChildren( Node this ): 
+	children().size > 0 || outgoingEdges().select(e|e.proxied).size > 0;
+	
+owningGraph( Node this ): 
+	(Graph)eContainer;
+ 
+create Styles styles(): this; 
+ 
+create TopicStyle topicstyle( String fillColor ):
+	setFillColor( fillColor ) ->
+	styles().topicstyles.add( this );
+	
+mapColor( ColorEnum fillColor ):
+	switch ( fillColor ) {
+		case ColorEnum::white : "#FFFFFF"     
+		case ColorEnum::lightGray : "#C0C0C0" 
+		case ColorEnum::gray : "#A8A8A8" 
+		case ColorEnum::darkGray : "#545454" 
+		case ColorEnum::black : "#000000" 
+		case ColorEnum::red : "#FF0000" 
+		case ColorEnum::orange : "#FF7F00" 
+		case ColorEnum::yellow : "#FFFF00" 
+		case ColorEnum::green : "#32CD32" 
+		case ColorEnum::lightGreen : "#7FFF00" 
+		case ColorEnum::darkGreen : "#426F42" 
+		case ColorEnum::cyan : "#00FFFF" 
+		case ColorEnum::lightBlue : "#C0D9D9" 
+		case ColorEnum::blue : "#0000FF" 
+		case ColorEnum::darkBlue : "#23238E"	
+		default: "#000000"
+	};	
+ 
+cached String uuid( Object o ): 
+	JAVA org.openarchitectureware.vis.xmind.generator.UidUtil.newUid( java.lang.Object ); 
+
+	
