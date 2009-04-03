@@ -22,7 +22,7 @@ Node:
 	SimpleNode | ContainerNode | CompartmentNode;
 
 SimpleNode:
-	name=ID 
+	"node" name=ID 
 		("label" label=STRING)? 
 		("tooltip" tooltip=STRING)?
 		("icon" icon=STRING)?
@@ -35,7 +35,7 @@ SimpleNode:
 	";";
 	
 ContainerNode:
-	"container" name=ID 
+	"containernode" name=ID 
 		("label" label=STRING)? 
 		("tooltip" tooltip=STRING)?
 		("icon" icon=STRING)?
@@ -64,15 +64,16 @@ CompartmentNode:
 
 Compartment:
 	"compartment" name=ID "{"
+		("category" category=STRING)?
 		("entry" entry=STRING)*
-	"}"
-;
+	"}";
 	
 Edge:
 	SimpleDirectedEdge;
 
 SimpleDirectedEdge:
-	source=[Node] direction=DirectionEnum target=[Node] (containment?="containment")? (proxied?="proxied")?  
+	source=[Node] direction=DirectionEnum target=[Node]
+		(containment?="containment")? (proxied?="proxied")? (inheritance?="inheritance")?
 		("label" label=STRING)? 
 		("tooltip" tooltip=STRING)? 
 		("icon" icon=STRING)?
