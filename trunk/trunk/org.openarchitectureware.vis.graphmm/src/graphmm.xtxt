@@ -1,6 +1,3 @@
-// specify your DSL grammar rules here ...
-// IMPORTANT: You should change the property 'overwrite.pluginresources=true' in the properties file to 'overwrite.pluginresources=false' AFTER first generation
-
 GraphCollection:
 	(prolog=Prolog)?
 	(graphs+=Graph)*;
@@ -22,7 +19,7 @@ Graph:
 	"}";
 	  
 Node:
-	SimpleNode | ContainerNode;
+	SimpleNode | ContainerNode | CompartmentNode;
 
 SimpleNode:
 	name=ID 
@@ -50,6 +47,26 @@ ContainerNode:
 		("userData" userData = Properties )?
 		("contained" containedGraph=Graph )?
 	";";
+
+CompartmentNode:
+	"compartmentnode" name=ID
+		("label" label=STRING)? 
+		("tooltip" tooltip=STRING)?
+		("icon" icon=STRING)?
+		("textcolor" textcolor=ColorEnum)?
+		("linecolor" linecolor=ColorEnum)?
+		("fillcolor" fillcolor=ColorEnum)?
+		("source" sourceLocation=STRING)? 
+		("category" category=STRING)?
+		("userData" userData = Properties )?
+		(compartments+=Compartment)*
+	";";
+
+Compartment:
+	"compartment" name=ID "{"
+		("entry" entry=STRING)*
+	"}"
+;
 	
 Edge:
 	SimpleDirectedEdge;
