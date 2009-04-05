@@ -1,0 +1,47 @@
+Â«IMPORT graphmm»
+
+«EXTENSION org::openarchitectureware::vis::ubigraph::generator::utils»
+
+«DEFINE main(String filename) FOR GraphCollection»
+«EXPAND pythonfile FOREACH graphs»
+«ENDDEFINE»
+
+«DEFINE pythonfile FOR Graph»
+«resetUUIDs()»
+«FILE name+".py"»
+import xmlrpclib
+
+# Create an object to represent our server.
+server_url = 'http://127.0.0.1:20738/RPC2'
+server = xmlrpclib.Server(server_url)
+G = server.ubigraph
+G.clear()
+
+# Create a graph
+«FOREACH nodes AS n»
+node«n.uuid(this)» = G.new_vertex()
+G.set_vertex_attribute(node«n.uuid(this)», 'label', '«n.label»')
+G.set_vertex_attribute(node«n.uuid(this)», 'color', '«n.fillcolor.mapColor()»')
+G.set_vertex_attribute(node«n.uuid(this)», 'fontcolor', '«n.fillcolor.mapColor()»')
+G.set_vertex_attribute(node«n.uuid(this)», 'shape', '«n.shape.mapShape()»')
+«ENDFOREACH»
+
+«FOREACH edges.reject(e|e.source == e.target) AS e»
+edge«e.uuid(this)» = G.new_edge( node«e.source.uuid(this)», node«e.target.uuid(this)» )
+G.set_edge_attribute(edge«e.uuid(this)», 'label', '«e.label»')
+G.set_edge_attribute(edge«e.uuid(this)», 'color', '«e.color.mapColor()»')
+«IF SimpleDirectedEdge.isInstance(e)»
+G.set_edge_attribute(edge«e.uuid(this)», 'arrow', 'true')
+«ENDIF»
+«IF e.containment»
+G.set_edge_attribute(edge«e.uuid(this)», 'oriented', 'true')
+G.set_edge_attribute(edge«e.uuid(this)», 'width', '4.0')
+«ELSE»
+G.set_edge_attribute(edge«e.uuid(this)», 'spline', 'true')
+G.set_edge_attribute(edge«e.uuid(this)», 'width', '2.0')
+«ENDIF»
+
+«ENDFOREACH»
+
+«ENDFILE»
+«ENDDEFINE»

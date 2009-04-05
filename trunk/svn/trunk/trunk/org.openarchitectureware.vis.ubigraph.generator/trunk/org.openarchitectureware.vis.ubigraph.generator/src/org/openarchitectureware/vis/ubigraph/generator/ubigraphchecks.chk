@@ -1,0 +1,4 @@
+import graphmm;
+
+context Graph WARNING "self-referencing edges are not supported":
+	edges.exists(e|e.source == e.target);
