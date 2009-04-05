@@ -31,6 +31,7 @@ SimpleNode:
 		("fillcolor" fillcolor=ColorEnum)?
 		("source" sourceLocation=STRING)? 
 		("category" category=STRING)?
+		("shape" shape=ShapeEnum)?
 		("userData" userData = Properties )?
 	";";
 	
@@ -44,6 +45,7 @@ ContainerNode:
 		("fillcolor" fillcolor=ColorEnum)?
 		("source" sourceLocation=STRING)? 
 		("category" category=STRING)?
+		("shape" shape=ShapeEnum)?
 		("userData" userData = Properties )?
 		("contained" containedGraph=Graph )?
 	";";
@@ -58,6 +60,7 @@ CompartmentNode:
 		("fillcolor" fillcolor=ColorEnum)?
 		("source" sourceLocation=STRING)? 
 		("category" category=STRING)?
+		("shape" shape=ShapeEnum)?
 		("userData" userData = Properties )?
 		(compartments+=Compartment)*
 	";";
@@ -122,6 +125,17 @@ Enum ColorEnum:
 	blue = "blue" |
 	darkBlue = "darkBlue";
 	
+
+Enum ShapeEnum:
+	ubi_cone = "ubi_cone" |      
+	ubi_cube = "ubi_cube" |      
+	ubi_dodecahedron = "ubi_dodecahedron" |      
+	ubi_icosahedron = "ubi_icosahedron" |      
+	ubi_octahedron = "ubi_octahedron" |      
+	ubi_sphere = "ubi_sphere" |      
+	ubi_torus = "ubi_torus";
+	
+
 	
 Enum LineStyleEnum:
 	solid = "solid" | // 1
