@@ -2,10 +2,11 @@
 
 = Checkout =
 
-* if you want to commit changes register first and then checkout via svn using *https*, your google account username and the google provided password.
+if you want to commit changes register first and then checkout via svn using _https_, your google account username and the google provided password.
 
 = Setup the projects in Eclipse =
 If you checkout the projects you'll notice that they don't compile. You have to run the oaw-Workflows of the projects:
-* org.openarchitectureware.vis.graphmm
-* org.openarchitectureware.graphviz
+ * org.openarchitectureware.vis.graphmm
+ * org.openarchitectureware.graphviz
+
 To do that you have to remove the src-gen folder from the buildpath and then run the oaw-workflows. After generation add the src-gen folder again.
