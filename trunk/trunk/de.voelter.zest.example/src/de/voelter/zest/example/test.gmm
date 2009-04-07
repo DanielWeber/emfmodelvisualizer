@@ -4,25 +4,25 @@ prolog {
 
 graph g1 {
 	nodes {
-		s1 label "S1" tooltip "S1 Tooltip" icon "icon1.gif" category "a"
+		node s1 label "S1" tooltip "S1 Tooltip" icon "icon1.gif" category "a"
 			userData 
 				test : text = "This is a test";
 				test2 : int = "2";
 				test3 : boolean = "true";
 			;
-		s2 label "S2" icon "icon2.gif" category "a";
-		s3 label "shift click here" source "platform:/resource/de.voelter.zest.example/src/de/voelter/zest/example/test.gmm,100,120";
-		s4 label "S4" linecolor red category "b";
-		s5 label "S5" linecolor gray category "b";
-		s6 label "S6" linecolor darkBlue fillcolor yellow;
-		s7 label "S7" textcolor green fillcolor blue;
-		s8 label "S8" textcolor darkBlue;
-		s9 label "S9" textcolor red;
-		container sc label "SC"
+		node s2 label "S2" icon "icon2.gif" category "a";
+		node s3 label "shift click here" source "platform:/resource/de.voelter.zest.example/src/de/voelter/zest/example/test.gmm,100,120";
+		node s4 label "S4" linecolor red category "b";
+		node s5 label "S5" linecolor gray category "b";
+		node s6 label "S6" linecolor darkBlue fillcolor yellow;
+		node s7 label "S7" textcolor green fillcolor blue;
+		node s8 label "S8" textcolor darkBlue;
+		node s9 label "S9" textcolor red;
+		containernode sc label "SCNode"
 			contained graph scchild {
 				nodes { 
-					sc1 label "sc1";
-					sc2 label "sc2";
+					node sc1 label "sc1";
+					node sc2 label "sc2";
 				}
 				edges {
 					sc1 -> sc2;
@@ -47,8 +47,9 @@ graph g1 {
 
 graph g2 {
 	nodes {
-		n1 label "n1";
-		n2 label "n2";
+		node n1 label "n1";
+		node n2 label "n2";
+			
 	}
 	
 	edges {
