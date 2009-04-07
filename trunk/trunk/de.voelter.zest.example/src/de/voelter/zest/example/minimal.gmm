@@ -6,14 +6,26 @@ graph g3 {
 	nodes {
 		node n1x label "n1";
 		node n2x label "n2";
-			containernode container label "CNode"
+		containernode container label "ContainerNode"
 			contained graph subgraph {
 				nodes { 
 					node sc1x label "sc1";
 					node sc2x label "sc2";
+					containernode subcontainer label "AnotherContainerNode"
+						contained graph subsubgraph {
+						nodes { 
+							node ss1 label "ss1";
+							node ss2 label "ss2";
+						}
+						edges {
+							ss1 -> ss2;
+						}		
+					}
+					;
 				}
 				edges {
 					sc1x -> sc2x;
+					sc1x -> subcontainer;
 				}		
 			}
 		;

@@ -217,23 +217,19 @@ public class GraphMMModelWrapper {
 
 
 	public EObject getContainedGraph(EObject containerNode) {
-		return getElement(containerNode, "containedGraph");
+		return (isContainerNode(containerNode)) ? getElement(containerNode, "containedGraph") : null;
 	}
 
+	public EObject getContainingGraph(EObject graph){
+		if (!graph.eClass().getName().equals("Graph")) throw new IllegalArgumentException("only graph instances allowed");
+		
+		EObject container = graph.eContainer();
+		if (container.eClass().getName().equals("GraphCollection"))
+		{			
+			return null; //reached the top graph
+		}
+		assert(container.eContainer().eClass().getName().equals("Graph")) : "Metamodel assumption about containment not valid";
+		return container.eContainer();
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
 }

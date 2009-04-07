@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
@@ -34,7 +35,7 @@ public class GraphBuilder {
 		this.model = new GraphMMModelWrapper(graphmmModel);
 	}
 	
-	public Graph constructGraph( Composite parent, EObject graphNode, Collection<String> checkedCategories ) {
+	public Graph constructGraph( Composite parent, EObject graphNode, Collection<String> checkedCategories, boolean drillDownEnabled ) {
 		nodeMap = new HashMap<EObject, GraphNode>();
 		graph = new Graph(parent, SWT.NONE);
 		graphData = new GraphData();
@@ -46,7 +47,7 @@ public class GraphBuilder {
 			graphData.setSuggestedLayout( suggestedLayout );
 		}
 		try {
-			populateContainer( graph, graphNode, checkedCategories);
+			populateContainer( graph, graphNode, checkedCategories,drillDownEnabled);
 		} catch ( Throwable t ) {
 			t.printStackTrace();
 			return null;
@@ -54,7 +55,7 @@ public class GraphBuilder {
 		return graph;
 	}
 	
-	private void populateContainer( IContainer container, EObject graphNode, Collection<String> checkedCategories ) {
+	private void populateContainer( IContainer container, EObject graphNode, Collection<String> checkedCategories, boolean drillDownEnabled ) {
 		for (EObject node : model.getNodes(graphNode)) {
 			boolean isContainerNode = model.isContainerNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);
@@ -65,13 +66,13 @@ public class GraphBuilder {
 					try {
 						ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
 						Image i = desc.createImage();	
-						zestNode = createGraphNode(container, node, isContainerNode, i);
+						zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, i);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
-						zestNode = createGraphNode(container, node, isContainerNode, null);
+						zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, null);
 					}
 				} else {
-					zestNode = createGraphNode(container, node, isContainerNode, null);
+					zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, null);
 				}
 				NodeData nodeData = new NodeData();
 				zestNode.setData( nodeData );
@@ -91,9 +92,9 @@ public class GraphBuilder {
 				nodeData.getUserData().putAll(userDataMap);
 				nodeMap.put( node , zestNode);
 				nodeData.setCategory( cat );
-				if ( isContainerNode ) {
+				if ( isContainerNode &&!drillDownEnabled ) {
 					EObject childgraph = model.getContainedGraph(node);
-					if ( childgraph != null ) populateContainer( (GraphContainer)zestNode, childgraph, checkedCategories);
+					if ( childgraph != null ) populateContainer( (GraphContainer)zestNode, childgraph, checkedCategories, drillDownEnabled);
 				}
 			}
 			if ( cat != null ) {
@@ -198,6 +199,26 @@ public class GraphBuilder {
 		return model.getGraphs();
 	}
 
+	public EObject getCorrespondingModelObject(GraphNode node)
+	{
+		EObject result = null;
+		if (nodeMap.containsValue(node))
+		{	
+			for (Entry<EObject, GraphNode> entry :  nodeMap.entrySet()){
+				if (entry.getValue() == node) result = entry.getKey();
+			}
+		}
+		return result;
+	}
 	
+	public EObject getChildGraph(EObject node)
+	{
+		return model.getContainedGraph(node);
+	}
+	
+	public EObject getContainingGraph(EObject node)
+	{
+		return model.getContainingGraph(node);
+	}
 	
 }

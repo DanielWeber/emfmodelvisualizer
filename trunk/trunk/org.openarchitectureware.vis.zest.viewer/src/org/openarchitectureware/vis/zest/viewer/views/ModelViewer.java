@@ -96,7 +96,8 @@ public class ModelViewer extends ViewPart {
 	private IToolBarManager toolBarManager;
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
-   private FormToolkit toolkit;
+    private FormToolkit toolkit;
+    private boolean drilldownEnabled =true;
 
 
 	/**
@@ -136,7 +137,9 @@ public class ModelViewer extends ViewPart {
 		fillLocalPullDown();
 		fillLocalToolBar();
 		// the following is for testing purposes.
-		setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
+//		setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
+		setFilenameAndRedraw("de/voelter/zest/example/createMinimal.oaw"); 
+
 	}
 
 	/**
@@ -232,6 +235,21 @@ public class ModelViewer extends ViewPart {
 				onLayoutComboSelectionChanged();
 			}
 		} );
+		
+		// ComboBox to enable/disbale the drill down feature for the current graph
+		// currently not working because the graph with the inline subgraph is not disposed correctly
+//		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK);
+//		cboxDrillDown.setText("drill down");
+//		cboxDrillDown.setSelection(drilldownEnabled);
+//		cboxDrillDown.addSelectionListener(new SelectionListener(){
+//
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				System.out.println("selected2");
+//			}
+//
+//			public void widgetSelected(SelectionEvent e) {
+//				rerenderGraph(cboxDrillDown.getSelection());
+//				}});
 		
 		// we then add another (vertical) sash that is used to change
 		// the size proportions of the filter and the properties tables
@@ -508,7 +526,7 @@ public class ModelViewer extends ViewPart {
 	 */
 	private Graph constructGraph(EObject graphModel, Collection<String> checkedCategories) {
 		// construct graph
-		final Graph g = graphbuilder.constructGraph(tabFolderForGraphs, graphModel, checkedCategories);
+		final Graph g = graphbuilder.constructGraph(tabFolderForGraphs, graphModel, checkedCategories, this.drilldownEnabled);
 		g.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -621,6 +639,42 @@ public class ModelViewer extends ViewPart {
 		}
 	}
 	
+	class DrillDownNode extends Action
+	{
+		public DrillDownNode() {
+			super("Drill down node");
+		}
+		@Override
+		public void run() {
+			Graph g = currGraph();
+			List currentSelection = g.getSelection();
+			if (currentSelection.size()==1)
+			{
+				for (Iterator nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
+					GraphNode n = (GraphNode) nodeIter.next();
+					EObject graphModelNode = graphbuilder.getCorrespondingModelObject(n);
+					EObject subGraph = graphbuilder.getChildGraph(graphModelNode);
+					if (subGraph != null) createGraphIntoTabItem(subGraph, currTabItem());
+				}
+			}
+		}
+	}
+	
+	class ClimbUpNode extends Action
+	{
+		public ClimbUpNode() {
+			super("Climb up");
+		}
+		@Override
+		public void run() {
+			Graph g = currGraph();
+				EObject superGraph = graphbuilder.getContainingGraph(((GraphData)currGraph().getData()).getModelNode());
+				if (superGraph!=null){
+					createGraphIntoTabItem(superGraph, currTabItem());
+				}
+		}
+	}
+	
 	private void fillContextMenu(IMenuManager menuMgr) {
 		menuMgr.add( new Action("Reset") {
 			@Override
@@ -635,7 +689,14 @@ public class ModelViewer extends ViewPart {
 			menuMgr.add( new SelectUpstreamRelatedNodeAction() );
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectConnectionsAction() );
+			if (drilldownEnabled){
+				menuMgr.add(new DrillDownNode());
+			}
 		}
+		if ( (currGraph() != null&&drilldownEnabled)){ 
+			menuMgr.add(new ClimbUpNode());
+		}
+
 	}
 
 	/**
@@ -879,4 +940,11 @@ public class ModelViewer extends ViewPart {
 		return d;
 	}
 	
+	//commented out because the graph with the inline subgraph is not disposed correctly
+//	private void rerenderGraph(boolean drilldown)
+//	{
+//		this.drilldownEnabled = drilldown;
+//		EObject eo = ((GraphData)currGraph().getData()).getModelNode();
+//		createGraphIntoTabItem(eo, currTabItem());
+//	}
 }
