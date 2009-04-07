@@ -25,10 +25,12 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -97,7 +99,7 @@ public class ModelViewer extends ViewPart {
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
     private FormToolkit toolkit;
-    private boolean drilldownEnabled =true;
+    private boolean drilldownEnabled = false;
 
 
 	/**
@@ -238,18 +240,18 @@ public class ModelViewer extends ViewPart {
 		
 		// ComboBox to enable/disbale the drill down feature for the current graph
 		// currently not working because the graph with the inline subgraph is not disposed correctly
-//		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK);
-//		cboxDrillDown.setText("drill down");
-//		cboxDrillDown.setSelection(drilldownEnabled);
-//		cboxDrillDown.addSelectionListener(new SelectionListener(){
-//
-//			public void widgetDefaultSelected(SelectionEvent e) {
-//				System.out.println("selected2");
-//			}
-//
-//			public void widgetSelected(SelectionEvent e) {
-//				rerenderGraph(cboxDrillDown.getSelection());
-//				}});
+		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK);
+		cboxDrillDown.setText("drill down");
+		cboxDrillDown.setSelection(drilldownEnabled);
+		cboxDrillDown.addSelectionListener(new SelectionListener(){
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				System.out.println("selected2");
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				rerenderGraph(cboxDrillDown.getSelection());
+				}});
 		
 		// we then add another (vertical) sash that is used to change
 		// the size proportions of the filter and the properties tables
@@ -941,10 +943,10 @@ public class ModelViewer extends ViewPart {
 	}
 	
 	//commented out because the graph with the inline subgraph is not disposed correctly
-//	private void rerenderGraph(boolean drilldown)
-//	{
-//		this.drilldownEnabled = drilldown;
-//		EObject eo = ((GraphData)currGraph().getData()).getModelNode();
-//		createGraphIntoTabItem(eo, currTabItem());
-//	}
+	private void rerenderGraph(boolean drilldown)
+	{
+		this.drilldownEnabled = drilldown;
+		EObject eo = ((GraphData)currGraph().getData()).getModelNode();
+		createGraphIntoTabItem(eo, currTabItem());
+	}
 }

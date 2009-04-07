@@ -141,6 +141,13 @@ public class GraphBuilder {
 				edgeData.setCategory(cat);
 				Map userDataMap = model.getUserDataMap( edge );
 				edgeData.getUserData().putAll( userDataMap );
+				
+				//Fix for connections that are inside a GraphContainer
+				if (zestConnection.getConnectionFigure().getParent()==null)
+				{
+					IFigure figure = nodeMap.get(sourceNode.eContainer().eContainer()).getNodeFigure().getParent();
+					zestConnection.getConnectionFigure().setParent(figure);
+				}
 			}
 			if ( cat != null ) {
 				graphData.getCategories().add( cat );
