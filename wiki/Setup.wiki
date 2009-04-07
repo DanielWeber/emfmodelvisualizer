@@ -1,4 +1,4 @@
-#How to set up the projects if you want to participate
+#summary How to set up the projects if you want to participate
 
 = Checkout =
 
