@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nu.bibi.breadcrumb.IMenuSelectionListener;
+import nu.bibi.breadcrumb.MenuSelectionEvent;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.emf.ecore.EObject;
@@ -17,10 +20,21 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IOpenListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -31,7 +45,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -40,6 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.IFormColors;
@@ -62,10 +76,13 @@ import org.openarchitectureware.vis.zest.builder.GraphBuilder;
 import org.openarchitectureware.vis.zest.builder.GraphData;
 import org.openarchitectureware.vis.zest.builder.NodeData;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
+import org.openarchitectureware.vis.zest.viewer.views.breadcrumb.GraphBreadcrumbViewer;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.issues.IssuesImpl;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 
 /**
@@ -89,7 +106,7 @@ public class ModelViewer extends ViewPart {
 	private Composite topLevelComposite;
 	private IMenuManager menuManager;
 	private Table nodePropertiesTable;
-	private Combo layoutCombo;
+	private CCombo layoutCombo;
 	private CTabFolder tabFolderForGraphs;
 	private SashForm topLevelSashForm;
 	private Composite rightSideComposite;
@@ -99,7 +116,8 @@ public class ModelViewer extends ViewPart {
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
     private FormToolkit toolkit;
-    private boolean drilldownEnabled = false;
+    private boolean drilldownEnabled = true;
+    private GraphBreadcrumbViewer viewer;
 
 
 	/**
@@ -220,7 +238,7 @@ public class ModelViewer extends ViewPart {
 
 		// the layout combo box provides ZEST's four different
 		// layout alternatives to choose from. 
-		layoutCombo = new Combo(rightSideComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		layoutCombo = new CCombo(rightSideComposite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FLAT);
 		GridData gdLayoutCombo = new GridData();
 		gdLayoutCombo.verticalAlignment = SWT.TOP;
 		gdLayoutCombo.horizontalAlignment= SWT.FILL;
@@ -238,9 +256,8 @@ public class ModelViewer extends ViewPart {
 			}
 		} );
 		
-		// ComboBox to enable/disbale the drill down feature for the current graph
-		// currently not working because the graph with the inline subgraph is not disposed correctly
-		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK);
+		// ComboBox to enable/disable the drill down feature for the current graph
+		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK | SWT.FLAT);
 		cboxDrillDown.setText("drill down");
 		cboxDrillDown.setSelection(drilldownEnabled);
 		cboxDrillDown.addSelectionListener(new SelectionListener(){
@@ -390,8 +407,9 @@ public class ModelViewer extends ViewPart {
 		// if there's already a graph in that item,
 		// delete it
 		Graph old = getData(item).getGraph();
+		boolean init=true;
 		if ( old != null ) {
-			item.setControl(null);
+			init = false;
 			old.dispose();
 		}
 		// get the filter configuration from the current tab
@@ -399,9 +417,121 @@ public class ModelViewer extends ViewPart {
 		// and create the new graph. Note how the "old" filter configuration
 		// is used -- if no filter configuration is available (checkedFilters == null)
 		// all nodes are added (i.e. nothing is filtered out)
-		Graph newGraph = constructGraph(graphModel, checkedFilters);
+		final Graph newGraph = constructGraph(graphModel, checkedFilters);
+		
+		newGraph.addSelectionListener(new SelectionListener(){
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				List nodes = ((Graph)e.widget).getSelection();
+				if (nodes.size()==1){
+					EObject node =graphbuilder.getCorrespondingModelObject((GraphNode) nodes.get(0));
+					viewer.setInput(node);
+					viewer.setSelection(new StructuredSelection(node));
+				}
+					
+			}});
+		
 		item.setText( getData(newGraph).getName() );
-		item.setControl(newGraph);
+		Composite composite = null;
+		if (init == true)
+		{
+				composite =toolkit.createComposite(tabFolderForGraphs, SWT.NONE);
+				GridLayout layout = new GridLayout();
+				layout.numColumns = 1;
+				layout.marginWidth = 2;
+				layout.marginHeight = 2;
+				composite.setLayout(layout);
+				item.setControl(composite);
+				
+				viewer = new GraphBreadcrumbViewer(composite,SWT.NONE,graphModel,graphbuilder);
+				viewer.setInput(graphModel);
+//				viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+//
+//					public void selectionChanged(SelectionChangedEvent event) {
+//						
+//						System.out.println(event.getSelection().isEmpty());
+//					}
+//					
+//				});
+				viewer.setSelection(new StructuredSelection(graphModel));
+				
+				viewer.setRootVisible(false);
+				
+				viewer.addMenuSelectionListener(new IMenuSelectionListener() {
+					public void menuSelect(final MenuSelectionEvent event) {
+						final IStructuredSelection selection = (IStructuredSelection) event
+								.getSelection();
+						if (selection.isEmpty()) {
+							viewer.setFocus();
+							return;
+						}
+						viewer.setInput(selection.getFirstElement());
+						viewer.setSelection(selection);
+						viewer.setFocus();
+						if (graphbuilder.isGraph((EObject) selection.getFirstElement()))
+							{
+							EObject eo = ((EObject) selection.getFirstElement());
+							createGraphIntoTabItem(eo, currTabItem());
+							}
+						if (graphbuilder.isNode((EObject) selection.getFirstElement()))
+							{
+//								newGraph.setSelection(new GraphItem[]{graphbuilder.getCorrespondingGraphNode((EObject) selection.getFirstElement())});
+							}
+						
+					}
+				});
+				viewer.addDoubleClickListener(new IDoubleClickListener() {
+					public void doubleClick(final DoubleClickEvent event) {
+						// get selection
+						final IStructuredSelection selection = (IStructuredSelection) event
+						.getSelection();
+
+						if (selection.isEmpty()) {
+							viewer.setFocus();
+							return;
+						}
+						viewer.setInput(selection.getFirstElement());
+						viewer.setSelection(selection);
+						viewer.setFocus();
+						if (graphbuilder.isGraph((EObject) selection.getFirstElement()))
+							{
+							EObject eo = ((EObject) selection.getFirstElement());
+							createGraphIntoTabItem(eo, currTabItem());
+							}
+						
+					}
+				});
+
+				viewer.addOpenListener(new IOpenListener() {
+					public void open(final OpenEvent event) {
+						final Object element = ((IStructuredSelection) event
+								.getSelection()).getFirstElement();
+						if (element != null) {
+							viewer.setInput(element);
+						}
+					}
+				});
+				
+				composite.addDisposeListener(new DisposeListener(){
+					
+					public void widgetDisposed(DisposeEvent e) {
+						viewer.getControl().dispose();
+					}
+					
+				}
+				);
+				viewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		//		item.setControl();
+		}
+		else composite = (Composite)item.getControl();
+		
+		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
+		newGraph.setParent(composite);
+		composite.layout();
 		// remember graph and model with the item
 		getData(item).setGraph(newGraph);
 		getData(item).setGraphModel(graphModel);
@@ -654,9 +784,16 @@ public class ModelViewer extends ViewPart {
 			{
 				for (Iterator nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
 					GraphNode n = (GraphNode) nodeIter.next();
+					
 					EObject graphModelNode = graphbuilder.getCorrespondingModelObject(n);
+
+					viewer.setSelection(new StructuredSelection(graphModelNode));
+					viewer.setInput(graphModelNode);
+					
 					EObject subGraph = graphbuilder.getChildGraph(graphModelNode);
-					if (subGraph != null) createGraphIntoTabItem(subGraph, currTabItem());
+					if (subGraph != null){
+						createGraphIntoTabItem(subGraph, currTabItem());
+					}
 				}
 			}
 		}
@@ -672,6 +809,9 @@ public class ModelViewer extends ViewPart {
 			Graph g = currGraph();
 				EObject superGraph = graphbuilder.getContainingGraph(((GraphData)currGraph().getData()).getModelNode());
 				if (superGraph!=null){
+					viewer.setSelection(new StructuredSelection(superGraph));
+					viewer.setInput(superGraph);
+					viewer.refresh();
 					createGraphIntoTabItem(superGraph, currTabItem());
 				}
 		}
@@ -947,6 +1087,5 @@ public class ModelViewer extends ViewPart {
 	{
 		this.drilldownEnabled = drilldown;
 		EObject eo = ((GraphData)currGraph().getData()).getModelNode();
-		createGraphIntoTabItem(eo, currTabItem());
 	}
 }

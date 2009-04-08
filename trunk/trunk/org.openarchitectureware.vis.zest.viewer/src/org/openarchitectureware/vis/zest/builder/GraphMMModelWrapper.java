@@ -231,5 +231,32 @@ public class GraphMMModelWrapper {
 		assert(container.eContainer().eClass().getName().equals("Graph")) : "Metamodel assumption about containment not valid";
 		return container.eContainer();
 	}
+	public EObject getContainingGraphForNode(EObject node){
+		if (isOneOfTopGraphs(node))
+		{			
+			return null; //reached the top graph
+		}
+		if (isGraph(node))
+			return node;
+		assert(node.eContainer().eClass().getName().equals("Graph")) : "Metamodel assumption about containment not valid";
 
+		return node.eContainer();
+	}
+	
+	protected boolean isGraph(EObject node)
+	{
+		return node.eClass().getName().equals("Graph");
+	}
+	protected boolean isOneOfTopGraphs(EObject node)
+	{
+		return isGraphCollection(node.eContainer());
+	}
+	public boolean isGraphCollection(EObject element)
+	{
+		return element.eClass().getName().equals("GraphCollection");
+	}
+	public boolean isNode(EObject element)
+	{
+		return element.eClass().getName().endsWith("Node");
+	}
 }

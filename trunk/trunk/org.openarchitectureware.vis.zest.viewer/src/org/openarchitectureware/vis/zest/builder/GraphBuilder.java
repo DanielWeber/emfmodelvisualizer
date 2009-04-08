@@ -217,6 +217,10 @@ public class GraphBuilder {
 		}
 		return result;
 	}
+	public GraphNode getCorrespondingGraphNode(EObject node)
+	{
+		return nodeMap.get(node);
+	}
 	
 	public EObject getChildGraph(EObject node)
 	{
@@ -227,5 +231,12 @@ public class GraphBuilder {
 	{
 		return model.getContainingGraph(node);
 	}
-	
+	public boolean isGraph(EObject node)
+	{
+		return model.isGraph(node);
+	}
+	public boolean isNode(EObject node)
+	{
+		return model.isNode(node);
+	}
 }
