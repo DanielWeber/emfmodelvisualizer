@@ -4,8 +4,18 @@ prolog {
 
 graph g3 {
 	nodes {
+		umlnode uml label "UML Klasse"
+			attributeCompartment compartment attributes {
+				entry "-name:String"
+			}
+			methodCompartment compartment methods {
+				entry "+getName():String"
+				entry "+setName(name:String)"
+			}
+		;
 		node n1x label "n1";
 		node n2x label "n2";
+		node n3x label "n3";
 		containernode container label "ContainerNode"
 			contained graph subgraph {
 				nodes { 
