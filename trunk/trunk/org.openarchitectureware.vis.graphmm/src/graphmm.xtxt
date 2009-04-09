@@ -68,7 +68,7 @@ CompartmentNode:
 Compartment:
 	"compartment" name=ID "{"
 		("category" category=STRING)?
-		("entry" entry=STRING)*
+		("entry" entry+=STRING)*
 	"}";
 	
 Edge:
