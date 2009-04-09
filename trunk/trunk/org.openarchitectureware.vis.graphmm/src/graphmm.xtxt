@@ -19,7 +19,7 @@ Graph:
 	"}";
 	  
 Node:
-	SimpleNode | ContainerNode | CompartmentNode;
+	SimpleNode | ContainerNode | CompartmentNode | UMLNode;
 
 SimpleNode:
 	"node" name=ID 
@@ -65,10 +65,26 @@ CompartmentNode:
 		(compartments+=Compartment)*
 	";";
 
+UMLNode:
+	"umlnode" name=ID
+		("label" label=STRING)? 
+		("tooltip" tooltip=STRING)?
+		("icon" icon=STRING)?
+		("textcolor" textcolor=ColorEnum)?
+		("linecolor" linecolor=ColorEnum)?
+		("fillcolor" fillcolor=ColorEnum)?
+		("source" sourceLocation=STRING)? 
+		("category" category=STRING)?
+		("shape" shape=ShapeEnum)?
+		("userData" userData = Properties )?
+		("attributeCompartment" attributeCompartment=Compartment)
+		("methodCompartment" methodCompartment=Compartment)
+	";";
+
 Compartment:
 	"compartment" name=ID "{"
 		("category" category=STRING)?
-		("entry" entry+=STRING)*
+		("entry" entries+=STRING)*
 	"}";
 	
 Edge:
