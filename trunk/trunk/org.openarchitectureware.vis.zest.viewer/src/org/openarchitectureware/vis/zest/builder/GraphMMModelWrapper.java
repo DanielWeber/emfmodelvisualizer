@@ -215,7 +215,7 @@ public class GraphMMModelWrapper {
 	}
 
 
-	public boolean isContainerNode(EObject node) {
+	public static boolean isContainerNode(EObject node) {
 		return node.eClass().getName().endsWith("ContainerNode");
 	}
 
