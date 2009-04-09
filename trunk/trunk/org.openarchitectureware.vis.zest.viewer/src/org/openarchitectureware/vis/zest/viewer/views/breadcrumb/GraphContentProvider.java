@@ -16,11 +16,9 @@ import org.openarchitectureware.vis.zest.builder.GraphMMModelWrapper;
 public class GraphContentProvider implements ITreeContentProvider {
 
 	private final GraphMMModelWrapper model;
-	private final GraphBuilder builder;
 	
-	public GraphContentProvider(EObject graphmmModel,GraphBuilder builder) {
+	public GraphContentProvider(EObject graphmmModel) {
 		this.model = new GraphMMModelWrapper(graphmmModel);
-		this.builder = builder;
 	}
 	public Object[] getChildren(Object parentElement) {
 //		if (parentElement instanceof Graph)
@@ -47,7 +45,9 @@ public class GraphContentProvider implements ITreeContentProvider {
 //		else return null;
 //		if (model.isContainerNode((EObject) parentElement))
 //			return new Object[]{model.getContainedGraph((EObject) parentElement)};
-		if (builder.isGraph((EObject) parentElement))
+		if (model.isGraphCollection((EObject) parentElement))
+			return model.getGraphs((EObject) parentElement).toArray();
+		if (model.isGraph((EObject) parentElement))
 			return model.getNodes((EObject) parentElement).toArray();
 		return ((EObject)parentElement).eContents().toArray();
 	}

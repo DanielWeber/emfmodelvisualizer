@@ -11,11 +11,13 @@ import org.eclipse.swt.graphics.Color;
 public class GraphMMModelWrapper {
 
 	private EObject model = null;
-	private Map<String, Color> colorMap = new HashMap<String, Color>();
-	private Map<String, Integer> styleMap = new HashMap<String, Integer>();
+	private static Map<String, Color> colorMap = new HashMap<String, Color>();
+	private static Map<String, Integer> styleMap = new HashMap<String, Integer>();
 	
 	public GraphMMModelWrapper( EObject graphmmModel ) {
 		this.model = graphmmModel;
+	}
+	static {
 		colorMap.put("white", ColorConstants.white );  
 		colorMap.put("lightGray", ColorConstants.lightGray );
 		colorMap.put("gray", ColorConstants.gray );
@@ -36,7 +38,6 @@ public class GraphMMModelWrapper {
 		styleMap.put("dotted", 3 ); 
 		styleMap.put("dashDotted", 4 );
 		styleMap.put("dashDotDotted", 5);
-
 	}
 	
 
@@ -46,6 +47,9 @@ public class GraphMMModelWrapper {
 	
 	public Collection<EObject> getGraphs() {
 		return (Collection<EObject>)getCollection(model, "graphs");
+	}
+	public Collection<EObject> getGraphs(EObject graphCollection) {
+		return (Collection<EObject>)getCollection(graphCollection, "graphs");
 	}	
 	
 	public Collection<EObject> getNodes(EObject graph) {
@@ -243,7 +247,7 @@ public class GraphMMModelWrapper {
 		return node.eContainer();
 	}
 	
-	protected boolean isGraph(EObject node)
+	public boolean isGraph(EObject node)
 	{
 		return node.eClass().getName().equals("Graph");
 	}
@@ -258,5 +262,13 @@ public class GraphMMModelWrapper {
 	public boolean isNode(EObject element)
 	{
 		return element.eClass().getName().endsWith("Node");
+	}
+	public boolean isProlog(EObject element)
+	{
+		return element.eClass().getName().endsWith("Prolog");
+	}
+	public EObject getModel()
+	{
+		return this.model;
 	}
 }

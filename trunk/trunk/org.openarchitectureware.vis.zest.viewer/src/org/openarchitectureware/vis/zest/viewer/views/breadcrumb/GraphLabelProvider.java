@@ -22,6 +22,9 @@ public class GraphLabelProvider extends ColumnLabelProvider{
 		if (model.isGraphCollection(nodeElement))
 			return "TopNode";
 		
+		if (model.isProlog(nodeElement))
+			return "Prolog";
+		
 		if (model.isContainerNode(nodeElement))
 			return model.getNodeOrEdgeLabel(nodeElement);
 

@@ -1,13 +1,10 @@
 package org.openarchitectureware.vis.zest.builder;
 
-
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
@@ -27,7 +24,6 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 public class GraphBuilder {
 	
 	private GraphMMModelWrapper model = null;
-	private Map<EObject, GraphNode> nodeMap = null;
 	private GraphData graphData;
 	private Graph graph;
 
@@ -36,18 +32,20 @@ public class GraphBuilder {
 	}
 	
 	public Graph constructGraph( Composite parent, EObject graphNode, Collection<String> checkedCategories, boolean drillDownEnabled ) {
-		nodeMap = new HashMap<EObject, GraphNode>();
+		Map<EObject, GraphNode> nodeMap = new HashMap<EObject, GraphNode>();
 		graph = new Graph(parent, SWT.NONE);
 		graphData = new GraphData();
 		graph.setData( graphData );
 		graphData.setName( model.getGraphName( graphNode ) );
 		graphData.setModelNode( graphNode );
+		//set Map that gets populated with association between model and graphnodes.
+		graphData.setNodeMap(nodeMap);
 		String suggestedLayout = model.getLayoutHint( graphNode );
 		if ( suggestedLayout != null ) {
 			graphData.setSuggestedLayout( suggestedLayout );
 		}
 		try {
-			populateContainer( graph, graphNode, checkedCategories,drillDownEnabled);
+			populateContainer( graph, graphNode, nodeMap, checkedCategories,drillDownEnabled);
 		} catch ( Throwable t ) {
 			t.printStackTrace();
 			return null;
@@ -55,7 +53,7 @@ public class GraphBuilder {
 		return graph;
 	}
 	
-	private void populateContainer( IContainer container, EObject graphNode, Collection<String> checkedCategories, boolean drillDownEnabled ) {
+	private void populateContainer( IContainer container, EObject graphNode, Map<EObject, GraphNode> nodeMap,Collection<String> checkedCategories, boolean drillDownEnabled ) {
 		for (EObject node : model.getNodes(graphNode)) {
 			boolean isContainerNode = model.isContainerNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);
@@ -90,11 +88,12 @@ public class GraphBuilder {
 				zestNode.setBackgroundColor( model.getNodeFillColor( node ) );
 				Map userDataMap = model.getUserDataMap( node );
 				nodeData.getUserData().putAll(userDataMap);
+				nodeData.setModelNode(node);
 				nodeMap.put( node , zestNode);
 				nodeData.setCategory( cat );
 				if ( isContainerNode &&!drillDownEnabled ) {
 					EObject childgraph = model.getContainedGraph(node);
-					if ( childgraph != null ) populateContainer( (GraphContainer)zestNode, childgraph, checkedCategories, drillDownEnabled);
+					if ( childgraph != null ) populateContainer( (GraphContainer)zestNode, childgraph, nodeMap, checkedCategories, drillDownEnabled);
 				}
 			}
 			if ( cat != null ) {
@@ -142,11 +141,15 @@ public class GraphBuilder {
 				Map userDataMap = model.getUserDataMap( edge );
 				edgeData.getUserData().putAll( userDataMap );
 				
-				//Fix for connections that are inside a GraphContainer
+				//Fix for connections that are inside a GraphContainer, only works for depth = 1 at the moment
 				if (zestConnection.getConnectionFigure().getParent()==null)
 				{
-					IFigure figure = nodeMap.get(sourceNode.eContainer().eContainer()).getNodeFigure().getParent();
-					zestConnection.getConnectionFigure().setParent(figure);
+					IFigure figure = nodeMap.get(sourceNode.eContainer().eContainer()).getNodeFigure();
+					zestConnection.getConnectionFigure().setParent(figure.getParent());
+//					System.out.println(zestConnection.getConnectionFigure());
+//					System.out.println(nodeMap.get(sourceNode.eContainer().eContainer()).getNodeFigure().getParent());
+//					System.out.println(((GraphContainer)container).zestLayer);
+//					System.out.println("fixing graph");
 				}
 			}
 			if ( cat != null ) {
@@ -206,37 +209,4 @@ public class GraphBuilder {
 		return model.getGraphs();
 	}
 
-	public EObject getCorrespondingModelObject(GraphNode node)
-	{
-		EObject result = null;
-		if (nodeMap.containsValue(node))
-		{	
-			for (Entry<EObject, GraphNode> entry :  nodeMap.entrySet()){
-				if (entry.getValue() == node) result = entry.getKey();
-			}
-		}
-		return result;
-	}
-	public GraphNode getCorrespondingGraphNode(EObject node)
-	{
-		return nodeMap.get(node);
-	}
-	
-	public EObject getChildGraph(EObject node)
-	{
-		return model.getContainedGraph(node);
-	}
-	
-	public EObject getContainingGraph(EObject node)
-	{
-		return model.getContainingGraph(node);
-	}
-	public boolean isGraph(EObject node)
-	{
-		return model.isGraph(node);
-	}
-	public boolean isNode(EObject node)
-	{
-		return model.isNode(node);
-	}
 }

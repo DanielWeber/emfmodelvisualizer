@@ -74,6 +74,7 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.openarchitectureware.vis.zest.builder.EdgeData;
 import org.openarchitectureware.vis.zest.builder.GraphBuilder;
 import org.openarchitectureware.vis.zest.builder.GraphData;
+import org.openarchitectureware.vis.zest.builder.GraphMMModelWrapper;
 import org.openarchitectureware.vis.zest.builder.NodeData;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.vis.zest.viewer.views.breadcrumb.GraphBreadcrumbViewer;
@@ -116,8 +117,7 @@ public class ModelViewer extends ViewPart {
 	private Action refreshCurrentWorkflowAction;
 	private String currentWorkflowFileName;
     private FormToolkit toolkit;
-    private boolean drilldownEnabled = true;
-    private GraphBreadcrumbViewer viewer;
+    private Button cboxDrillDown;
 
 
 	/**
@@ -213,10 +213,10 @@ public class ModelViewer extends ViewPart {
 		graphSection.setClient(tabFolderForGraphs);
 		
 		// Highlight the selected tab using a color gradient
-      toolkit.getColors().initializeSectionToolBarColors();
-      Color selectedColor = toolkit.getColors().getColor(IFormColors.TB_BG);
-      tabFolderForGraphs.setSelectionBackground(new Color[] { selectedColor,
-            toolkit.getColors().getBackground() }, new int[] { 100 }, true);
+		toolkit.getColors().initializeSectionToolBarColors();
+		Color selectedColor = toolkit.getColors().getColor(IFormColors.TB_BG);
+		tabFolderForGraphs.setSelectionBackground(new Color[] { selectedColor,
+        toolkit.getColors().getBackground() }, new int[] { 100 }, true);
 		
 		createRightSideComposite();
 		populateTabFolderWithGraphs();
@@ -257,18 +257,21 @@ public class ModelViewer extends ViewPart {
 		} );
 		
 		// ComboBox to enable/disable the drill down feature for the current graph
-		final Button cboxDrillDown = new Button(rightSideComposite,SWT.CHECK | SWT.FLAT);
+		cboxDrillDown = new Button(rightSideComposite,SWT.CHECK | SWT.FLAT);
 		cboxDrillDown.setText("drill down");
-		cboxDrillDown.setSelection(drilldownEnabled);
+		//get drilldown info from tab if present
+		cboxDrillDown.setSelection((currTabItem()!=null)?getData(currTabItem()).isDrilldownEnabled():true);
 		cboxDrillDown.addSelectionListener(new SelectionListener(){
 
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println("selected2");
-			}
+				widgetSelected(e);
+				}
 
 			public void widgetSelected(SelectionEvent e) {
 				rerenderGraph(cboxDrillDown.getSelection());
 				}});
+		//still buggy with GraphContainer and the zestrootlayer association
+		cboxDrillDown.setEnabled(false);
 		
 		// we then add another (vertical) sash that is used to change
 		// the size proportions of the filter and the properties tables
@@ -396,6 +399,7 @@ public class ModelViewer extends ViewPart {
 	private void onTabFolderSelectionChanged() {
 		updateLayoutCombo();
 		updateFilterTable();
+		cboxDrillDown.setSelection(getData(currTabItem()).isDrilldownEnabled());
 	}
 	
 	/**
@@ -403,7 +407,7 @@ public class ModelViewer extends ViewPart {
 	 * @param graphModel the EObject model of the graph
 	 * @param item the item into which it should be rendered
 	 */
-	private void createGraphIntoTabItem(EObject graphModel, CTabItem item) {
+	private void createGraphIntoTabItem(final EObject graphModel, final CTabItem item) {
 		// if there's already a graph in that item,
 		// delete it
 		Graph old = getData(item).getGraph();
@@ -412,129 +416,64 @@ public class ModelViewer extends ViewPart {
 			init = false;
 			old.dispose();
 		}
+
+		Composite composite = null;
+		if (init == true)
+		{
+			//create composite for the breadcrumb and the graph
+			composite =toolkit.createComposite(tabFolderForGraphs, SWT.NONE);
+			GridLayout layout = new GridLayout();
+			layout.numColumns = 1;
+			layout.marginWidth = 2;
+			layout.marginHeight = 2;
+			composite.setLayout(layout);
+			item.setControl(composite);
+			
+			//configure the breadcrumb
+			GraphBreadcrumbViewer viewer = new GraphBreadcrumbViewer(composite,SWT.NONE,graphModel);
+			viewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			//the model to navigate on
+			viewer.setInput(graphModel);
+			viewer.setSelection(new StructuredSelection(graphModel));
+			//the GraphCollection should not be visible
+			viewer.setRootVisible(false);			
+			addListeners(viewer);
+			getData(item).setBreadCrumb(viewer);
+//			viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+			//
+//								public void selectionChanged(SelectionChangedEvent event) {
+//									
+//									System.out.println(event.getSelection().isEmpty());
+//								}
+//								
+//							});
+		}
+		else composite = (Composite)item.getControl();
+		
 		// get the filter configuration from the current tab
 		Set<String> checkedFilters = getData(item).getCheckedFilters();
 		// and create the new graph. Note how the "old" filter configuration
 		// is used -- if no filter configuration is available (checkedFilters == null)
 		// all nodes are added (i.e. nothing is filtered out)
-		final Graph newGraph = constructGraph(graphModel, checkedFilters);
-		
+		final Graph newGraph = constructGraph(graphModel, checkedFilters, getData(item).isDrilldownEnabled());
+		//synchronize node selection in graph with breadcrumb
 		newGraph.addSelectionListener(new SelectionListener(){
-
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				selectNodeInViewer(((Graph)e.widget).getSelection());
 			}
-
 			public void widgetSelected(SelectionEvent e) {
-				List nodes = ((Graph)e.widget).getSelection();
-				if (nodes.size()==1){
-					EObject node =graphbuilder.getCorrespondingModelObject((GraphNode) nodes.get(0));
-					viewer.setInput(node);
-					viewer.setSelection(new StructuredSelection(node));
-				}
-					
-			}});
-		
-		item.setText( getData(newGraph).getName() );
-		Composite composite = null;
-		if (init == true)
-		{
-				composite =toolkit.createComposite(tabFolderForGraphs, SWT.NONE);
-				GridLayout layout = new GridLayout();
-				layout.numColumns = 1;
-				layout.marginWidth = 2;
-				layout.marginHeight = 2;
-				composite.setLayout(layout);
-				item.setControl(composite);
-				
-				viewer = new GraphBreadcrumbViewer(composite,SWT.NONE,graphModel,graphbuilder);
-				viewer.setInput(graphModel);
-//				viewer.addSelectionChangedListener(new ISelectionChangedListener(){
-//
-//					public void selectionChanged(SelectionChangedEvent event) {
-//						
-//						System.out.println(event.getSelection().isEmpty());
-//					}
-//					
-//				});
-				viewer.setSelection(new StructuredSelection(graphModel));
-				
-				viewer.setRootVisible(false);
-				
-				viewer.addMenuSelectionListener(new IMenuSelectionListener() {
-					public void menuSelect(final MenuSelectionEvent event) {
-						final IStructuredSelection selection = (IStructuredSelection) event
-								.getSelection();
-						if (selection.isEmpty()) {
-							viewer.setFocus();
-							return;
-						}
-						viewer.setInput(selection.getFirstElement());
-						viewer.setSelection(selection);
-						viewer.setFocus();
-						if (graphbuilder.isGraph((EObject) selection.getFirstElement()))
-							{
-							EObject eo = ((EObject) selection.getFirstElement());
-							createGraphIntoTabItem(eo, currTabItem());
-							}
-						if (graphbuilder.isNode((EObject) selection.getFirstElement()))
-							{
-//								newGraph.setSelection(new GraphItem[]{graphbuilder.getCorrespondingGraphNode((EObject) selection.getFirstElement())});
-							}
-						
-					}
-				});
-				viewer.addDoubleClickListener(new IDoubleClickListener() {
-					public void doubleClick(final DoubleClickEvent event) {
-						// get selection
-						final IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-
-						if (selection.isEmpty()) {
-							viewer.setFocus();
-							return;
-						}
-						viewer.setInput(selection.getFirstElement());
-						viewer.setSelection(selection);
-						viewer.setFocus();
-						if (graphbuilder.isGraph((EObject) selection.getFirstElement()))
-							{
-							EObject eo = ((EObject) selection.getFirstElement());
-							createGraphIntoTabItem(eo, currTabItem());
-							}
-						
-					}
-				});
-
-				viewer.addOpenListener(new IOpenListener() {
-					public void open(final OpenEvent event) {
-						final Object element = ((IStructuredSelection) event
-								.getSelection()).getFirstElement();
-						if (element != null) {
-							viewer.setInput(element);
-						}
-					}
-				});
-				
-				composite.addDisposeListener(new DisposeListener(){
-					
-					public void widgetDisposed(DisposeEvent e) {
-						viewer.getControl().dispose();
-					}
-					
-				}
-				);
-				viewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		//		item.setControl();
-		}
-		else composite = (Composite)item.getControl();
+				selectNodeInViewer(((Graph)e.widget).getSelection());
+		}});
 		
 		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
 		newGraph.setParent(composite);
+		//set tabtext
+		item.setText( getData(newGraph).getName() );
+		//it may be a new graph
 		composite.layout();
 		// remember graph and model with the item
 		getData(item).setGraph(newGraph);
-		getData(item).setGraphModel(graphModel);
+		getData(item).setWrappedGraphModel(new GraphMMModelWrapper(graphModel));
 		// if no filters had been configured into the tab item.
 		// we add all the categories defined by the graph (i.e.
 		// nothing is filtered)
@@ -560,7 +499,77 @@ public class ModelViewer extends ViewPart {
 			}
 		}
 	}
+	/**
+	 * if the selection contains a single node, select it in the breadcrumb
+	 */
+	private void selectNodeInViewer(final List selection) {
+		if (selection.size()==1 && selection.get(0) instanceof GraphNode){
+			GraphNode graphNode = (GraphNode) selection.get(0);
+			EObject node = ((NodeData)graphNode.getData()).getModelNode();
+			getData(currTabItem()).getBreadCrumb().setInput(node);
+			getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(node));
+		}
+	}
+	/**
+	 * adds some listeners to the GraphBreadcrumbViewer
+	 * @param viewer GraphBreadcrumbViewer to add listeners to
+	 */
+	private void addListeners(final GraphBreadcrumbViewer viewer)
+	{
+		viewer.addMenuSelectionListener(new IMenuSelectionListener() {
+			public void menuSelect(final MenuSelectionEvent event) {
+				handleSelection((IStructuredSelection) event.getSelection(), viewer);
+			}
+		});
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(final DoubleClickEvent event) {
+				handleSelection((IStructuredSelection) event.getSelection(), viewer);
+			}
+		});
 
+		viewer.addOpenListener(new IOpenListener() {
+			public void open(final OpenEvent event) {
+				final Object element = ((IStructuredSelection) event
+						.getSelection()).getFirstElement();
+				if (element != null) {
+					viewer.setInput(element);
+				}
+			}
+		});
+	}
+	/**
+	 * Sets the breadcrumb to the selected item and inits a new graph rendering if a subgraphnode is selected.
+	 * @param selection to react on
+	 * @param viewer the viewer that reflects the selection
+	 */
+	private void handleSelection(IStructuredSelection selection, final  GraphBreadcrumbViewer viewer)
+	{
+		if (selection.isEmpty()) {
+			viewer.setFocus();
+			return;
+		}
+		viewer.setInput(selection.getFirstElement());
+		viewer.setSelection(selection);
+		viewer.setFocus();
+		if (getData(currTabItem()).getWrappedGraphModel().isGraph((EObject) selection.getFirstElement()))
+			{
+			EObject eo = ((EObject) selection.getFirstElement());
+			createGraphIntoTabItem(eo, currTabItem());
+			}
+		if (getData(currTabItem()).getWrappedGraphModel().isNode((EObject) selection.getFirstElement()))
+		{
+			GraphNode no = ((GraphData)currGraph().getData()).getCorrespondingGraphNode((EObject) selection.getFirstElement());
+			if (no == null)
+			{
+				EObject eo = (EObject) selection.getFirstElement();
+				GraphMMModelWrapper mm = new GraphMMModelWrapper(eo);
+				EObject graph = mm.getContainingGraphForNode(eo);
+				createGraphIntoTabItem(graph, currTabItem());
+
+			}
+				currGraph().setSelection(new GraphItem[]{((GraphData)currGraph().getData()).getCorrespondingGraphNode((EObject) selection.getFirstElement())});
+		}
+	}
 	/**
 	 * translates the string used as the layout hint into
 	 * the constant used internally
@@ -645,7 +654,7 @@ public class ModelViewer extends ViewPart {
 		}
 		// get the graph model from the current tab item
 		// and recreate the graph into the tab item
-		final EObject graphmodel = getData(currTabItem()).getGraphModel();
+		final EObject graphmodel = getData(currTabItem()).getWrappedGraphModel().getModel();
 		createGraphIntoTabItem(graphmodel, currTabItem());
 	}
 
@@ -656,9 +665,9 @@ public class ModelViewer extends ViewPart {
 	 * @param checkedCategories the set of categories that are checked in the filter table
 	 * @return the actual created graph
 	 */
-	private Graph constructGraph(EObject graphModel, Collection<String> checkedCategories) {
+	private Graph constructGraph(EObject graphModel, Collection<String> checkedCategories, boolean drilldownEnabled) {
 		// construct graph
-		final Graph g = graphbuilder.constructGraph(tabFolderForGraphs, graphModel, checkedCategories, this.drilldownEnabled);
+		final Graph g = graphbuilder.constructGraph(tabFolderForGraphs, graphModel, checkedCategories, drilldownEnabled);
 		g.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -782,18 +791,15 @@ public class ModelViewer extends ViewPart {
 			List currentSelection = g.getSelection();
 			if (currentSelection.size()==1)
 			{
-				for (Iterator nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
-					GraphNode n = (GraphNode) nodeIter.next();
-					
-					EObject graphModelNode = graphbuilder.getCorrespondingModelObject(n);
+					GraphNode n = (GraphNode) currentSelection.get(0);
+					EObject graphModelNode = ((NodeData)n.getData()).getModelNode();
 
-					viewer.setSelection(new StructuredSelection(graphModelNode));
-					viewer.setInput(graphModelNode);
+					getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(graphModelNode));
+					getData(currTabItem()).getBreadCrumb().setInput(graphModelNode);
 					
-					EObject subGraph = graphbuilder.getChildGraph(graphModelNode);
+					EObject subGraph = getData(currTabItem()).getWrappedGraphModel().getContainedGraph(graphModelNode);
 					if (subGraph != null){
 						createGraphIntoTabItem(subGraph, currTabItem());
-					}
 				}
 			}
 		}
@@ -807,11 +813,11 @@ public class ModelViewer extends ViewPart {
 		@Override
 		public void run() {
 			Graph g = currGraph();
-				EObject superGraph = graphbuilder.getContainingGraph(((GraphData)currGraph().getData()).getModelNode());
+				EObject superGraph = getData(currTabItem()).getWrappedGraphModel().getContainingGraph(((GraphData)currGraph().getData()).getModelNode());
 				if (superGraph!=null){
-					viewer.setSelection(new StructuredSelection(superGraph));
-					viewer.setInput(superGraph);
-					viewer.refresh();
+					getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(superGraph));
+					getData(currTabItem()).getBreadCrumb().setInput(superGraph);
+					getData(currTabItem()).getBreadCrumb().refresh();
 					createGraphIntoTabItem(superGraph, currTabItem());
 				}
 		}
@@ -831,11 +837,11 @@ public class ModelViewer extends ViewPart {
 			menuMgr.add( new SelectUpstreamRelatedNodeAction() );
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectConnectionsAction() );
-			if (drilldownEnabled){
+			if (getData(currTabItem()).isDrilldownEnabled()){
 				menuMgr.add(new DrillDownNode());
 			}
 		}
-		if ( (currGraph() != null&&drilldownEnabled)){ 
+		if ( (currGraph() != null&&getData(currTabItem()).isDrilldownEnabled())){ 
 			menuMgr.add(new ClimbUpNode());
 		}
 
@@ -1081,11 +1087,13 @@ public class ModelViewer extends ViewPart {
 		}
 		return d;
 	}
-	
-	//commented out because the graph with the inline subgraph is not disposed correctly
+	/**
+	 * sets the current state of the tab and rerenders the graph
+	 */
 	private void rerenderGraph(boolean drilldown)
 	{
-		this.drilldownEnabled = drilldown;
-		EObject eo = ((GraphData)currGraph().getData()).getModelNode();
+		getData(currTabItem()).setDrilldownEnabled(drilldown);
+		EObject graph = ((GraphData)currGraph().getData()).getModelNode();
+		createGraphIntoTabItem(graph, currTabItem());
 	}
 }

@@ -1,10 +1,12 @@
 package org.openarchitectureware.vis.zest.builder;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.zest.core.widgets.GraphNode;
 
 public class GraphData {
 
@@ -12,6 +14,7 @@ public class GraphData {
 	private EObject modelNode;
 	private Set<String> categories;
 	private String suggestedLayout;
+	private Map<EObject, GraphNode> nodeMap = null;
 
 	public String getName() {
 		return name;
@@ -42,7 +45,14 @@ public class GraphData {
 	public void setSuggestedLayout(String suggestedLayout) {
 		this.suggestedLayout = suggestedLayout;
 	}
-	
 
+	public void setNodeMap(Map<EObject, GraphNode> nodeMap) {
+		this.nodeMap = nodeMap;
+	}
+
+	public GraphNode getCorrespondingGraphNode(EObject node)
+	{
+		return nodeMap.get(node);
+	}
 	
 }

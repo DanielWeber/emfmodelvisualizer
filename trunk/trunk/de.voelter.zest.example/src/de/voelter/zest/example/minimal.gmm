@@ -36,3 +36,13 @@ graph g3 {
 		n2x -> container;
 	}
 }
+
+graph graph2 {
+	nodes {
+		node node1 label "node1";
+		node node2 label "node2";
+	}
+	edges {
+		node1 -> node2;
+	}
+}

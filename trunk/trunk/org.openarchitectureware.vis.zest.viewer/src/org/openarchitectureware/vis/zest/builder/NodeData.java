@@ -3,11 +3,14 @@ package org.openarchitectureware.vis.zest.builder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EObject;
+
 public class NodeData {
 
 	private String category;
 	private String              sourceLocation;
 	private Map<String, String> userData;
+	private EObject modelNode;
 	
 	public String getCategory() {
 		return category;
@@ -31,5 +34,13 @@ public class NodeData {
    {
       this.sourceLocation = sourceLoaction;
    }
+
+	public EObject getModelNode() {
+		return modelNode;
+	}
+	
+	public void setModelNode(EObject modelNode) {
+		this.modelNode = modelNode;
+	}
 	
 }
