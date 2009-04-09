@@ -12,6 +12,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.zest.core.widgets.Graph;
@@ -55,7 +56,8 @@ public class GraphBuilder {
 	
 	private void populateContainer( IContainer container, EObject graphNode, Map<EObject, GraphNode> nodeMap,Collection<String> checkedCategories, boolean drillDownEnabled ) {
 		for (EObject node : model.getNodes(graphNode)) {
-			boolean isContainerNode = model.isContainerNode(node);
+			boolean isContainerNode = GraphMMModelWrapper.isContainerNode(node);
+			boolean isUMLNode = model.isUMLNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);
 			if ( isInGraph( node, checkedCategories, cat )) {
 				GraphNode zestNode = null;
@@ -64,13 +66,13 @@ public class GraphBuilder {
 					try {
 						ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
 						Image i = desc.createImage();	
-						zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, i);
+						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, i);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
-						zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, null);
+						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null);
 					}
 				} else {
-					zestNode = createGraphNode(container, node, isContainerNode && !drillDownEnabled, null);
+					zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null);
 				}
 				NodeData nodeData = new NodeData();
 				zestNode.setData( nodeData );
@@ -86,7 +88,7 @@ public class GraphBuilder {
 				zestNode.setBorderColor(model.getNodeLineColor( node ));
 				zestNode.setForegroundColor(model.getNodeTextColor( node ));
 				zestNode.setBackgroundColor( model.getNodeFillColor( node ) );
-				Map userDataMap = model.getUserDataMap( node );
+				Map<String, String> userDataMap = model.getUserDataMap( node );
 				nodeData.getUserData().putAll(userDataMap);
 				nodeData.setModelNode(node);
 				nodeMap.put( node , zestNode);
@@ -138,7 +140,7 @@ public class GraphBuilder {
 				zestConnection.setWeight( model.getEdgeLineWeight(edge) ); 
 				zestConnection.setLineStyle(model.getEdgeStyle( edge ));
 				edgeData.setCategory(cat);
-				Map userDataMap = model.getUserDataMap( edge );
+				Map<String, String> userDataMap = model.getUserDataMap( edge );
 				edgeData.getUserData().putAll( userDataMap );
 				
 				//Fix for connections that are inside a GraphContainer, only works for depth = 1 at the moment
@@ -186,16 +188,36 @@ public class GraphBuilder {
       return true;
    }
 
-   private GraphNode createGraphNode(IContainer container, EObject node,
+   private GraphNode createGraphNode(IContainer container, EObject node, boolean isUMLNode,
          boolean isContainerNode, Image icon)
    {
 		GraphNode n;
 		if ( isContainerNode ) {
 			n = new GraphContainer(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
-		} else {
+		} else if (isUMLNode) {
+			n = createNewUMLNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
+		}else {
 			n = new GraphNode(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
 		}
 		return n;
+	}
+
+	private GraphNode createNewUMLNode(IContainer graphModel, EObject node, int style, String text, Image image) {
+		Label nodeLabel = new Label(text);
+		nodeLabel.setFont(new Font(null, "Arial", 12, SWT.BOLD));
+		UMLClassFigure figure = new UMLClassFigure(nodeLabel);
+		EObject compartment = model.getAttributeCompartment(node);
+		Collection<String> entries = model.getEntries(compartment);
+		for (String string : entries) {
+					figure.getAttributesCompartment().add(new Label(string));
+		}
+		compartment = model.getMethodCompartment(node);
+		entries = model.getEntries(compartment);
+		for (String string : entries) {
+					figure.getMethodsCompartment().add(new Label(string));
+		}
+		figure.setSize(-1, -1);
+		return new org.openarchitectureware.vis.zest.builder.UMLNode(graphModel, style, figure);
 	}
 
 	private boolean isInGraph(EObject node, Collection<String> checkedCategories, String cat) {
