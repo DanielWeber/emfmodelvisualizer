@@ -456,6 +456,7 @@ public class ModelViewer extends ViewPart {
 		// is used -- if no filter configuration is available (checkedFilters == null)
 		// all nodes are added (i.e. nothing is filtered out)
 		final Graph newGraph = constructGraph(graphModel, checkedFilters, getData(item).isDrilldownEnabled());
+
 		//synchronize node selection in graph with breadcrumb
 		newGraph.addSelectionListener(new SelectionListener(){
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -467,6 +468,7 @@ public class ModelViewer extends ViewPart {
 		
 		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
 		newGraph.setParent(composite);
+		
 		//set tabtext
 		item.setText( getData(newGraph).getName() );
 		//it may be a new graph
@@ -498,6 +500,9 @@ public class ModelViewer extends ViewPart {
 				setGraphLayout(item, LAYOUT_RADIAL);
 			}
 		}
+		//graph has to be fully constructed
+		Menu menu = constructMenuManager().createContextMenu(newGraph);
+		newGraph.setMenu(menu);
 	}
 	/**
 	 * if the selection contains a single node, select it in the breadcrumb
@@ -680,6 +685,11 @@ public class ModelViewer extends ViewPart {
 				onGraphSelectionChanged(g);
 			}
 		});
+		//getSite().registerContextMenu(menuMgr, viewer);		
+		return g;
+	}
+	private MenuManager constructMenuManager()
+	{
 		
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
@@ -689,11 +699,7 @@ public class ModelViewer extends ViewPart {
 				fillContextMenu(manager);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(g);
-		g.setMenu(menu);
-		//getSite().registerContextMenu(menuMgr, viewer);		
-		
-		return g;
+		return menuMgr;
 	}
 
 	
@@ -837,7 +843,8 @@ public class ModelViewer extends ViewPart {
 			menuMgr.add( new SelectUpstreamRelatedNodeAction() );
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectConnectionsAction() );
-			if (getData(currTabItem()).isDrilldownEnabled()){
+			if (getData(currTabItem()).isDrilldownEnabled() && (currGraph().getSelection().size() == 1)){
+				if (currGraph().getSelection().get(0) instanceof GraphNode && GraphMMModelWrapper.isContainerNode(getData((GraphNode)currGraph().getSelection().get(0)).getModelNode()))
 				menuMgr.add(new DrillDownNode());
 			}
 		}
