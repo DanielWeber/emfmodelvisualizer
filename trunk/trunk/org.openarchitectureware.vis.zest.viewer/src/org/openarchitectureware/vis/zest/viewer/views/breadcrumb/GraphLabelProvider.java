@@ -30,7 +30,10 @@ public class GraphLabelProvider extends ColumnLabelProvider{
 
 		if (model.isNode(nodeElement))
 			return model.getNodeOrEdgeLabel(nodeElement);
-			
-		return model.getGraphName(nodeElement);
+		
+		if (model.isGraph(nodeElement))
+			return model.getGraphName(nodeElement);
+		
+		return nodeElement.toString();
 	}
 }
