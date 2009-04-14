@@ -18,7 +18,7 @@ public class GraphContentProvider implements ITreeContentProvider {
 		if (model.isGraph((EObject) parentElement))
 			return model.getNodes((EObject) parentElement).toArray();
 		if (model.isContainerNode((EObject) parentElement))
-			return ((EObject)parentElement).eContents().get(0).eContents().toArray();
+			return model.getNodes(((EObject)parentElement).eContents().get(0)).toArray();
 		return ((EObject)parentElement).eContents().toArray();
 	}
 
