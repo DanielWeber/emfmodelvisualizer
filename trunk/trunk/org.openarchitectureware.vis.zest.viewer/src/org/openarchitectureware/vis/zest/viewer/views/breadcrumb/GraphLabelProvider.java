@@ -2,9 +2,6 @@ package org.openarchitectureware.vis.zest.viewer.views.breadcrumb;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
 import org.openarchitectureware.vis.zest.builder.GraphMMModelWrapper;
 
 public class GraphLabelProvider extends ColumnLabelProvider{
