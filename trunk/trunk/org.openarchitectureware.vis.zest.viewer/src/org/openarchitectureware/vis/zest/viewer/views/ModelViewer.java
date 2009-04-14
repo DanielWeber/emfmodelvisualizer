@@ -1,5 +1,6 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -99,6 +102,9 @@ public class ModelViewer extends ViewPart {
 	private static final int LAYOUT_SPRING = 1;
 	private static final int LAYOUT_TREE = 2;
 	private static final int LAYOUT_TREE_HORI = 3;
+	private static final int ENTER = 13;
+	private static final int BACKSPACE = 8;
+	
 
 	private Set recentWorkflowFiles = new HashSet();
 	private EclipseSourceLocator eclipseSourceLocator = new EclipseSourceLocator();
@@ -118,6 +124,7 @@ public class ModelViewer extends ViewPart {
 	private String currentWorkflowFileName;
     private FormToolkit toolkit;
     private Button cboxDrillDown;
+    private final StringBuffer typedKeys = new StringBuffer();
 
 
 	/**
@@ -456,16 +463,8 @@ public class ModelViewer extends ViewPart {
 		// is used -- if no filter configuration is available (checkedFilters == null)
 		// all nodes are added (i.e. nothing is filtered out)
 		final Graph newGraph = constructGraph(graphModel, checkedFilters, getData(item).isDrilldownEnabled());
-
-		//synchronize node selection in graph with breadcrumb
-		newGraph.addSelectionListener(new SelectionListener(){
-			public void widgetDefaultSelected(SelectionEvent e) {
-				selectNodeInViewer(((Graph)e.widget).getSelection());
-			}
-			public void widgetSelected(SelectionEvent e) {
-				selectNodeInViewer(((Graph)e.widget).getSelection());
-		}});
 		
+		addGraphListeners(newGraph);
 		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
 		newGraph.setParent(composite);
 		
@@ -503,6 +502,51 @@ public class ModelViewer extends ViewPart {
 		//graph has to be fully constructed
 		Menu menu = constructMenuManager().createContextMenu(newGraph);
 		newGraph.setMenu(menu);
+	}
+	
+	/**
+	 * adds a set of listeners to the graph
+	 */
+	private void addGraphListeners(final Graph graph)
+	{
+		//synchronize node selection in graph with breadcrumb
+		graph.addSelectionListener(new SelectionListener(){
+			public void widgetDefaultSelected(SelectionEvent e) {
+				selectNodeInViewer(((Graph)e.widget).getSelection());
+			}
+			public void widgetSelected(SelectionEvent e) {
+				selectNodeInViewer(((Graph)e.widget).getSelection());
+		}});
+
+		graph.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent e )
+			{
+				boolean complete = false;
+				if (e.keyCode == BACKSPACE){
+					if (typedKeys.length() > 0 )
+						typedKeys.deleteCharAt(typedKeys.length()-1);
+				}else if (e.keyCode == ENTER){
+					complete = true;
+				}else if ((e.character >= 'a' && e.character <= 'z') || (e.character >= 'A' && e.character <= 'Z') || (e.character == '.') || (e.character >= '0' && e.character <= '9')) {
+					typedKeys.append(e.character);
+				}
+				List<GraphNode> list = new ArrayList<GraphNode>();
+				if (typedKeys.length() > 0){
+					for (Object obj : graph.getNodes())
+					{
+						if (((GraphNode)obj).getText().toLowerCase().indexOf(typedKeys.toString().toLowerCase())>=0){
+							list.add((GraphNode)obj);
+						}
+					}
+				}
+				graph.setSelection((GraphItem[])list.toArray(new GraphItem[list.size()]));
+				if (complete && typedKeys.length()>0){
+					typedKeys.delete(0, typedKeys.length());
+				}
+				graph.redraw();
+			}
+		});
 	}
 	/**
 	 * if the selection contains a single node, select it in the breadcrumb
