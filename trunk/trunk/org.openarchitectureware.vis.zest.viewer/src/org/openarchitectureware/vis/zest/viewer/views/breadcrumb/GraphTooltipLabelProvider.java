@@ -23,7 +23,7 @@ public class GraphTooltipLabelProvider extends LabelProvider {
 		if (model.isGraphCollection(nodeElement))
 			return "TopNode";
 
-		if (model.isContainerNode(nodeElement))
+		if(GraphMMModelWrapper.isContainerNode(nodeElement))
 			return model.getNodeOrEdgeLabel(nodeElement);
 
 		if (model.isNode(nodeElement))

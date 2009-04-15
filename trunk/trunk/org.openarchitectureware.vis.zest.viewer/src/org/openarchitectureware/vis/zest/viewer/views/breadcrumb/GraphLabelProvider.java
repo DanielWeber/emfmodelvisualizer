@@ -22,7 +22,7 @@ public class GraphLabelProvider extends ColumnLabelProvider{
 		if (model.isProlog(nodeElement))
 			return "Prolog";
 		
-		if (model.isContainerNode(nodeElement))
+		if(GraphMMModelWrapper.isContainerNode(nodeElement))
 			return model.getNodeOrEdgeLabel(nodeElement);
 
 		if (model.isNode(nodeElement))

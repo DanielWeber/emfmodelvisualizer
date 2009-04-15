@@ -17,7 +17,7 @@ public class GraphContentProvider implements ITreeContentProvider {
 			return model.getGraphs((EObject) parentElement).toArray();
 		if (model.isGraph((EObject) parentElement))
 			return model.getNodes((EObject) parentElement).toArray();
-		if (model.isContainerNode((EObject) parentElement))
+		if(GraphMMModelWrapper.isContainerNode((EObject)parentElement))
 			return model.getNodes(((EObject)parentElement).eContents().get(0)).toArray();
 		return ((EObject)parentElement).eContents().toArray();
 	}
@@ -26,7 +26,8 @@ public class GraphContentProvider implements ITreeContentProvider {
 		EObject container = ((EObject)element).eContainer();
 		if (container != null)
 		{  //hides the graph-node of ContainerNode
-			if (model.isGraph(container) && container.eContainer() != null && model.isContainerNode(container.eContainer()))
+         if(model.isGraph(container) && container.eContainer() != null
+               && GraphMMModelWrapper.isContainerNode(container.eContainer()))
 					return container.eContainer();
 		}
 		return container;

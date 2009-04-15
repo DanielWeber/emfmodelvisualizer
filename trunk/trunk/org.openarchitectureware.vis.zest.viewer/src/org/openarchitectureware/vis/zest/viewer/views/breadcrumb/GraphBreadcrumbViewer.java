@@ -5,7 +5,6 @@ import nu.bibi.breadcrumb.BreadcrumbViewer;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.openarchitectureware.vis.zest.builder.GraphBuilder;
 /***
  * shows the model of a graph in a breadcrumb like in the JDT
  * 
