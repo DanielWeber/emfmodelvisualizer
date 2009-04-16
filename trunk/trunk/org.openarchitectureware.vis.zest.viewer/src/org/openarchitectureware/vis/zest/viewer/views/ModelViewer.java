@@ -402,6 +402,7 @@ public class ModelViewer extends ViewPart {
 		updateLayoutCombo();
 		updateFilterTable();
 		cboxDrillDown.setSelection(getData(currTabItem()).isDrilldownEnabled());
+		clearStatusBar();
 	}
 	
 	/**
@@ -490,6 +491,9 @@ public class ModelViewer extends ViewPart {
 		//graph has to be fully constructed
 		Menu menu = constructMenuManager().createContextMenu(newGraph);
 		newGraph.setMenu(menu);
+		newGraph.setFocus();
+		
+		clearStatusBar();
 	}
 	
 	/**
@@ -505,6 +509,8 @@ public class ModelViewer extends ViewPart {
 				if (e.keyCode == BACKSPACE){
 					if (typedKeys.length() > 0 )
 						typedKeys.deleteCharAt(typedKeys.length()-1);
+					if (typedKeys.length() == 0 )
+						clearStatusBar();
 				}else if (e.keyCode == ENTER){
 					complete = true;
 				}else if ((e.character >= 'a' && e.character <= 'z') || (e.character >= 'A' && e.character <= 'Z') || (e.character == '.') || (e.character >= '0' && e.character <= '9')) {
@@ -520,20 +526,26 @@ public class ModelViewer extends ViewPart {
 					}
 				}
 				
-				String status = null;
 				if (complete && typedKeys.length()>0){
-					typedKeys.delete(0, typedKeys.length());
+					clearStatusBar();
 					selectedNodes = Collections.emptyList();
 				}
 				if (typedKeys.length()>0)
 				{
-					status = "Searched for \""+typedKeys.toString()+"\". Press Enter to complete search";
+					updateStatusBar("Searched for \""+typedKeys.toString()+"\". Press Enter to complete search");
 				}
-				updateStatusBar((status==null)?"":status);
 				graph.setSelection((GraphItem[])selectedNodes.toArray(new GraphItem[selectedNodes.size()]));
 				graph.redraw();
 			}
 		});
+	}
+	/**
+	 * update statusbar and delete buffer of typedkeys
+	 */
+	private void clearStatusBar()
+	{
+		typedKeys.delete(0, typedKeys.length());
+		updateStatusBar("");
 	}
 
 	private void updateStatusBar(String status)
@@ -586,7 +598,7 @@ public class ModelViewer extends ViewPart {
 		}
 		viewer.setInput(selection.getFirstElement());
 		viewer.setSelection(selection);
-		viewer.setFocus();
+//		viewer.setFocus();
 		if (getData(currTabItem()).getWrappedGraphModel().isGraph((EObject) selection.getFirstElement()))
 		{
 			EObject eo = ((EObject) selection.getFirstElement());
