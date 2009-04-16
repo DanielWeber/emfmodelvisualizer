@@ -439,14 +439,6 @@ public class ModelViewer extends ViewPart {
 			viewer.setRootVisible(false);			
 			addListeners(viewer);
 			getData(item).setBreadCrumb(viewer);
-//			viewer.addSelectionChangedListener(new ISelectionChangedListener(){
-			//
-//								public void selectionChanged(SelectionChangedEvent event) {
-//									
-//									System.out.println(event.getSelection().isEmpty());
-//								}
-//								
-//							});
 		}
 		else composite = (Composite)item.getControl();
 		
@@ -461,7 +453,8 @@ public class ModelViewer extends ViewPart {
 		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
 		newGraph.setParent(composite);
 		
-		//set tabtext
+		//set tabtext with topgraph-name
+		if (GraphMMModelWrapper.isOneOfTopGraphs(graphModel)||item.getText()==null)
 		item.setText( getData(newGraph).getName() );
 		//it may be a new graph
 		composite.layout();
@@ -502,15 +495,6 @@ public class ModelViewer extends ViewPart {
 	 */
 	private void addGraphListeners(final Graph graph)
 	{
-		//synchronize node selection in graph with breadcrumb
-		graph.addSelectionListener(new SelectionListener(){
-			public void widgetDefaultSelected(SelectionEvent e) {
-				selectNodeInViewer(((Graph)e.widget).getSelection());
-			}
-			public void widgetSelected(SelectionEvent e) {
-				selectNodeInViewer(((Graph)e.widget).getSelection());
-		}});
-
 		graph.addKeyListener(new KeyAdapter(){
 			@Override
 			public void keyPressed(KeyEvent e )
@@ -541,17 +525,7 @@ public class ModelViewer extends ViewPart {
 			}
 		});
 	}
-	/**
-	 * if the selection contains a single node, select it in the breadcrumb
-	 */
-	private void selectNodeInViewer(final List selection) {
-		if (selection.size()==1 && selection.get(0) instanceof GraphNode){
-			GraphNode graphNode = (GraphNode) selection.get(0);
-			EObject node = ((NodeData)graphNode.getData()).getModelNode();
-			getData(currTabItem()).getBreadCrumb().setInput(node);
-			getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(node));
-		}
-	}
+
 	/**
 	 * adds some listeners to the GraphBreadcrumbViewer
 	 * @param viewer GraphBreadcrumbViewer to add listeners to
@@ -594,15 +568,23 @@ public class ModelViewer extends ViewPart {
 		viewer.setSelection(selection);
 		viewer.setFocus();
 		if (getData(currTabItem()).getWrappedGraphModel().isGraph((EObject) selection.getFirstElement()))
-			{
+		{
 			EObject eo = ((EObject) selection.getFirstElement());
 			createGraphIntoTabItem(eo, currTabItem());
-			}
+		}
+		if (getData(currTabItem()).getWrappedGraphModel().isContainerNode((EObject) selection.getFirstElement()))
+		{
+			EObject eo = ((EObject) selection.getFirstElement());
+			createGraphIntoTabItem(getData(currTabItem()).getWrappedGraphModel().getContainedGraph(eo), currTabItem());
+			return;
+		}
 		if (getData(currTabItem()).getWrappedGraphModel().isNode((EObject) selection.getFirstElement()))
 		{
+			if(true)throw new NullPointerException("sollte nicht passieren");
 			GraphNode no = ((GraphData)currGraph().getData()).getCorrespondingGraphNode((EObject) selection.getFirstElement());
 			if (no == null)
 			{
+				//if a node in the breadcrumb is selected that is not in the present graph render the graph that contains the node
 				EObject eo = (EObject) selection.getFirstElement();
 				GraphMMModelWrapper mm = new GraphMMModelWrapper(eo);
 				EObject graph = mm.getContainingGraphForNode(eo);

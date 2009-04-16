@@ -255,11 +255,11 @@ public class GraphMMModelWrapper {
 	{
 		return node.eClass().getName().equals("Graph");
 	}
-	protected boolean isOneOfTopGraphs(EObject node)
+	public static boolean isOneOfTopGraphs(EObject node)
 	{
 		return isGraphCollection(node.eContainer());
 	}
-	public boolean isGraphCollection(EObject element)
+	public static boolean isGraphCollection(EObject element)
 	{
 		return element.eClass().getName().equals("GraphCollection");
 	}
