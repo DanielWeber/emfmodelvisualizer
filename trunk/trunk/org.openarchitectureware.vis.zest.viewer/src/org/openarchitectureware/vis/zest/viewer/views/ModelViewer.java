@@ -455,7 +455,7 @@ public class ModelViewer extends ViewPart {
 		
 		//set tabtext with topgraph-name
 		if (GraphMMModelWrapper.isOneOfTopGraphs(graphModel)||item.getText()==null)
-		item.setText( getData(newGraph).getName() );
+			item.setText( getData(newGraph).getName() );
 		//it may be a new graph
 		composite.layout();
 		// remember graph and model with the item
@@ -552,6 +552,11 @@ public class ModelViewer extends ViewPart {
 				}
 			}
 		});
+	}
+	
+	private void setCurrentBreadCrumbViewer(EObject node){
+		getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(node));
+		getData(currTabItem()).getBreadCrumb().setInput(node);
 	}
 	/**
 	 * Sets the breadcrumb to the selected item and inits a new graph rendering if a subgraphnode is selected.
@@ -819,8 +824,7 @@ public class ModelViewer extends ViewPart {
 					GraphNode n = (GraphNode) currentSelection.get(0);
 					EObject graphModelNode = ((NodeData)n.getData()).getModelNode();
 
-					getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(graphModelNode));
-					getData(currTabItem()).getBreadCrumb().setInput(graphModelNode);
+					setCurrentBreadCrumbViewer(graphModelNode);
 					
 					EObject subGraph = getData(currTabItem()).getWrappedGraphModel().getContainedGraph(graphModelNode);
 					if (subGraph != null){
@@ -839,9 +843,10 @@ public class ModelViewer extends ViewPart {
 		public void run() {
 				EObject superGraph = getData(currTabItem()).getWrappedGraphModel().getContainingGraph(((GraphData)currGraph().getData()).getModelNode());
 				if (superGraph!=null){
-					getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(superGraph));
-					getData(currTabItem()).getBreadCrumb().setInput(superGraph);
-					getData(currTabItem()).getBreadCrumb().refresh();
+					if (GraphMMModelWrapper.isOneOfTopGraphs(superGraph))
+						setCurrentBreadCrumbViewer(superGraph);
+					else
+						setCurrentBreadCrumbViewer(superGraph.eContainer());
 					createGraphIntoTabItem(superGraph, currTabItem());
 				}
 		}
@@ -866,7 +871,7 @@ public class ModelViewer extends ViewPart {
 				menuMgr.add(new DrillDownNode());
 			}
 		}
-		if ( (currGraph() != null&&getData(currTabItem()).isDrilldownEnabled())){ 
+		if ( (currGraph() != null && getData(currTabItem()).isDrilldownEnabled() && !GraphMMModelWrapper.isOneOfTopGraphs(getData(currGraph()).getModelNode()))){ 
 			menuMgr.add(new ClimbUpNode());
 		}
 
