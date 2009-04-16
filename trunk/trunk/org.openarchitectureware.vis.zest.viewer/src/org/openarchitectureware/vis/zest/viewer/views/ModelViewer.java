@@ -2,6 +2,7 @@ package org.openarchitectureware.vis.zest.viewer.views;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -131,6 +132,7 @@ public class ModelViewer extends ViewPart {
 	 * do nothing
 	 */
 	public void setFocus() {
+		currGraph().setFocus();
 	}
 	
 
@@ -508,24 +510,37 @@ public class ModelViewer extends ViewPart {
 				}else if ((e.character >= 'a' && e.character <= 'z') || (e.character >= 'A' && e.character <= 'Z') || (e.character == '.') || (e.character >= '0' && e.character <= '9')) {
 					typedKeys.append(e.character);
 				}
-				List<GraphNode> list = new ArrayList<GraphNode>();
+				List<GraphNode> selectedNodes = new ArrayList<GraphNode>();
 				if (typedKeys.length() > 0){
 					for (Object obj : graph.getNodes())
 					{
 						if (((GraphNode)obj).getText().toLowerCase().indexOf(typedKeys.toString().toLowerCase())>=0){
-							list.add((GraphNode)obj);
+							selectedNodes.add((GraphNode)obj);
 						}
 					}
 				}
-				graph.setSelection((GraphItem[])list.toArray(new GraphItem[list.size()]));
+				
+				String status = null;
 				if (complete && typedKeys.length()>0){
 					typedKeys.delete(0, typedKeys.length());
+					selectedNodes = Collections.emptyList();
 				}
+				if (typedKeys.length()>0)
+				{
+					status = "Searched for \""+typedKeys.toString()+"\". Press Enter to complete search";
+				}
+				updateStatusBar((status==null)?"":status);
+				graph.setSelection((GraphItem[])selectedNodes.toArray(new GraphItem[selectedNodes.size()]));
 				graph.redraw();
 			}
 		});
 	}
 
+	private void updateStatusBar(String status)
+	{
+		IActionBars bars = getViewSite().getActionBars();
+		bars.getStatusLineManager().setMessage(status);
+	}
 	/**
 	 * adds some listeners to the GraphBreadcrumbViewer
 	 * @param viewer GraphBreadcrumbViewer to add listeners to
