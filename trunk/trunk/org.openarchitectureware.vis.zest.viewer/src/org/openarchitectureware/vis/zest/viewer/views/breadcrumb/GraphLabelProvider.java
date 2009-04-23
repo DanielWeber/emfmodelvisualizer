@@ -16,7 +16,7 @@ public class GraphLabelProvider extends ColumnLabelProvider{
 	public String getText(final Object element) {
 		EObject nodeElement = (EObject)element;
 		
-		if (model.isGraphCollection(nodeElement))
+		if (GraphMMModelWrapper.isGraphCollection(nodeElement))
 			return "TopNode";
 		
 		if (model.isProlog(nodeElement))

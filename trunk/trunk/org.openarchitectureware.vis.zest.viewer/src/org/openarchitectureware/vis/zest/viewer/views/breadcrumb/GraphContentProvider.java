@@ -2,7 +2,6 @@ package org.openarchitectureware.vis.zest.viewer.views.breadcrumb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
@@ -26,18 +25,18 @@ public class GraphContentProvider implements ITreeContentProvider {
 //			containerNodes.toArray();
 		}
 		//Collection that gets filtered later on
-		Collection containerNodes = new ArrayList();
+		Collection<EObject> containerNodes = new ArrayList<EObject>();
 		
 		if (model.isGraph((EObject) parentElement))
 			containerNodes =  model.getNodes((EObject) parentElement);
 		if (GraphMMModelWrapper.isContainerNode((EObject) parentElement))
 			containerNodes =  model.getNodes(((EObject)parentElement).eContents().get(0));
 		//the nodes that match
-		List resultNodes = new ArrayList();
+		List<EObject> resultNodes = new ArrayList<EObject>();
 		for (Object node : containerNodes)
 		{
 			if (GraphMMModelWrapper.isContainerNode((EObject) node))
-				resultNodes.add(node);
+				resultNodes.add((EObject)node);
 		}
 		return resultNodes.toArray();
 	}

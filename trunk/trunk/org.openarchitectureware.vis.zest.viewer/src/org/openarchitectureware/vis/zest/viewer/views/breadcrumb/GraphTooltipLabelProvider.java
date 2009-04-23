@@ -20,7 +20,7 @@ public class GraphTooltipLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		EObject nodeElement = (EObject) element;
 
-		if (model.isGraphCollection(nodeElement))
+		if (GraphMMModelWrapper.isGraphCollection(nodeElement))
 			return "TopNode";
 
 		if(GraphMMModelWrapper.isContainerNode(nodeElement))

@@ -100,7 +100,7 @@ public class ModelViewer extends ViewPart {
 	private static final int BACKSPACE = 8;
 	
 
-	private Set recentWorkflowFiles = new HashSet();
+	private Set<String> recentWorkflowFiles = new HashSet<String>();
 	private EclipseSourceLocator eclipseSourceLocator = new EclipseSourceLocator();
 	
 	private Action runWorkflowAction;
@@ -604,7 +604,8 @@ public class ModelViewer extends ViewPart {
 			EObject eo = ((EObject) selection.getFirstElement());
 			createGraphIntoTabItem(eo, currTabItem());
 		}
-		if (getData(currTabItem()).getWrappedGraphModel().isContainerNode((EObject) selection.getFirstElement()))
+		getData(currTabItem()).getWrappedGraphModel();
+		if (GraphMMModelWrapper.isContainerNode((EObject) selection.getFirstElement()))
 		{
 			EObject eo = ((EObject) selection.getFirstElement());
 			createGraphIntoTabItem(getData(currTabItem()).getWrappedGraphModel().getContainedGraph(eo), currTabItem());
@@ -758,21 +759,22 @@ public class ModelViewer extends ViewPart {
 		public SelectRelatedAction(String label) {
 			super( label );
 		}
+		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			Graph g = currGraph();
-			List currentSelection = g.getSelection();
-			Set<GraphItem> newSelection = new HashSet();
+			List<GraphItem> currentSelection = g.getSelection();
+			Set<GraphItem> newSelection = new HashSet<GraphItem>();
 			newSelection.addAll(currentSelection);
-			for (Iterator nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
+			for (Iterator<GraphItem> nodeIter = currentSelection.iterator(); nodeIter.hasNext();) {
 				GraphNode n = (GraphNode) nodeIter.next();
-				List downstreamConnections = n.getSourceConnections();
-				for (Iterator connIter = downstreamConnections.iterator(); connIter.hasNext();) {
+				List<GraphItem> downstreamConnections = n.getSourceConnections();
+				for (Iterator<GraphItem> connIter = downstreamConnections.iterator(); connIter.hasNext();) {
 					GraphConnection c = (GraphConnection) connIter.next();
 					handleDownstreamConnection( c, newSelection );
 				}
-				List upstreamConnections = n.getTargetConnections();
-				for (Iterator connIter = upstreamConnections.iterator(); connIter.hasNext();) {
+				List<GraphItem> upstreamConnections = n.getTargetConnections();
+				for (Iterator<GraphItem> connIter = upstreamConnections.iterator(); connIter.hasNext();) {
 					GraphConnection c = (GraphConnection) connIter.next();
 					handleUpstreamConnection( c, newSelection );
 				}
@@ -842,13 +844,14 @@ public class ModelViewer extends ViewPart {
 		public DrillDownNode() {
 			super("Drill down node");
 		}
+		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			Graph g = currGraph();
-			List currentSelection = g.getSelection();
+			List<GraphNode> currentSelection = g.getSelection();
 			if (currentSelection.size()==1)
 			{
-					GraphNode n = (GraphNode) currentSelection.get(0);
+					GraphNode n = currentSelection.get(0);
 					EObject graphModelNode = ((NodeData)n.getData()).getModelNode();
 
 					setCurrentBreadCrumbViewer(graphModelNode);
@@ -909,8 +912,9 @@ public class ModelViewer extends ViewPart {
 	 * @param graph the graph on which we click
 	 * @param event the event 
 	 */
+	@SuppressWarnings("unchecked")
 	private void onGraphMouseEvent(final Graph graph, MouseEvent event) {
-		List selectedNodeOrEdges = graph.getSelection();
+		List<GraphItem> selectedNodeOrEdges = graph.getSelection();
 		int stateMask = event.stateMask;
 		// if we have one element only...
       if(selectedNodeOrEdges.size() == 1
@@ -934,8 +938,9 @@ public class ModelViewer extends ViewPart {
 	 * on a node or edge) we update the propreties table
 	 * @param graph the graph that was clicked on
 	 */
+	@SuppressWarnings("unchecked")
 	private void onGraphSelectionChanged(final Graph graph) {
-		List selectedNodes = graph.getSelection();
+		List<GraphItem> selectedNodes = graph.getSelection();
 		// if there's one node selected only, then 
 		// update it's properties in the table
 		if ( selectedNodes.size() == 1 ) {
@@ -999,8 +1004,8 @@ public class ModelViewer extends ViewPart {
 	 * @return the graphmodel built by the workflow
 	 */
 	private EObject runWorkflow(String workflowFileName) {
-		Map properties = new HashMap();
-		Map slotContents = new HashMap();
+		Map<String, String> properties = new HashMap<String, String>();
+		Map<Object, Object> slotContents = new HashMap<Object, Object>();
 		WorkflowRunner runner = new WorkflowRunner();
 		final boolean configOK = runner.prepare(workflowFileName, new NullProgressMonitor(), properties);
 		final Issues issues = new IssuesImpl();
