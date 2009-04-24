@@ -18,4 +18,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/nu.bibi.breadcrumb.jar
+Export-Package: org.openarchitectureware.vis.zest.viewer.source,
+ org.openarchitectureware.vis.zest.viewer.views
 Import-Package: org.eclipse.core.resources

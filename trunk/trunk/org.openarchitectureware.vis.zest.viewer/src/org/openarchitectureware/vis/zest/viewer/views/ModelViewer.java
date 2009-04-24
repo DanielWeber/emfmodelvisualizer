@@ -3,7 +3,6 @@ package org.openarchitectureware.vis.zest.viewer.views;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,13 +12,12 @@ import java.util.Set;
 import nu.bibi.breadcrumb.IMenuSelectionListener;
 import nu.bibi.breadcrumb.MenuSelectionEvent;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -41,25 +39,18 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphItem;
@@ -75,22 +66,18 @@ import org.openarchitectureware.vis.zest.builder.GraphBuilder;
 import org.openarchitectureware.vis.zest.builder.GraphData;
 import org.openarchitectureware.vis.zest.builder.GraphMMModelWrapper;
 import org.openarchitectureware.vis.zest.builder.NodeData;
-import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
+import org.openarchitectureware.vis.zest.viewer.source.SourceLocator;
 import org.openarchitectureware.vis.zest.viewer.views.breadcrumb.GraphBreadcrumbViewer;
-import org.openarchitectureware.workflow.WorkflowRunner;
-import org.openarchitectureware.workflow.issues.Issues;
-import org.openarchitectureware.workflow.issues.IssuesImpl;
-import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
-
 
 /**
- * This class represents an Eclipse view that renders graphmm 
- * instances using ZEST.
+ * This class provides a viewer that renders graphmm instances using ZEST. The
+ * graphmm model instance must be handed in using #setInput. The viewer does not
+ * care where this instacne is coming from.
  * 
  * @author MarkusVoelter
  * @author DanielWeber
  */
-public class ModelViewer extends ViewPart {
+public class ModelViewer {
 
 	private static final int LAYOUT_RADIAL = 0;
 	private static final int LAYOUT_SPRING = 1;
@@ -99,13 +86,8 @@ public class ModelViewer extends ViewPart {
 	private static final int ENTER = 13;
 	private static final int BACKSPACE = 8;
 	
-
-	private Set<String> recentWorkflowFiles = new HashSet<String>();
-	private EclipseSourceLocator eclipseSourceLocator = new EclipseSourceLocator();
-	
-	private Action runWorkflowAction;
-	private Composite topLevelComposite;
-	private IMenuManager menuManager;
+	private final SourceLocator sourceLocator;
+	private final Composite topLevelComposite;
 	private Table nodePropertiesTable;
 	private CCombo layoutCombo;
 	private CTabFolder tabFolderForGraphs;
@@ -113,91 +95,46 @@ public class ModelViewer extends ViewPart {
 	private Composite rightSideComposite;
 	private Table filterTable;
 	private GraphBuilder graphbuilder;
-	private IToolBarManager toolBarManager;
-	private Action refreshCurrentWorkflowAction;
-	private String currentWorkflowFileName;
-    private FormToolkit toolkit;
+    private final FormToolkit toolkit;
     private Button cboxDrillDown;
     private final StringBuffer typedKeys = new StringBuffer();
-
+	private final IStatusLineManager statusLineManager;
 
 	/**
-	 * constructor - do nothing
+	 * Constructor. Does not create any widgets.
+	 * 
+	 * @param topLevelComposite
+	 *            The composite this viewer should embed its widgets in
+	 * @param toolkit
+	 *            To be used for forms stuff
+	 * @param sourceLocator
+	 *            Used to open the source for a specific node if a source
+	 *            location has been specified.
+	 * @param statusLineManager
+	 *            Well, used to display status updates
 	 */
-	public ModelViewer() {
+	public ModelViewer(Composite topLevelComposite, FormToolkit toolkit,
+			SourceLocator sourceLocator, IStatusLineManager statusLineManager) {
+		this.topLevelComposite = topLevelComposite;
+		this.toolkit = toolkit;
+		this.sourceLocator = sourceLocator;
+		this.statusLineManager = statusLineManager;
 	}
 	
 	/**
 	 * callback when the focus is set
-	 * do nothing
 	 */
 	public void setFocus() {
 		currGraph().setFocus();
 	}
 	
-
 	/**
-	 * called by Eclipse to initiate construction of 
-	 * the view. Here we just create the menus. All
-	 * the rest of the view content is created after
-	 * a workflow has been run to create a graph. 
+	 * Method that updates the model view to display the given graph model
+	 * 
+	 * @param graphmodel
+	 *            the model to be displayed by this viewer
 	 */
-	public void createPartControl(Composite parent) {
-	   toolkit = new FormToolkit(parent.getDisplay());
-	   Form form = toolkit.createForm(parent);
-      FillLayout layout = new FillLayout();
-      layout.marginHeight = 10;
-      layout.marginWidth = 4;
-      form.getBody().setLayout(layout);
-      toolkit.decorateFormHeading(form);
-      this.topLevelComposite = form.getBody();
-		
-		IActionBars bars = getViewSite().getActionBars();
-		menuManager = bars.getMenuManager();
-		toolBarManager = bars.getToolBarManager();
-		createActions();
-		fillLocalPullDown();
-		fillLocalToolBar();
-		// the following is for testing purposes.
-//		setFilenameAndRedraw("de/voelter/zest/example/createEcore.oaw");
-		setFilenameAndRedraw("de/voelter/zest/example/createMinimal.oaw"); 
-
-	}
-
-	/**
-	 * creates the pull down menu on the view
-	 */
-	private void fillLocalPullDown() {
-		// this one allows the selection of workflows to be run
-		menuManager.add(runWorkflowAction);
-		// we add a separator, because for each run workflow we
-		// add an action that re-runs it below this separator
-		menuManager.add(new Separator());
-	}
-
-	/**
-	 * creates the pull down menu on the view
-	 */
-	private void fillLocalToolBar() {
-		// select and run a workflow
-		toolBarManager.add( runWorkflowAction );
-		// the action to rerun the current workflow
-		toolBarManager.add( refreshCurrentWorkflowAction );
-	}
-
-	/** 
-	 * main method that runs a workflow and renders the graph
-	 * created by that workflow. The workflow must put an instance
-	 * of the graphmm metamodel into the graphmodel workflow slot 
-	 * @param workflowFileName name and path to workflow
-	 */
-	private void setFilenameAndRedraw(String workflowFileName) {
-		// remember current workflow
-		currentWorkflowFileName = workflowFileName;
-		// add workflow to the drop down menu
-		addRecentWorkflowFile( workflowFileName );
-		// actually run workflow and get the resulting graphmm instance
-		EObject graphmodel = runWorkflow(workflowFileName);
+	public void setInput(EObject graphmodel) {
 		// use the GraphBuilder to create an actual ZEST graph
 		// from the EObject that describes the graph
 		graphbuilder = new GraphBuilder(graphmodel);
@@ -237,10 +174,10 @@ public class ModelViewer extends ViewPart {
 		section.setClient(rightSideComposite);
 		section.setText("Layout, Categories and Properties");   
 		rightSideComposite.setLayout( new GridLayout(1, true) );
-
+		
 		// the layout combo box provides ZEST's four different
-		// layout alternatives to choose from. 
-		layoutCombo = new CCombo(rightSideComposite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.FLAT);
+		// layout alternatives to choose from.
+		layoutCombo = new CCombo(rightSideComposite, comboStyle());
 		GridData gdLayoutCombo = new GridData();
 		gdLayoutCombo.verticalAlignment = SWT.TOP;
 		gdLayoutCombo.horizontalAlignment= SWT.FILL;
@@ -311,6 +248,24 @@ public class ModelViewer extends ViewPart {
 		rightSash.setWeights(new int[] {60,40});
 		rightSideComposite.pack();
 		
+	}
+
+	/**
+	 * "Calculates" a style for our CCombo so that a border is used if the
+	 * toolkit currently uses borders.
+	 * 
+	 * @return SWT style bits according to the {@link #toolkit}'s current
+	 *         settings.
+	 */
+	private int comboStyle() {
+		int style = SWT.DROP_DOWN | SWT.READ_ONLY;
+		if (toolkit.getBorderStyle() == SWT.BORDER) {
+			style |= SWT.BORDER;
+		}
+		else {
+			style |= SWT.FLAT;
+		}
+		return style;
 	}
 
 	/**
@@ -550,8 +505,8 @@ public class ModelViewer extends ViewPart {
 
 	private void updateStatusBar(String status)
 	{
-		IActionBars bars = getViewSite().getActionBars();
-		bars.getStatusLineManager().setMessage(status);
+		if (null != statusLineManager)
+			statusLineManager.setMessage(status);
 	}
 	/**
 	 * adds some listeners to the GraphBreadcrumbViewer
@@ -883,12 +838,6 @@ public class ModelViewer extends ViewPart {
 	}
 	
 	private void fillContextMenu(IMenuManager menuMgr) {
-		menuMgr.add( new Action("Reset") {
-			@Override
-			public void run() {
-				setFilenameAndRedraw(currentWorkflowFileName);
-			}
-		});
 		if ( (currGraph() != null) && (currGraph().getSelection().size() != 0) ) {
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectAllRelatedNodeAction() );
@@ -904,7 +853,6 @@ public class ModelViewer extends ViewPart {
 		if ( (currGraph() != null && getData(currTabItem()).isDrilldownEnabled() && !GraphMMModelWrapper.isOneOfTopGraphs(getData(currGraph()).getModelNode()))){ 
 			menuMgr.add(new ClimbUpNode());
 		}
-
 	}
 
 	/**
@@ -934,9 +882,11 @@ public class ModelViewer extends ViewPart {
 	}
 
 	/**
-	 * when the graph is selected (i.e. somebody clicked
-	 * on a node or edge) we update the propreties table
-	 * @param graph the graph that was clicked on
+	 * when the graph is selected (i.e. somebody clicked on a node or edge) we
+	 * update the properties table
+	 * 
+	 * @param graph
+	 *            the graph that was clicked on
 	 */
 	@SuppressWarnings("unchecked")
 	private void onGraphSelectionChanged(final Graph graph) {
@@ -957,7 +907,7 @@ public class ModelViewer extends ViewPart {
 	private void locateSource(GraphNode nodeClickedOn) {
 		String location = ((NodeData)nodeClickedOn.getData()).getSourceLocation();
 		if ( location != null ) {
-			eclipseSourceLocator.locate(location);
+			sourceLocator.locate(location);
 		}
 	}
 	
@@ -998,113 +948,6 @@ public class ModelViewer extends ViewPart {
       return null;
    }
 	
-	/**
-	 * runs an oAW workflow to get hold of a graph model
-	 * @param workflowFileName the workflow to be run
-	 * @return the graphmodel built by the workflow
-	 */
-	private EObject runWorkflow(String workflowFileName) {
-		Map<String, String> properties = new HashMap<String, String>();
-		Map<Object, Object> slotContents = new HashMap<Object, Object>();
-		WorkflowRunner runner = new WorkflowRunner();
-		final boolean configOK = runner.prepare(workflowFileName, new NullProgressMonitor(), properties);
-		final Issues issues = new IssuesImpl();
-		if (configOK) {
-			runner.executeWorkflow(slotContents, issues);
-			EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
-			return graphmodel;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * adds a workflow file to the list of recently run workflows
-	 * @param workflowFileName the workflow to be added
-	 */
-	private void addRecentWorkflowFile(String workflowFileName) {
-		// only add it if it's not yet in the list
-		if ( recentWorkflowFiles.contains(workflowFileName)) {
-			return;
-		}
-		recentWorkflowFiles.add(workflowFileName);
-		menuManager.add( new RecentWorkflowAction(workflowFileName) );
-	}
-	
-	/**
-	 * action used to re-run existing workflows
-	 * @author MarkusVoelter
-	 */
-	class RecentWorkflowAction extends Action {
-		String workflow = null;
-		public RecentWorkflowAction( String filename ) {
-			workflow = filename;
-			setText(filename);
-			setToolTipText("Rerun "+filename);
-			setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
-		}
-		public void run() {
-        	onRerunWorkflow(workflow);
-		}
-	}
-
-	/** 
-	 * when a recent workflow is rerun, just call the 
-	 * setFilenameAndRedraw method
-	 * @param recentWorkflowToBeRerun
-	 */
-	private void onRerunWorkflow(String recentWorkflowToBeRerun) {
-		setFilenameAndRedraw(recentWorkflowToBeRerun);
-	}
-	
-	/**
-	 * creates the actions for the drop down menu and the button list
-	 */
-	private void createActions() {
-		runWorkflowAction = new Action() {
-			public void run() {
-				onRunNewWorkflow();
-			}
-		};
-		runWorkflowAction.setText("Run Transformation Workflow...");
-		runWorkflowAction.setToolTipText("Run a workflow that creates a GraphMM model");
-		runWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
-
-		refreshCurrentWorkflowAction = new Action() {
-			public void run() {
-				onRefreshCurrentWorkflow();
-			}
-
-		};
-		refreshCurrentWorkflowAction.setText("Rerun current workflow");
-		refreshCurrentWorkflowAction.setToolTipText("Rerun current workflow");
-		refreshCurrentWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.REFRESH));
-	}
-
-	/**
-	 * reruns the currently active workflow
-	 */
-	private void onRefreshCurrentWorkflow() {
-		setFilenameAndRedraw( currentWorkflowFileName );
-	}
-
-	/**
-	 * runs a new workflow - opens a file dialog
-	 * to let the user select the file to run
-	 */
-	private void onRunNewWorkflow() {
-		FileDialog fd = new FileDialog(new Shell(Display.getCurrent()), SWT.OPEN);
-		fd.setText("Run Workflow");
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
-		String[] filterExt = { "*.oaw" };
-		fd.setFilterExtensions(filterExt);
-		String selected = fd.open();
-		if ( selected != null ) {
-			setFilenameAndRedraw(selected);
-		}
-	}
-	
-
 	/**
 	 * returns the NodeData structure for a node
 	 * @param n the node for which the data structure

@@ -9,7 +9,7 @@
       </category>
       <view
             category="org.openarchitectureware.vis.zest.viewer"
-            class="org.openarchitectureware.vis.zest.viewer.views.ModelViewer"
+            class="org.openarchitectureware.vis.zest.viewer.views.ModelVisualizationView"
             icon="icons/modelvisview.gif"
             id="org.openarchitectureware.vis.zest.viewer.views.ModelViewer"
             name="Model Visualization">
