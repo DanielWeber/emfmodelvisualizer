@@ -57,7 +57,7 @@ public class GraphBuilder {
 	private void populateContainer( IContainer container, EObject graphNode, Map<EObject, GraphNode> nodeMap,Collection<String> checkedCategories, boolean drillDownEnabled ) {
 		for (EObject node : model.getNodes(graphNode)) {
 			boolean isContainerNode = GraphMMModelWrapper.isContainerNode(node);
-			boolean isUMLNode = model.isUMLNode(node);
+			boolean isUMLNode = GraphMMModelWrapper.isUMLNode(node);
 			String cat = model.getNodeOrEdgeCategory(node);
 			if ( isInGraph( node, checkedCategories, cat )) {
 				GraphNode zestNode = null;
@@ -194,30 +194,51 @@ public class GraphBuilder {
 		GraphNode n;
 		if ( isContainerNode ) {
 			n = new GraphContainer(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
-		} else if (isUMLNode) {
+		} else if (GraphMMModelWrapper.isUMLNode(node)) {
 			n = createNewUMLNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
+		} else if (GraphMMModelWrapper.isCompartmentNode(node)) {
+			n = createNewCompartmentNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
 		}else {
 			n = new GraphNode(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
 		}
 		return n;
 	}
 
+	private GraphNode createNewCompartmentNode(IContainer graphModel, EObject node,
+		int style, String text, Image image) {
+		Label nodeLabel = new Label(text);
+		nodeLabel.setFont(new Font(null, "Arial", 12, SWT.BOLD));
+		MultiCompartmentFigure figure = new MultiCompartmentFigure(nodeLabel);
+		Collection<EObject> compartments = GraphMMModelWrapper.getCompartments(node);
+		for (EObject compartment : compartments) {
+			Collection<String> entries = GraphMMModelWrapper
+					.getEntries(compartment);
+			for (String string : entries) {
+				CompartmentFigure compartmentFigure = new CompartmentFigure();
+				compartmentFigure.add(new Label(string));
+				figure.add(compartmentFigure);
+			}
+		}
+		figure.setSize(-1, -1);
+		return new org.openarchitectureware.vis.zest.builder.CompartmentNode(graphModel, style, figure);
+}
+
 	private GraphNode createNewUMLNode(IContainer graphModel, EObject node, int style, String text, Image image) {
 		Label nodeLabel = new Label(text);
 		nodeLabel.setFont(new Font(null, "Arial", 12, SWT.BOLD));
 		UMLClassFigure figure = new UMLClassFigure(nodeLabel);
-		EObject compartment = model.getAttributeCompartment(node);
-		Collection<String> entries = model.getEntries(compartment);
+		EObject compartment = GraphMMModelWrapper.getAttributeCompartment(node);
+		Collection<String> entries = GraphMMModelWrapper.getEntries(compartment);
 		for (String string : entries) {
 					figure.getAttributesCompartment().add(new Label(string));
 		}
-		compartment = model.getMethodCompartment(node);
-		entries = model.getEntries(compartment);
+		compartment = GraphMMModelWrapper.getMethodCompartment(node);
+		entries = GraphMMModelWrapper.getEntries(compartment);
 		for (String string : entries) {
 					figure.getMethodsCompartment().add(new Label(string));
 		}
 		figure.setSize(-1, -1);
-		return new org.openarchitectureware.vis.zest.builder.UMLNode(graphModel, style, figure);
+		return new org.openarchitectureware.vis.zest.builder.CompartmentNode(graphModel, style, figure);
 	}
 
 	private boolean isInGraph(EObject node, Collection<String> checkedCategories, String cat) {

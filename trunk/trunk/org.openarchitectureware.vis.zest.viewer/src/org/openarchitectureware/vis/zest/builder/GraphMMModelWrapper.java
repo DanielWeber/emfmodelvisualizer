@@ -176,27 +176,27 @@ public class GraphMMModelWrapper {
 	}
 	
 	
-	private Collection<?> getCollection(EObject element, String featureName) {
+	private static Collection<?> getCollection(EObject element, String featureName) {
 		return (Collection<?>)get(element, featureName);
 	}
 	
-	private String getString(EObject element, String featureName) {
+	private static String getString(EObject element, String featureName) {
 		return (String)get(element, featureName);
 	}
 
-	private EObject getElement(EObject element, String featureName) {
+	private static EObject getElement(EObject element, String featureName) {
 		return (EObject)get(element, featureName);
 	}
 
-	private Object get(EObject element, String featureName) {
+	private static Object get(EObject element, String featureName) {
 		return element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
 
-	private Color getColor( EObject elem, String colorkind ) {
+	private static Color getColor( EObject elem, String colorkind ) {
 		return getColor(elem, colorkind, ColorConstants.black);
 	}
 
-	private Color getColor( EObject elem, String colorkind, Color defaultcolor ) {
+	private static Color getColor( EObject elem, String colorkind, Color defaultcolor ) {
 		String c = getElement(elem, colorkind).toString();
 		if ( c == null ) return defaultcolor;
 		Color col = colorMap.get(c);
@@ -277,35 +277,35 @@ public class GraphMMModelWrapper {
 	}
 	
 	// CompartmentNode helper methods
-	public boolean isCompartmentNode(EObject node) {
+	public static boolean isCompartmentNode(EObject node) {
 		return node.eClass().getName().endsWith("CompartmentNode");
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<EObject> getCompartments(EObject node) {
+	public static Collection<EObject> getCompartments(EObject node) {
 		return (isCompartmentNode(node)) ?  (Collection<EObject>) getCollection(node, "compartments") : null;
 	}
 	
 	// UMLNode helper methods
-	public boolean isUMLNode(EObject node) {
+	public static boolean isUMLNode(EObject node) {
 		return node.eClass().getName().endsWith("UMLNode");
 	}
 
-	public EObject getAttributeCompartment(EObject node) {
+	public static EObject getAttributeCompartment(EObject node) {
 		return (isUMLNode(node)) ?  (EObject) get(node, "attributeCompartment") : null;
 	}
 	
-	public EObject getMethodCompartment(EObject node) {
+	public static EObject getMethodCompartment(EObject node) {
 		return (isUMLNode(node)) ?  (EObject) get(node, "methodCompartment") : null;
 	}
 	
 	// Compartment helper methods
-	public boolean isCompartment(EObject compartment) {
+	public static boolean isCompartment(EObject compartment) {
 		return compartment.eClass().getName().endsWith("Compartment");
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Collection<String> getEntries(EObject compartment) {
+	public static Collection<String> getEntries(EObject compartment) {
 		return (isCompartment(compartment)) ?  (Collection<String>) getCollection(compartment, "entries") : null; 
 	}
 }

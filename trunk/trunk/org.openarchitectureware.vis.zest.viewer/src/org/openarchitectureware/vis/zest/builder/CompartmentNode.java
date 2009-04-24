@@ -4,10 +4,10 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.IContainer;
 
-public class UMLNode extends GraphNode {
+public class CompartmentNode extends GraphNode {
 		IFigure customFigure = null;
 
-		public UMLNode(IContainer graphModel, int style, IFigure figure) {
+		public CompartmentNode(IContainer graphModel, int style, IFigure figure) {
 			super(graphModel, style, figure);
 		}
 
