@@ -2,6 +2,68 @@ prolog {
 	iconbasepath "platform:/plugin/de.voelter.zest.example/icons/";
 }
 
+graph ClassDiagram {
+	nodes {
+		umlnode car label "Automobile"
+			attributeCompartment compartment attributes {
+				entry "-speed:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getSpeed():Real"
+				entry "+setSpeed(speed:Real)"
+			}
+		;
+		
+		umlnode truck label "Truck"
+			attributeCompartment compartment attributes {
+				entry "-load:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getLoad():Real"
+			}
+		;
+		
+		umlnode wheel label "Wheel"
+			attributeCompartment compartment attributes {
+				entry "-diameter:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getDiameter():Real"
+			}
+		;
+	}
+	
+	edges {
+		car -> truck;
+		car -- wheel;
+	}
+}
+
+graph CategoryDiagram {
+	nodes {
+		compartmentnode node1 label "comp" category "node"
+			compartment comp1 {
+				category "comp"
+				entry "test1"
+			}
+			compartment comp2 {
+				category "comp"
+				entry "test2"
+			}
+			compartment comp3 {
+				category "altcomp"
+				entry "test3"
+			}
+			compartment comp4 {
+				category "altcomp"
+				entry "test4"
+			}
+		; 
+	}
+	edges {
+	}
+}
+
 graph g3 {
 	nodes {
 		umlnode uml label "UML Klasse"

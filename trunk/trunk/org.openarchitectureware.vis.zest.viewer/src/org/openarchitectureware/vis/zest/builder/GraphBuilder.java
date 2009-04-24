@@ -58,7 +58,7 @@ public class GraphBuilder {
 		for (EObject node : model.getNodes(graphNode)) {
 			boolean isContainerNode = GraphMMModelWrapper.isContainerNode(node);
 			boolean isUMLNode = GraphMMModelWrapper.isUMLNode(node);
-			String cat = model.getNodeOrEdgeCategory(node);
+			String cat = GraphMMModelWrapper.getCategory(node);
 			if ( isInGraph( node, checkedCategories, cat )) {
 				GraphNode zestNode = null;
 				String icon = model.getNodeIcon( node );
@@ -66,13 +66,13 @@ public class GraphBuilder {
 					try {
 						ImageDescriptor desc = ImageDescriptor.createFromURL(new URL(icon));
 						Image i = desc.createImage();	
-						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, i);
+						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, i, checkedCategories);
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
-						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null);
+						zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null, checkedCategories);
 					}
 				} else {
-					zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null);
+					zestNode = createGraphNode(container, node, isUMLNode, isContainerNode && !drillDownEnabled, null, checkedCategories);
 				}
 				NodeData nodeData = new NodeData();
 				zestNode.setData( nodeData );
@@ -105,7 +105,7 @@ public class GraphBuilder {
 		for (EObject edge : model.getEdges(graphNode)) {
 			EObject sourceNode = model.getEdgeSource( edge );
 			EObject targetNode = model.getEdgeTarget( edge );
-			String cat = model.getNodeOrEdgeCategory(edge);
+			String cat = GraphMMModelWrapper.getCategory(edge);
 			if(isEdgeInGraph(edge, checkedCategories, cat))
          {
 			   int style = SWT.NONE;
@@ -170,13 +170,13 @@ public class GraphBuilder {
          String cat)
    {
       EObject source = model.getEdgeSource(edge);
-      String sourceCat = model.getNodeOrEdgeCategory(source);
+      String sourceCat = GraphMMModelWrapper.getCategory(source);
       if(!isInGraph(source, checkedCategories, sourceCat))
       {
          return false;
       }
       EObject target = model.getEdgeTarget(edge);
-      String targetCat = model.getNodeOrEdgeCategory(target);
+      String targetCat = GraphMMModelWrapper.getCategory(target);
       if(!isInGraph(target, checkedCategories, targetCat))
       {
          return false;
@@ -189,7 +189,7 @@ public class GraphBuilder {
    }
 
    private GraphNode createGraphNode(IContainer container, EObject node, boolean isUMLNode,
-         boolean isContainerNode, Image icon)
+         boolean isContainerNode, Image icon, Collection<String> checkedCategories)
    {
 		GraphNode n;
 		if ( isContainerNode ) {
@@ -197,7 +197,7 @@ public class GraphBuilder {
 		} else if (GraphMMModelWrapper.isUMLNode(node)) {
 			n = createNewUMLNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
 		} else if (GraphMMModelWrapper.isCompartmentNode(node)) {
-			n = createNewCompartmentNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
+			n = createNewCompartmentNode(container, node, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon, checkedCategories);
 		}else {
 			n = new GraphNode(container, SWT.NONE, model.getNodeOrEdgeLabel( node ), icon);
 		}
@@ -205,18 +205,24 @@ public class GraphBuilder {
 	}
 
 	private GraphNode createNewCompartmentNode(IContainer graphModel, EObject node,
-		int style, String text, Image image) {
+		int style, String text, Image image, Collection<String> checkedCategories) {
 		Label nodeLabel = new Label(text);
 		nodeLabel.setFont(new Font(null, "Arial", 12, SWT.BOLD));
 		MultiCompartmentFigure figure = new MultiCompartmentFigure(nodeLabel);
 		Collection<EObject> compartments = GraphMMModelWrapper.getCompartments(node);
 		for (EObject compartment : compartments) {
-			Collection<String> entries = GraphMMModelWrapper
-					.getEntries(compartment);
-			for (String string : entries) {
-				CompartmentFigure compartmentFigure = new CompartmentFigure();
-				compartmentFigure.add(new Label(string));
-				figure.add(compartmentFigure);
+			String category = GraphMMModelWrapper.getCategory(compartment);
+			if (category != null) {
+				graphData.getCategories().add(category);
+			}
+			if (isInGraph(node, checkedCategories, category)) {
+				Collection<String> entries = GraphMMModelWrapper
+						.getEntries(compartment);
+				for (String string : entries) {
+					CompartmentFigure compartmentFigure = new CompartmentFigure();
+					compartmentFigure.add(new Label(string));
+					figure.add(compartmentFigure);
+				}
 			}
 		}
 		figure.setSize(-1, -1);
@@ -228,11 +234,19 @@ public class GraphBuilder {
 		nodeLabel.setFont(new Font(null, "Arial", 12, SWT.BOLD));
 		UMLClassFigure figure = new UMLClassFigure(nodeLabel);
 		EObject compartment = GraphMMModelWrapper.getAttributeCompartment(node);
+		String category = GraphMMModelWrapper.getCategory(compartment);
+		if (category != null) {
+			graphData.getCategories().add(category);
+		}
 		Collection<String> entries = GraphMMModelWrapper.getEntries(compartment);
 		for (String string : entries) {
 					figure.getAttributesCompartment().add(new Label(string));
 		}
 		compartment = GraphMMModelWrapper.getMethodCompartment(node);
+		category = GraphMMModelWrapper.getCategory(compartment);
+		if (category != null) {
+			graphData.getCategories().add(category);
+		}
 		entries = GraphMMModelWrapper.getEntries(compartment);
 		for (String string : entries) {
 					figure.getMethodsCompartment().add(new Label(string));

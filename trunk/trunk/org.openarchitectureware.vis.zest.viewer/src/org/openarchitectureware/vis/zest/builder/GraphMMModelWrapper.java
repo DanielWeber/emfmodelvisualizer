@@ -113,7 +113,7 @@ public class GraphMMModelWrapper {
 		Map<String, String> res = new HashMap<String, String>();
 		EObject ud = getUserData(nodeOrEdge);
 		res.put( "name" , getNodeOrEdgeLabel(nodeOrEdge));
-		String cat = getNodeOrEdgeCategory( nodeOrEdge );
+		String cat = getCategory( nodeOrEdge );
 		if ( cat != null ) {
 			res.put( "cat" , cat);
 		}
@@ -125,8 +125,8 @@ public class GraphMMModelWrapper {
 		return res;
 	}
 	
-	public String getNodeOrEdgeCategory(EObject nodeOrEdge) {
-		return getString(nodeOrEdge, "category");
+	public static String getCategory(EObject graphElement) {
+		return getString(graphElement, "category");
 	}
 
 
