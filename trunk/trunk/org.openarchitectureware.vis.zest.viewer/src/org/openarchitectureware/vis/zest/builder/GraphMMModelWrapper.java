@@ -79,6 +79,12 @@ public class GraphMMModelWrapper {
 	public EObject getEdgeTarget(EObject edge) {
 		return getElement( edge, "target" );
 	}
+	
+	public int getEdgeCurveDepth(EObject edge) {
+		return getInt(edge, "curvedepth" );
+	}
+	
+
 
 	public String getNodeSourceLocation(EObject node) {
 		return getString(node, "sourceLocation");
@@ -182,6 +188,10 @@ public class GraphMMModelWrapper {
 	
 	private static String getString(EObject element, String featureName) {
 		return (String)get(element, featureName);
+	}
+
+	private static int getInt(EObject element, String featureName) {
+		return ((Integer)get(element, featureName)).intValue();
 	}
 
 	private static EObject getElement(EObject element, String featureName) {

@@ -197,18 +197,18 @@ public class ModelViewer {
 		
 		// ComboBox to enable/disable the drill down feature for the current graph
 		cboxDrillDown = new Button(rightSideComposite,SWT.CHECK | SWT.FLAT);
-		cboxDrillDown.setText("drill down");
+		cboxDrillDown.setText("Subgraphs as Drill Down");
 		//get drilldown info from tab if present
 		cboxDrillDown.setSelection((currTabItem()!=null)?getData(currTabItem()).isDrilldownEnabled():true);
 		cboxDrillDown.addSelectionListener(new SelectionListener(){
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
-				}
+			}
 
 			public void widgetSelected(SelectionEvent e) {
 				rerenderGraph(cboxDrillDown.getSelection());
-				}});
+			}
+		});
 		//still buggy with GraphContainer and the zestrootlayer association
 		cboxDrillDown.setEnabled(false);
 		
@@ -797,7 +797,7 @@ public class ModelViewer {
 	class DrillDownNode extends Action
 	{
 		public DrillDownNode() {
-			super("Drill down node");
+			super("Drill Down this Node");
 		}
 		@SuppressWarnings("unchecked")
 		@Override
@@ -822,7 +822,7 @@ public class ModelViewer {
 	class ClimbUpNode extends Action
 	{
 		public ClimbUpNode() {
-			super("Climb up");
+			super("Climb out of this Node");
 		}
 		@Override
 		public void run() {
@@ -846,11 +846,14 @@ public class ModelViewer {
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectConnectionsAction() );
 			if (getData(currTabItem()).isDrilldownEnabled() && (currGraph().getSelection().size() == 1)){
-				if (currGraph().getSelection().get(0) instanceof GraphNode && GraphMMModelWrapper.isContainerNode(getData((GraphNode)currGraph().getSelection().get(0)).getModelNode()))
-				menuMgr.add(new DrillDownNode());
+				if (currGraph().getSelection().get(0) instanceof GraphNode && GraphMMModelWrapper.isContainerNode(getData((GraphNode)currGraph().getSelection().get(0)).getModelNode())) {
+					menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+					menuMgr.add(new DrillDownNode());
+				}
 			}
 		}
 		if ( (currGraph() != null && getData(currTabItem()).isDrilldownEnabled() && !GraphMMModelWrapper.isOneOfTopGraphs(getData(currGraph()).getModelNode()))){ 
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add(new ClimbUpNode());
 		}
 	}

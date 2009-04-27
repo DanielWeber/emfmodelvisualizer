@@ -104,8 +104,8 @@ graph g3 {
 	}
 	
 	edges {
-		n1x -> n2x label "label";
-		n2x -> container;
+		n1x -> n2x label "label" curvedepth 10;
+		n2x -> container curvedepth 10;
 	}
 }
 
