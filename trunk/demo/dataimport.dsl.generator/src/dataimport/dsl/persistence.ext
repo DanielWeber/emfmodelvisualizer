@@ -1,0 +1,11 @@
+import imp;
+
+
+addIDAttributes( ImportSpec spec ):
+	spec.dataSection.dataStructures.select(d|d.isPersistent).addIDAttribute();
+	
+addIDAttribute( DataStructure ds ):
+	ds.attributes.add( ds.createIDAttribute() );
+	
+create Attribute createIDAttribute( DataStructure ds ):	
+	setName("id") -> null; //setType("String");

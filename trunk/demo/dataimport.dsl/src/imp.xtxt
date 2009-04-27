@@ -1,0 +1,85 @@
+ImportSpec:
+ "import" "ext" "=" fileExt=STRING "{"
+    (refs += OtherFile)*
+    (dataSection=DataSection)?
+    (recordSection=RecordSection)?
+ "}";
+ 
+OtherFile:
+ "ref" file=URI;
+ 
+
+DataStructure:
+	"data" name=ID (isPersistent?="persistent")?  "{"
+		( attributes += Attribute | 
+		  references += Reference)*
+	"}";
+	
+Reference:
+	"->" name=ID ":" type=[DataStructure] (ismulti?="*")?;
+	
+Attribute:
+	name=ID ":" type=AttributeType;
+	
+AttributeType:
+	IntType | BooleanType | StringType;
+	
+IntType:
+	"int" (range=Range)?;
+	
+Range:
+	"range" min=INT ".." max=INT;
+	
+BooleanType:
+	"boolean";
+	
+StringType:
+	"String" ("["len=INT"]")? ("regex" regex=STRING)?;
+
+DataSection:
+ "data" "{" 
+     (dataStructures+=DataStructure)*
+ "}";
+
+RecordSection:
+ "records" "{"
+     (recordHandlers+=RecordHandler)*
+ "}";
+ 
+RecordHandler:
+ "record" name=ID "{"
+     (instances+=Instance | fieldMappings+=FieldMapping | graphBuilds+=GraphBuild)*
+     (nextSteps+=RecordHandler)*
+     (jump=Jump)?
+ "}"; 
+ 
+Jump:
+ "next" nextRecord=[RecordHandler]; 
+ 
+GraphBuild:
+ ownerInstance=[Instance]"."ownerRef=[Reference] (one?="="|several?="+=") targetInstance=[Instance];
+ 
+FieldMapping:
+ index=INT "->" instance=[Instance]"."field=[Attribute]; 
+ 
+Instance:
+ name=ID ":" type=[DataStructure];
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

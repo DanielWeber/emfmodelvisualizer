@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: exampleData
+Bundle-SymbolicName: exampleData
+Bundle-Version: 1.0.0
+Require-Bundle: dataimport.dsl.generator,
+ dataimport.dsl,
+ dataimport.platform,
+ org.junit

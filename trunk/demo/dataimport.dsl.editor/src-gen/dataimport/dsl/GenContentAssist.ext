@@ -1,0 +1,183 @@
+import imp;
+import codeassist;
+
+extension dataimport::dsl::EditorExtensions;
+
+/* proposals for Feature StringType::len */
+List[Proposal] completeStringType_len(emf::EObject ctx, String prefix) :
+	{newProposal("StringTypeLen")};
+
+/* proposals for Feature FieldMapping::index */
+List[Proposal] completeFieldMapping_index(emf::EObject ctx, String prefix) :
+	{newProposal("FieldMappingIndex")};
+
+/* proposals for Feature Range::max */
+List[Proposal] completeRange_max(emf::EObject ctx, String prefix) :
+	{newProposal("RangeMax")};
+
+/* proposals for Feature DataStructure::name */
+List[Proposal] completeDataStructure_name(emf::EObject ctx, String prefix) :
+	{newProposal("DataStructureName")};
+
+/* proposals for Feature RecordHandler::name */
+List[Proposal] completeRecordHandler_name(emf::EObject ctx, String prefix) :
+	{newProposal("RecordHandlerName")};
+
+/* proposals for Feature ImportSpec::fileExt */
+List[Proposal] completeImportSpec_fileExt(emf::EObject ctx, String prefix) :
+	{newProposal("ImportSpecFileExt")};
+
+/* proposals for Feature StringType::regex */
+List[Proposal] completeStringType_regex(emf::EObject ctx, String prefix) :
+	{newProposal("StringTypeRegex")};
+
+/* proposals for Feature Range::min */
+List[Proposal] completeRange_min(emf::EObject ctx, String prefix) :
+	{newProposal("RangeMin")};
+
+/* proposals for Feature Reference::name */
+List[Proposal] completeReference_name(emf::EObject ctx, String prefix) :
+	{newProposal("ReferenceName")};
+
+/* proposals for Feature Instance::name */
+List[Proposal] completeInstance_name(emf::EObject ctx, String prefix) :
+	{newProposal("InstanceName")};
+
+/* proposals for Feature Attribute::name */
+List[Proposal] completeAttribute_name(emf::EObject ctx, String prefix) :
+	{newProposal("AttributeName")};
+
+
+
+/* proposals for Feature DataSection::dataStructures */
+List[Proposal] completeDataSection_dataStructures(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature ImportSpec::dataSection */
+List[Proposal] completeImportSpec_dataSection(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature IntType::range */
+List[Proposal] completeIntType_range(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature ImportSpec::recordSection */
+List[Proposal] completeImportSpec_recordSection(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordHandler::graphBuilds */
+List[Proposal] completeRecordHandler_graphBuilds(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordHandler::jump */
+List[Proposal] completeRecordHandler_jump(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature DataStructure::attributes */
+List[Proposal] completeDataStructure_attributes(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature Attribute::type */
+List[Proposal] completeAttribute_type(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature ImportSpec::refs */
+List[Proposal] completeImportSpec_refs(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordHandler::nextSteps */
+List[Proposal] completeRecordHandler_nextSteps(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordHandler::instances */
+List[Proposal] completeRecordHandler_instances(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordSection::recordHandlers */
+List[Proposal] completeRecordSection_recordHandlers(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature DataStructure::references */
+List[Proposal] completeDataStructure_references(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature RecordHandler::fieldMappings */
+List[Proposal] completeRecordHandler_fieldMappings(emf::EObject ctx, String prefix) :
+	{};
+
+
+
+/* proposals for Feature Reference::ismulti */
+List[Proposal] completeReference_ismulti(emf::EObject ctx, String prefix) :
+    {newProposal("*", "*", "keyword.gif")};
+
+/* proposals for Feature DataStructure::isPersistent */
+List[Proposal] completeDataStructure_isPersistent(emf::EObject ctx, String prefix) :
+    {newProposal("persistent", "persistent", "keyword.gif")};
+
+/* proposals for Feature GraphBuild::several */
+List[Proposal] completeGraphBuild_several(emf::EObject ctx, String prefix) :
+    {newProposal("+=", "+=", "keyword.gif")};
+
+/* proposals for Feature GraphBuild::one */
+List[Proposal] completeGraphBuild_one(emf::EObject ctx, String prefix) :
+    {newProposal("=", "=", "keyword.gif")};
+
+
+
+/* proposals for GraphBuild::ownerInstance */
+List[Proposal] completeGraphBuild_ownerInstance(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::Instance).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for FieldMapping::field */
+List[Proposal] completeFieldMapping_field(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::Attribute).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for Jump::nextRecord */
+List[Proposal] completeJump_nextRecord(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::RecordHandler).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for GraphBuild::ownerRef */
+List[Proposal] completeGraphBuild_ownerRef(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::Reference).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for FieldMapping::instance */
+List[Proposal] completeFieldMapping_instance(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::Instance).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for GraphBuild::targetInstance */
+List[Proposal] completeGraphBuild_targetInstance(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::Instance).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for Reference::type */
+List[Proposal] completeReference_type(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::DataStructure).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for Instance::type */
+List[Proposal] completeInstance_type(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(imp::DataStructure).collect(x|newProposal(x.label(),x.id(),x.image()));
+
+
+List[Proposal] sortProposals(List[Proposal] proposalsToSort):
+	proposalsToSort.sortBy(e|e.label.toLowerCase());
+
+isKeywordProposal(Proposal this):
+	type == codeassist::Type::KEYWORD;
+
+isAssignmentProposal(Proposal this):
+	type == codeassist::Type::ASSIGNMENT;
+	
+isEnumProposal(Proposal this):
+	type == codeassist::Type::ENUM_LITERAL;
+
+// create extensions
+Proposal newProposal(String proposal) :
+	newProposal(proposal,proposal);
+	
+Proposal newProposal(String label, String toReplace) :
+	newProposal(label,toReplace,"default.gif");
+	
+create Proposal newProposal(String label, String replace, String image) :
+	setLabel(label==null?"ERROR":label)->
+	setToInsert(replace==null?"ERROR":replace)->
+	setImage(image);

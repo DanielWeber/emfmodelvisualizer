@@ -1,0 +1,30 @@
+import imp;
+
+extension dataimport::dsl::Extensions;
+
+
+fqClassname(DataStructure this): classname();
+classname(DataStructure this): name;
+filename(DataStructure this): fqClassname().replaceAll("\\.","/")+".java";
+
+fqClassname(ImportSpec this): classname(); 
+classname(ImportSpec this): fileExt.toFirstUpper()+"Importer";
+filename(ImportSpec this): fqClassname().replaceAll("\\.","/")+".java";
+
+allRecordHandlers( ImportSpec this ): eRootContainer.eAllContents.typeSelect(RecordHandler);
+
+handlerMethodName( RecordHandler this ): "handle_"+recursiveName();
+datamappingMethodName( RecordHandler this ): "data_"+recursiveName();
+
+String recursiveName( RecordHandler this ): 
+	parentHandler() != null ? parentHandler().recursiveName()+"_"+name : name;
+	 
+
+javaType( AttributeType this ): null;// can never happen
+javaType( IntType this ): "int";
+javaType( BooleanType this ): "boolean";
+javaType( StringType this ): "String";
+
+
+	
+

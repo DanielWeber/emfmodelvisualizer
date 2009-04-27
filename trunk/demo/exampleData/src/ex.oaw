@@ -1,0 +1,15 @@
+<workflow>
+
+	<bean class="org.eclipse.mwe.emf.StandaloneSetup">
+		<platformUri value=".."/>
+	</bean>
+	
+	<cartridge file="dataimport::dsl::generator.oaw" 
+		modelFile="example.imp"/>
+		
+	<cartridge file="dataimport::dsl::visualize.oaw" 
+		modelFile="example.imp"/>
+		
+	
+
+</workflow>

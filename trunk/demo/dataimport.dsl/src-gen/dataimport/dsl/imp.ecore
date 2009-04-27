@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="imp" nsURI="http://www.mycompany.com/dataimport" nsPrefix="imp">
+  <eClassifiers xsi:type="ecore:EClass" name="ImportSpec">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="refs" ordered="false" upperBound="-1" eType="//OtherFile" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recordSection" ordered="false" eType="//RecordSection" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExt" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSection" ordered="false" eType="//DataSection" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OtherFile">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataStructure">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="references" ordered="false" upperBound="-1" eType="//Reference" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" ordered="false" upperBound="-1" eType="//Attribute" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isPersistent" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Reference">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ismulti" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" ordered="false" unique="false" eType="//DataStructure"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" ordered="false" eType="//AttributeType" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeType" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntType" eSuperTypes="//AttributeType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" ordered="false" eType="//Range" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Range">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanType" eSuperTypes="//AttributeType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="StringType" eSuperTypes="//AttributeType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="len" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regex" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataSection">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataStructures" ordered="false" upperBound="-1" eType="//DataStructure" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordSection">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recordHandlers" ordered="false" upperBound="-1" eType="//RecordHandler" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordHandler">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextSteps" ordered="false" upperBound="-1" eType="//RecordHandler" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instances" ordered="false" upperBound="-1" eType="//Instance" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="graphBuilds" ordered="false" upperBound="-1" eType="//GraphBuild" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="jump" ordered="false" eType="//Jump" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fieldMappings" ordered="false" upperBound="-1" eType="//FieldMapping" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Jump">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextRecord" ordered="false" unique="false" eType="//RecordHandler"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GraphBuild">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetInstance" ordered="false" unique="false" eType="//Instance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownerRef" ordered="false" unique="false" eType="//Reference"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="several" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownerInstance" ordered="false" unique="false" eType="//Instance"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="one" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FieldMapping">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instance" ordered="false" unique="false" eType="//Instance"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="index" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" ordered="false" unique="false" eType="//Attribute"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Instance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" ordered="false" unique="false" eType="//DataStructure"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

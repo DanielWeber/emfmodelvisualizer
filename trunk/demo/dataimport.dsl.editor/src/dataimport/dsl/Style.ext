@@ -1,0 +1,16 @@
+import scanning;
+import imp;
+
+extension dataimport::dsl::GenStyle reexport;
+
+FontStyle fontstyle(String keyword, DataStructure ctx):
+	ctx.name == "XXY" ?
+	                 //  bold, italic, strike, underline, 
+		createFontStyle( true, true,   false,  false,    
+		             //  foreground color,     background color
+		                 createColor(0,200,0), createColor(100,0,0) ) : 
+		null;
+		
+		
+		
+		

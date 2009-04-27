@@ -1,0 +1,59 @@
+import imp;
+import dot;
+
+extension dotlib;
+ 
+Object top(ImportSpec s): 
+	toGraphVizmodel(s); 
+
+create dot::graphvizmodel toGraphVizmodel(ImportSpec imp):
+	addGraph( toGraph(imp) ); 
+
+cached toGraph(ImportSpec imp):
+	imp.mapToGraph()
+		.setName( "import_"+imp.fileExt)
+		.addStatement( imp.dataSection.toSubgraph() )
+		.addStatement( imp.recordSection.toSubgraph() );
+		
+cached toSubgraph( DataSection s ):
+	s.mapToSubgraph()
+		.setName("data")
+		.setLabel("data")
+		.addStatements( s.dataStructures.toNode() )
+		.addStatements( s.dataStructures.references.toEdge() );
+		
+cached toSubgraph( RecordSection s ):
+	s.mapToSubgraph()
+		.setName("records")
+		.setLabel("records")
+		.addStatements( s.eAllContents.typeSelect(RecordHandler).toNode() )
+		.addStatements( s.eAllContents.typeSelect(RecordHandler).handleNextSteps() )
+		.addStatements( s.eAllContents.typeSelect(RecordHandler).instances.toEdge() );
+
+handleNextSteps( RecordHandler h ):
+	h.nextSteps.toEdge( h );
+
+cached toEdge( Instance inst ):
+	mapToDirectedEdge( inst.eContainer, inst.type, inst )
+		.setArrowHead("vee")
+		.setStyle("dashed")
+		.setLabel( inst.name );
+
+cached toNode( RecordHandler r ):
+	r.mapToNode()
+		.setShape("ellipse")
+		.setLabel( r.name );
+		
+cached toEdge( RecordHandler next, RecordHandler current ):
+	mapToDirectedEdge( current, next, null )
+		.setArrowHead("vee");
+
+		
+cached toNode( DataStructure s ):
+	s.mapToNode()
+		.setShape("record")
+		.setLabel("{"+s.name+"|"+s.attributes.collect(a|a.name+": "+a.type).toString("\\n")+"}");
+		
+cached toEdge( Reference r ):
+	mapToDirectedEdge( r.eContainer, r.type, r )
+		.setLabel( r.name );

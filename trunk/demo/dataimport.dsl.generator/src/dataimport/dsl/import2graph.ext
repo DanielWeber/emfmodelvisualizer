@@ -1,0 +1,23 @@
+import imp;
+import graphmm;
+
+extension graphmmlib;
+ 
+create GraphCollection top(ImportSpec s): 
+	graphs.add( s.toGraph() );
+	
+create Graph toGraph( ImportSpec s ):
+	setName( "importspec" ) ->
+	nodes.addAll( s.dataSection.dataStructures.toNode() ) ->
+	edges.addAll( s.dataSection.dataStructures.references.toEdge() );
+	
+create CompartmentNode toNode( DataStructure d ):
+	setSourceLocation( d.xtext431SourceLocation() ) ->
+    setName( uuid() ) -> 
+	setLabel( d.name );
+	
+create SimpleDirectedEdge toEdge( Reference r ):
+	setSource( ((DataStructure)r.eContainer).toNode() ) ->
+	setTarget( r.type.toNode() );
+	
+	

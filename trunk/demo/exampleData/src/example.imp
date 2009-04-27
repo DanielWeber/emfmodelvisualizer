@@ -1,0 +1,91 @@
+import  ext="exp"  {
+
+	data {
+	 
+	  	data Patient persistent {
+	 		name: String
+	 		age : int range 0..120
+	 		firstName: String[20] regex "[a-z]*" 
+	 		birthDate: String
+			insuranceName: String  
+			insuranceNumber: String
+	 		-> adr: Adress   
+	 		-> tel: Telephone*
+	 		-> stays: Stay*
+		}  
+	  	data Adress persistent {
+	 		street: String  
+	 		zip: String
+	 		city: String
+		} 
+		
+		data Telephone {
+			countryCode: String
+			cityCode: String
+			localNumber: String
+		}
+	 	data Stay {
+	 		beginDate: String
+	 		-> stations: Station*
+	 		endDate: String
+	 	}
+	 	data Station {
+	 		date: String
+	 		stationName: String 
+	 	}
+	 }
+
+	records {
+	
+		record P001 {
+			p: Patient 
+	 		1 -> p.name  
+			2 -> p.firstName
+			3 -> p.birthDate
+			
+			
+			record A001 {
+				a: Adress
+				1 -> a.street
+				2 -> a.zip
+				3 -> a.city
+				p.adr = a 
+			} 
+			
+			record V001 {
+				1 -> p.insuranceName
+				2 -> p.insuranceNumber
+			}
+			record T001 {
+				tel: Telephone
+				1 -> tel.countryCode
+			 	2 -> tel.cityCode
+				3 -> tel.localNumber
+				p.tel += tel
+			}
+			record S001 {
+				stay: Stay
+				1 -> stay.beginDate
+				
+				station: Station
+				2 -> station.stationName
+				1 -> station.date
+				stay.stations += station
+	
+				p.stays += stay
+				
+				record S003 {
+					1 -> stay.endDate
+				}		
+				
+				record S002 {
+					st: Station
+					1 -> st. date 
+					2 -> st.stationName
+					stay.stations += st
+				}	
+			}
+		}
+	} 
+
+}

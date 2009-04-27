@@ -1,0 +1,35 @@
+
+extension dataimport::dsl::Extensions;
+extension dataimport::dsl::Linking;
+
+link(emf::EObject this) :
+	this.allVisibleElements().internalLink();
+
+Void internalLink(emf::EObject this) :
+	null;
+
+
+Void internalLink(imp::Reference this) :
+	this.link_type()
+;
+
+Void internalLink(imp::Jump this) :
+	this.link_nextRecord()
+;
+
+Void internalLink(imp::GraphBuild this) :
+	this.link_targetInstance()
+ -> 	this.link_ownerRef()
+ -> 	this.link_ownerInstance()
+;
+
+Void internalLink(imp::FieldMapping this) :
+	this.link_instance()
+ -> 	this.link_field()
+;
+
+Void internalLink(imp::Instance this) :
+	this.link_type()
+;
+
+

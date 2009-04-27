@@ -1,0 +1,16 @@
+<plugin>
+   <extension
+         point="org.openarchitectureware.xtext.core.base.dynamic_package">
+      <resource
+            location="platform:/plugin/dataimport.dsl/dataimport.dsl/imp.ecore"
+            uri="imp">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            class="dataimport.dsl.resource.impResourceFactory"
+            type="imp">
+      </parser>
+   </extension>
+</plugin>

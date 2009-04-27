@@ -1,0 +1,15 @@
+import imp;
+
+extension dataimport::dsl::GenExtensions reexport;
+ 
+Collection[Instance] instancesInScope( RecordHandler this ):
+	parentHandler() != null ? instances.union( parentHandler().instancesInScope() ) : instances;
+	
+parentHandler( RecordHandler this ):
+	eContainer != null ? ( RecordHandler.isInstance(eContainer) ? ((RecordHandler)eContainer) : null ) : 
+		null;
+		
+allReferencedDataStructures( DataStructure this ):
+	references.type;
+	
+	

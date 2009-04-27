@@ -1,0 +1,18 @@
+<workflow>
+
+	<property name="modelFile" />
+	<property name="targetDir" value="src-gen/" />
+
+	<component file='dataimport/dsl/parser/Parser.oaw'>
+    	<modelFile value='${modelFile}'/>
+    	<outputSlot value='model'/>
+	</component>
+
+	<cartridge file="model2dotfile.oaw" 
+		outputFilename="imp2prefuse.xml"
+		targetDir="${targetDir}"
+		topFunctionCallExpression="dataimport::dsl::import2dot::top(model)"
+		inheritAll="true"/>
+
+
+</workflow>

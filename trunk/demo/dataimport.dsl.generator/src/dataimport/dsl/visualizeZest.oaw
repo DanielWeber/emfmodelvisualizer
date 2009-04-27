@@ -1,0 +1,13 @@
+<workflow abstract="true">
+
+	<property name="modelFile" />
+
+	<component file='dataimport/dsl/parser/Parser.oaw'>
+    	<modelFile value='${modelFile}'/>
+    	<outputSlot value='model'/>
+	</component>
+
+	<cartridge file="trafo2graphmm"
+	 	trafocall="dataimport::dsl::import2graph::top(model)"/>
+
+</workflow>

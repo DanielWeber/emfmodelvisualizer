@@ -1,0 +1,40 @@
+import imp;
+
+extension org::openarchitectureware::xtext::parser::LinkerUtils;
+
+extension dataimport::dsl::Extensions;
+
+/*
+ * check linking
+ */
+context Reference ERROR "Couldn't resolve reference to '"+this.parsedString("type")+"'" :
+	this.parsedString("type")!=null ? type!=null : true;
+
+context Jump ERROR "Couldn't resolve reference to '"+this.parsedString("nextRecord")+"'" :
+	this.parsedString("nextRecord")!=null ? nextRecord!=null : true;
+
+context GraphBuild ERROR "Couldn't resolve reference to '"+this.parsedString("targetInstance")+"'" :
+	this.parsedString("targetInstance")!=null ? targetInstance!=null : true;
+
+context GraphBuild ERROR "Couldn't resolve reference to '"+this.parsedString("ownerRef")+"'" :
+	this.parsedString("ownerRef")!=null ? ownerRef!=null : true;
+
+context GraphBuild ERROR "Couldn't resolve reference to '"+this.parsedString("ownerInstance")+"'" :
+	this.parsedString("ownerInstance")!=null ? ownerInstance!=null : true;
+
+context FieldMapping ERROR "Couldn't resolve reference to '"+this.parsedString("instance")+"'" :
+	this.parsedString("instance")!=null ? instance!=null : true;
+
+context FieldMapping ERROR "Couldn't resolve reference to '"+this.parsedString("field")+"'" :
+	this.parsedString("field")!=null ? field!=null : true;
+
+context Instance ERROR "Couldn't resolve reference to '"+this.parsedString("type")+"'" :
+	this.parsedString("type")!=null ? type!=null : true;
+
+
+
+
+context OtherFile if file!=null ERROR "Couldn't resolve referenced artifact '"+file+"'" :
+	!file(false).isEmpty;
+
+

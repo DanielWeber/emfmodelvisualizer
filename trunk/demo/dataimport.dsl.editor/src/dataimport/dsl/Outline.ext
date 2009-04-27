@@ -1,0 +1,25 @@
+import imp;
+import tree;
+
+extension dataimport::dsl::EditorExtensions;
+extension dataimport::dsl::GenOutline reexport;
+
+create UIContentNode outlineTree_Types(emf::EObject model) :
+	setLabel(model.label()) ->
+	setImage(model.image()) ->
+	setContext(model)->
+	children.addAll( model.eAllContents.typeSelect(DataStructure).createDSContainer(model) );
+			
+create UIContentNode createDSContainer( DataStructure ds, emf::EObject model ):
+	setLabel( ds.label() ) ->			
+	setImage( ds.image() ) ->
+	setContext(ds) ->
+	children.addAll( model. eAllContents.typeSelect(Instance).select(i|i.type == ds).createINode() );
+			
+create UIContentNode createINode( Instance i):
+	setLabel(i.label()) ->
+	setImage(i.image()) ->
+	setContext(i);
+
+List[String] viewpoints() :
+	{"Types"};
