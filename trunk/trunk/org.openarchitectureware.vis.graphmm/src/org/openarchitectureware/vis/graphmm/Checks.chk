@@ -12,6 +12,9 @@ context Edge ERROR "weight must be between -100 and +100" :
 context Graph ERROR "name must be specified":
 	name != null;
 	
+context Node ERROR "node IDs must be unique per model (not just per graph!)": 	
+	((GraphCollection)eRootContainer).allNodes().select(n|n.name == name).size == 1;
+	
 context Graph ERROR "graphs must be contained in GraphCollections or a ContainerNode":
 	eContainer != null && (GraphCollection.isInstance( eContainer ) || ContainerNode.isInstance( eContainer ));
 

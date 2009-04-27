@@ -9,3 +9,5 @@ extension org::openarchitectureware::vis::graphmm::GenExtensions reexport;
  * You can overwrite or specialize them here
  */
  
+cached allNodes( GraphCollection this ):
+	eAllContents.typeSelect(Node);
