@@ -41,7 +41,7 @@ graph ClassDiagram {
 
 graph CategoryDiagram {
 	nodes {
-		compartmentnode node1 label "comp" category "node"
+		compartmentnode comp label "comp" category "node"
 			compartment comp1 {
 				category "comp"
 				entry "test1"
