@@ -125,7 +125,7 @@ public class ModelViewer {
 	 * callback when the focus is set
 	 */
 	public void setFocus() {
-		currGraph().setFocus();
+		if ( currGraph() != null ) currGraph().setFocus();
 	}
 	
 	/**
@@ -621,6 +621,7 @@ public class ModelViewer {
 	 * @return the currently selected graph
 	 */
 	private Graph currGraph() {
+		if ( graphbuilder == null ) return null; 
 		return getData(currTabItem()).getGraph();
 	}
 
