@@ -18,6 +18,13 @@ create Properties createProperties( emf::EObject node ):
 NVPair createNVPair( String n, String v ):
     let this = new NVPair :
 	   setName( n ) -> setValue( v ) -> setType( texttype() ) -> this;
+	   
+cached String uuid( Node this ):
+	JAVA  org.openarchitectureware.vis.graphmm.ExtensionHelper.uuid( java.lang.Object );
+
+cached String xtext431SourceLocation( emf::EObject this ):
+	JAVA  org.openarchitectureware.vis.graphmm.ExtensionHelper.location431( org.eclipse.emf.ecore.EObject );
+	
 	
 create TextType texttype(): this;   
 
