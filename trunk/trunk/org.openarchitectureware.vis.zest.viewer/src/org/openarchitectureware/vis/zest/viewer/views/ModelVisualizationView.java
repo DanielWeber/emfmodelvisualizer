@@ -88,7 +88,8 @@ public class ModelVisualizationView extends ViewPart {
 		fillLocalPullDown();
 		fillLocalToolBar();
 		// the following is for testing purposes.
-		setFilenameAndRedraw("de/voelter/zest/example/createMinimal.oaw"); 
+		setFilenameAndRedraw("de/voelter/zest/example/createMinimal.oaw");
+		getSite().setSelectionProvider(modelViewer);
 	}
 
 	/**

@@ -12,6 +12,7 @@ import java.util.Set;
 import nu.bibi.breadcrumb.IMenuSelectionListener;
 import nu.bibi.breadcrumb.MenuSelectionEvent;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
@@ -23,8 +24,12 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IOpenListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -47,7 +52,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -72,12 +80,12 @@ import org.openarchitectureware.vis.zest.viewer.views.breadcrumb.GraphBreadcrumb
 /**
  * This class provides a viewer that renders graphmm instances using ZEST. The
  * graphmm model instance must be handed in using #setInput. The viewer does not
- * care where this instacne is coming from.
+ * care where this instance is coming from.
  * 
  * @author MarkusVoelter
  * @author DanielWeber
  */
-public class ModelViewer {
+public class ModelViewer implements ISelectionProvider {
 
 	private static final int LAYOUT_RADIAL = 0;
 	private static final int LAYOUT_SPRING = 1;
@@ -99,6 +107,7 @@ public class ModelViewer {
     private Button cboxDrillDown;
     private final StringBuffer typedKeys = new StringBuffer();
 	private final IStatusLineManager statusLineManager;
+	private ListenerList listeners;
 
 	/**
 	 * Constructor. Does not create any widgets.
@@ -119,6 +128,7 @@ public class ModelViewer {
 		this.toolkit = toolkit;
 		this.sourceLocator = sourceLocator;
 		this.statusLineManager = statusLineManager;
+		this.listeners = new ListenerList();
 	}
 	
 	/**
@@ -493,6 +503,11 @@ public class ModelViewer {
 				graph.redraw();
 			}
 		});
+		graph.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setSelection(getSelection());
+			}
+		});
 	}
 	/**
 	 * update statusbar and delete buffer of typedkeys
@@ -839,6 +854,18 @@ public class ModelViewer {
 	}
 	
 	private void fillContextMenu(IMenuManager menuMgr) {
+		menuMgr.add(new Action("Show properties view") {
+			@Override
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage().showView(
+									IPageLayout.ID_PROP_SHEET);
+				} catch (PartInitException e) {
+					// The property view is not available, live with it...
+				}
+			}
+		});
 		if ( (currGraph() != null) && (currGraph().getSelection().size() != 0) ) {
 			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
 			menuMgr.add( new SelectAllRelatedNodeAction() );
@@ -1004,5 +1031,76 @@ public class ModelViewer {
 		getData(currTabItem()).setDrilldownEnabled(drilldown);
 		EObject graph = ((GraphData)currGraph().getData()).getModelNode();
 		createGraphIntoTabItem(graph, currTabItem());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * @return The selection of the currently active graph. An empty selection
+	 *         if there is no graph. Note that the selection will be filled with
+	 *         graphmm model objects (instead of zest graph items). That's
+	 *         similar to what JFace viewers do.
+	 * 
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+	 */
+	public ISelection getSelection() {
+		Object[] selectionElements = null;
+		Graph currGraph = currGraph();
+		if (null != currGraph) {
+			@SuppressWarnings("unchecked")
+			List graphSelection = currGraph.getSelection();
+			List<EObject> selectedElements = new ArrayList<EObject>(
+					graphSelection.size());
+			// extract model objects and put them into the selectedElements list
+			for (Object item : graphSelection) {
+				if (item instanceof GraphNode) {
+					selectedElements.add(getData((GraphNode) item)
+							.getModelNode());
+				} else if (item instanceof GraphConnection) {
+					selectedElements.add(getData((GraphConnection) item)
+							.getModelEdge());
+				}
+			}
+			selectionElements = selectedElements.toArray();
+		}
+		return new StructuredSelection(selectionElements);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Propagates selection changes in contained graphs to registered
+	 * {@link ISelectionChangedListener}s
+	 * 
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+	 *      .jface.viewers.ISelection)
+	 */
+	public void setSelection(ISelection selection) {
+		Object[] listenerObjects = listeners.getListeners();
+		SelectionChangedEvent ev = new SelectionChangedEvent(ModelViewer.this,
+				selection);
+		for (int i = 0; i < listenerObjects.length; ++i) {
+			((ISelectionChangedListener) listenerObjects[i])
+					.selectionChanged(ev);
+		}
 	}
 }

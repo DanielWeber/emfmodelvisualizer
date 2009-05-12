@@ -100,7 +100,7 @@ public class GraphBuilder {
 				zestNode.setBorderColor(model.getNodeLineColor(node));
 				zestNode.setForegroundColor(model.getNodeTextColor(node));
 				zestNode.setBackgroundColor(model.getNodeFillColor(node));
-				Map<String, String> userDataMap = model.getUserDataMap(node);
+				Map<String, String> userDataMap = GraphMMModelWrapper.getUserDataMap(node);
 				nodeData.getUserData().putAll(userDataMap);
 				nodeData.setModelNode(node);
 				nodeMap.put(node, zestNode);
@@ -130,6 +130,7 @@ public class GraphBuilder {
 						style, nodeMap.get(sourceNode), nodeMap.get(targetNode));
 				zestConnection.setHighlightColor(ColorConstants.red);
 				EdgeData edgeData = new EdgeData();
+				edgeData.setModelEdge(edge);
 				zestConnection.setData(edgeData);
 				int curveDepth = model.getEdgeCurveDepth(edge);
 				if ( curveDepth > 0 ) {
@@ -140,7 +141,7 @@ public class GraphBuilder {
 					IFigure label = new Label(tooltip);
 					zestConnection.setTooltip(label);
 				}
-				String text = model.getNodeOrEdgeLabel(edge);
+				String text = GraphMMModelWrapper.getNodeOrEdgeLabel(edge);
 				if (text != null)
 					zestConnection.setText(text);
 				String icon = model.getEdgeIcon(edge);
@@ -159,7 +160,7 @@ public class GraphBuilder {
 				zestConnection.setWeight(model.getEdgeLineWeight(edge));
 				zestConnection.setLineStyle(model.getEdgeStyle(edge));
 				edgeData.setCategory(cat);
-				Map<String, String> userDataMap = model.getUserDataMap(edge);
+				Map<String, String> userDataMap = GraphMMModelWrapper.getUserDataMap(edge);
 				edgeData.getUserData().putAll(userDataMap);
 
 				// Fix for connections that are inside a GraphContainer, only
@@ -211,16 +212,16 @@ public class GraphBuilder {
 			Collection<String> checkedCategories) {
 		GraphNode n;
 		if (isContainerNode) {
-			n = new GraphContainer(container, SWT.NONE, model
+			n = new GraphContainer(container, SWT.NONE, GraphMMModelWrapper
 					.getNodeOrEdgeLabel(node), icon);
 		} else if (GraphMMModelWrapper.isUMLNode(node)) {
-			n = createNewUMLNode(container, node, SWT.NONE, model
+			n = createNewUMLNode(container, node, SWT.NONE, GraphMMModelWrapper
 					.getNodeOrEdgeLabel(node), icon);
 		} else if (GraphMMModelWrapper.isCompartmentNode(node)) {
-			n = createNewCompartmentNode(container, node, SWT.NONE, model
+			n = createNewCompartmentNode(container, node, SWT.NONE, GraphMMModelWrapper
 					.getNodeOrEdgeLabel(node), icon, checkedCategories);
 		} else {
-			n = new GraphNode(container, SWT.NONE, model
+			n = new GraphNode(container, SWT.NONE, GraphMMModelWrapper
 					.getNodeOrEdgeLabel(node), icon);
 		}
 		return n;

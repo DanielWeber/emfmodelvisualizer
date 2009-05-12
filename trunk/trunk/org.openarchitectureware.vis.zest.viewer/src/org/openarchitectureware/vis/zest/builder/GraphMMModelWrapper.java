@@ -62,7 +62,7 @@ public class GraphMMModelWrapper {
 		return (Collection<EObject>) getCollection(graph, "edges");
 	}
 	
-	public String getNodeOrEdgeLabel(EObject node) {
+	public static String getNodeOrEdgeLabel(EObject node) {
 		return getString( node, "label" );
 	}
 
@@ -110,12 +110,12 @@ public class GraphMMModelWrapper {
 		return getColor( node, "textcolor");
 	}
 
-	public EObject getUserData(EObject nodeOrEdge) {
+	public static EObject getUserData(EObject nodeOrEdge) {
 		return getElement( nodeOrEdge, "userData");
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<String, String> getUserDataMap( EObject nodeOrEdge ) {
+	public static Map<String, String> getUserDataMap(EObject nodeOrEdge) {
 		Map<String, String> res = new HashMap<String, String>();
 		EObject ud = getUserData(nodeOrEdge);
 		res.put( "name" , getNodeOrEdgeLabel(nodeOrEdge));
