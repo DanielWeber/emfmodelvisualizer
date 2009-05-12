@@ -1053,7 +1053,7 @@ public class ModelViewer implements ISelectionProvider {
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
 	 */
 	public ISelection getSelection() {
-		Object[] selectionElements = null;
+		ISelection ret = StructuredSelection.EMPTY;
 		Graph currGraph = currGraph();
 		if (null != currGraph) {
 			@SuppressWarnings("unchecked")
@@ -1070,9 +1070,9 @@ public class ModelViewer implements ISelectionProvider {
 							.getModelEdge());
 				}
 			}
-			selectionElements = selectedElements.toArray();
+			ret = new StructuredSelection(selectedElements.toArray());
 		}
-		return new StructuredSelection(selectionElements);
+		return ret;
 	}
 
 	/*
