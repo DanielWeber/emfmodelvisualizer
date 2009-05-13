@@ -15,6 +15,7 @@ public class GraphMMModelWrapper {
 	private static Map<String, Integer> styleMap = new HashMap<String, Integer>();
 	
 	public GraphMMModelWrapper( EObject graphmmModel ) {
+		if (graphmmModel == null) throw new IllegalArgumentException("model can not be null");
 		this.model = graphmmModel;
 		colorMap.put("white", ColorConstants.white );  
 		colorMap.put("lightGray", ColorConstants.lightGray );
@@ -199,6 +200,7 @@ public class GraphMMModelWrapper {
 	}
 
 	private static Object get(EObject element, String featureName) {
+		if (element == null || featureName==null) throw new IllegalArgumentException("Element can not be null");
 		return element.eGet( element.eClass().getEStructuralFeature(featureName) );
 	}
 

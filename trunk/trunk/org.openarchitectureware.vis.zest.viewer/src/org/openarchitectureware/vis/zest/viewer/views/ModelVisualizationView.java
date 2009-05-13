@@ -5,91 +5,98 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
+import org.openarchitectureware.vis.zest.util.OawEclipseProjectResourceAndClassesLoader;
+import org.openarchitectureware.vis.zest.viewer.Activator;
 import org.openarchitectureware.vis.zest.viewer.source.EclipseSourceLocator;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.issues.IssuesImpl;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
-
+import org.openarchitectureware.workflow.util.ResourceLoader;
+import org.openarchitectureware.workflow.util.ResourceLoaderFactory;
 
 /**
- * This class represents an Eclipse view that renders graphmm 
- * instances using ZEST.
+ * This class represents an Eclipse view that renders graphmm instances using
+ * ZEST.
  * 
  * @author MarkusVoelter
  * @author DanielWeber
  */
 public class ModelVisualizationView extends ViewPart {
 
-	private Set<String> recentWorkflowFiles = new HashSet<String>();
-	
+	private Set<IFile> recentWorkflowIFiles = new HashSet<IFile>();
+
 	private Action runWorkflowAction;
 	private IMenuManager menuManager;
 	private IToolBarManager toolBarManager;
 	private Action refreshCurrentWorkflowAction;
-	private String currentWorkflowFileName;
-    private ModelViewer          modelViewer;
+	private IFile currentWorkflowFile;
+	private ModelViewer modelViewer;
 
 	/**
 	 * constructor - do nothing
 	 */
 	public ModelVisualizationView() {
 	}
-	
+
 	/**
-	 * callback when the focus is set
-	 * do nothing
+	 * callback when the focus is set do nothing
 	 */
 	public void setFocus() {
 		if (null != modelViewer)
 			modelViewer.setFocus();
 	}
-	
 
 	/**
-	 * called by Eclipse to initiate construction of 
-	 * the view. Here we just create the menus. All
-	 * the rest of the view content is created after
-	 * a workflow has been run to create a graph. 
+	 * called by Eclipse to initiate construction of the view. Here we just
+	 * create the menus. All the rest of the view content is created after a
+	 * workflow has been run to create a graph.
 	 */
 	public void createPartControl(Composite parent) {
-	  FormToolkit toolkit = new FormToolkit(parent.getDisplay());
-	  Form form = toolkit.createForm(parent);
-      FillLayout layout = new FillLayout();
-      layout.marginHeight = 10;
-      layout.marginWidth = 4;
-      form.getBody().setLayout(layout);
-      toolkit.decorateFormHeading(form);
-		
-      IActionBars bars = getViewSite().getActionBars();
+		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
+		Form form = toolkit.createForm(parent);
+		FillLayout layout = new FillLayout();
+		layout.marginHeight = 10;
+		layout.marginWidth = 4;
+		form.getBody().setLayout(layout);
+		toolkit.decorateFormHeading(form);
 
-      modelViewer = new ModelViewer(form.getBody(), toolkit,
+		IActionBars bars = getViewSite().getActionBars();
+
+		modelViewer = new ModelViewer(form.getBody(), toolkit,
 				new EclipseSourceLocator(), bars.getStatusLineManager());
-      
+
 		menuManager = bars.getMenuManager();
 		toolBarManager = bars.getToolBarManager();
 		createActions();
 		fillLocalPullDown();
 		fillLocalToolBar();
-		// the following is for testing purposes.
-		setFilenameAndRedraw("de/voelter/zest/example/createMinimal.oaw");
 		getSite().setSelectionProvider(modelViewer);
+
 	}
 
 	/**
@@ -108,87 +115,131 @@ public class ModelVisualizationView extends ViewPart {
 	 */
 	private void fillLocalToolBar() {
 		// select and run a workflow
-		toolBarManager.add( runWorkflowAction );
+		toolBarManager.add(runWorkflowAction);
 		// the action to rerun the current workflow
-		toolBarManager.add( refreshCurrentWorkflowAction );
+		toolBarManager.add(refreshCurrentWorkflowAction);
 	}
 
-	/** 
-	 * main method that runs a workflow and renders the graph
-	 * created by that workflow. The workflow must put an instance
-	 * of the graphmm metamodel into the graphmodel workflow slot 
-	 * @param workflowFileName name and path to workflow
-	 */
-	private void setFilenameAndRedraw(String workflowFileName) {
-		// remember current workflow
-		currentWorkflowFileName = workflowFileName;
-		// add workflow to the drop down menu
-		addRecentWorkflowFile( workflowFileName );
-		// actually run workflow and get the resulting graphmm instance
-		EObject graphmodel = runWorkflow(workflowFileName);
-		
-		modelViewer.setInput(graphmodel);
-	}
-	
 	/**
-	 * runs an oAW workflow to get hold of a graph model
-	 * @param workflowFileName the workflow to be run
-	 * @return the graphmodel built by the workflow
+	 * main method that runs a workflow and renders the graph created by that
+	 * workflow. The workflow must put an instance of the graphmm metamodel into
+	 * the graphmodel workflow slot
+	 * 
+	 * @param workflowFile
+	 *            the workflow file in the workspace
 	 */
-	private EObject runWorkflow(String workflowFileName) {
+	private void setFilenameAndRedraw(IFile workflowFile) {
+		// remember current workflow
+		currentWorkflowFile = workflowFile;
+		// // add workflow to the drop down menu
+		addRecentWorkflowFile(workflowFile);
+		// // actually run workflow and get the resulting graphmm instance
+		EObject graphmodel = null;
+		graphmodel = runWorkflow(workflowFile);
+
+		if (graphmodel == null)
+			MessageDialog.openInformation(new Shell(Display.getCurrent()), "",
+					"there is no model to interpet after workflow execution");
+		else {
+			modelViewer.setInput(graphmodel);
+		}
+	}
+
+	public EObject runWorkflow(IFile workflowFile) {
+		IProject project = workflowFile.getProject();
 		Map<String, String> properties = new HashMap<String, String>();
 		Map<?, ?> slotContents = new HashMap<String, Object>();
-		WorkflowRunner runner = new WorkflowRunner();
-		final boolean configOK = runner.prepare(workflowFileName, new NullProgressMonitor(), properties);
-		final Issues issues = new IssuesImpl();
-		if (configOK) {
-			runner.executeWorkflow(slotContents, issues);
-			EObject graphmodel = (EObject)runner.getContext().get("graphmodel");
-			return graphmodel;
-		} else {
-			return null;
+		EObject graphmodel = null;
+		// configure properties passed to the workflow engine
+		properties.put("basedir", project.getLocation().toFile()
+				.getAbsolutePath());
+		// Logging disabled: ResourceLoading does not work. (Bollbach)
+		// ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
+		// Thread.currentThread().setContextClassLoader(
+		// this.getClass().getClassLoader());
+		// MyLog.registerToLogFactory();
+		// ResourceLoader oldResourceLoader = ResourceLoaderFactory
+		// .createResourceLoader();
+		try {
+			ResourceLoader resourceLoader = new OawEclipseProjectResourceAndClassesLoader(
+					project);
+			ResourceLoaderFactory
+					.setCurrentThreadResourceLoader(resourceLoader);
+
+			WorkflowRunner runner = new WorkflowRunner();
+			final boolean configOK = runner.prepare(workflowFile.getFullPath()
+					.toOSString(), new NullProgressMonitor(), properties);
+			if (configOK) {
+				final Issues issues = new IssuesImpl();
+				runner.executeWorkflow(slotContents, issues);
+				graphmodel = (EObject) runner.getContext().get("graphmodel");
+			}
+		} catch (CoreException ex) {
+			ex.printStackTrace();
+		} finally {
+			ResourceLoaderFactory.setCurrentThreadResourceLoader(null);
+			// Thread.currentThread().setContextClassLoader(oldcl);
+			// MyLog.unregisterFromLogFactory();
 		}
+		return graphmodel;
 	}
 
 	/**
 	 * adds a workflow file to the list of recently run workflows
-	 * @param workflowFileName the workflow to be added
+	 * 
+	 * @param workflowFile
+	 *            the workflow to be added
 	 */
-	private void addRecentWorkflowFile(String workflowFileName) {
+	private void addRecentWorkflowFile(IFile workflowFile) {
 		// only add it if it's not yet in the list
-		if ( recentWorkflowFiles.contains(workflowFileName)) {
+		if (recentWorkflowIFiles.contains(workflowFile)) {
 			return;
 		}
-		recentWorkflowFiles.add(workflowFileName);
-		menuManager.add( new RecentWorkflowAction(workflowFileName) );
+		recentWorkflowIFiles.add(workflowFile);
+		menuManager.add(new RecentWorkflowAction(workflowFile));
 	}
-	
+
 	/**
 	 * action used to re-run existing workflows
+	 * 
 	 * @author MarkusVoelter
 	 */
 	class RecentWorkflowAction extends Action {
 		String workflow = null;
-		public RecentWorkflowAction( String filename ) {
+		IFile workflowIFile = null;
+
+		public RecentWorkflowAction(String filename) {
 			workflow = filename;
 			setText(filename);
-			setToolTipText("Rerun "+filename);
-			setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
+			setToolTipText("Rerun " + filename);
+			setImageDescriptor(ImageRegistry
+					.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
 		}
+
+		public RecentWorkflowAction(IFile workflowFile) {
+			workflowIFile = workflowFile;
+			setText(workflowFile.getName());
+			setToolTipText("Rerun " + workflowFile.getName());
+			setImageDescriptor(ImageRegistry
+					.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
+		}
+
 		public void run() {
-        	onRerunWorkflow(workflow);
+			if (workflowIFile != null)
+				onRerunWorkflow(workflowIFile);
 		}
 	}
 
-	/** 
-	 * when a recent workflow is rerun, just call the 
-	 * setFilenameAndRedraw method
+	/**
+	 * when a recent workflow is rerun, just call the setFilenameAndRedraw
+	 * method
+	 * 
 	 * @param recentWorkflowToBeRerun
 	 */
-	private void onRerunWorkflow(String recentWorkflowToBeRerun) {
+	private void onRerunWorkflow(IFile recentWorkflowToBeRerun) {
 		setFilenameAndRedraw(recentWorkflowToBeRerun);
 	}
-	
+
 	/**
 	 * creates the actions for the drop down menu and the button list
 	 */
@@ -199,8 +250,10 @@ public class ModelVisualizationView extends ViewPart {
 			}
 		};
 		runWorkflowAction.setText("Run Transformation Workflow...");
-		runWorkflowAction.setToolTipText("Run a workflow that creates a GraphMM model");
-		runWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
+		runWorkflowAction
+				.setToolTipText("Run a workflow that creates a GraphMM model");
+		runWorkflowAction.setImageDescriptor(ImageRegistry
+				.getImageDescriptorFromPlugin(ImageRegistry.WORKFLOWFILE));
 
 		refreshCurrentWorkflowAction = new Action() {
 			public void run() {
@@ -210,28 +263,41 @@ public class ModelVisualizationView extends ViewPart {
 		};
 		refreshCurrentWorkflowAction.setText("Rerun current workflow");
 		refreshCurrentWorkflowAction.setToolTipText("Rerun current workflow");
-		refreshCurrentWorkflowAction.setImageDescriptor(ImageRegistry.getImageDescriptorFromPlugin(ImageRegistry.REFRESH));
+		refreshCurrentWorkflowAction.setImageDescriptor(ImageRegistry
+				.getImageDescriptorFromPlugin(ImageRegistry.REFRESH));
 	}
 
 	/**
 	 * reruns the currently active workflow
 	 */
 	private void onRefreshCurrentWorkflow() {
-		setFilenameAndRedraw( currentWorkflowFileName );
+		if (currentWorkflowFile != null)
+			setFilenameAndRedraw(currentWorkflowFile);
 	}
 
 	/**
-	 * runs a new workflow - opens a file dialog
-	 * to let the user select the file to run
+	 * runs a new workflow - opens a file dialog for the current workspace to
+	 * let the user select the file to run
 	 */
 	private void onRunNewWorkflow() {
-		FileDialog fd = new FileDialog(new Shell(Display.getCurrent()), SWT.OPEN);
-		fd.setText("Run Workflow");
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
-		String[] filterExt = { "*.oaw" };
-		fd.setFilterExtensions(filterExt);
-		String selected = fd.open();
-		if ( selected != null ) {
+		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
+				new Shell(Display.getCurrent()), new WorkbenchLabelProvider(),
+				new WorkbenchContentProvider());
+		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+
+		IFile selected = null;
+		if (dialog.open() == Window.OK) {
+			Object[] selection = ((ElementTreeSelectionDialog) dialog)
+					.getResult();
+			if (selection.length > 0)
+				if (selection[0] instanceof IFile)
+					selected = (IFile) selection[0];
+				else {
+					MessageDialog.openInformation(new Shell(Display
+							.getCurrent()), "", "no oaw-Workflow selected");
+				}
+		}
+		if (selected != null) {
 			setFilenameAndRedraw(selected);
 		}
 	}
