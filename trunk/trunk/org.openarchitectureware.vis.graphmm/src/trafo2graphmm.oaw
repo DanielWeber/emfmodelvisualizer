@@ -18,8 +18,4 @@
 	   <checkFile value="org::openarchitectureware::vis::graphmm::Checks"/>
 	</component>
 
-	<component class="org.openarchitectureware.vis.graphmm.TempWriter">
-		<modelSlot value="graphmodel"/>
-		<uri value="tmpGraphmodel.xmi"/>
-	</component>
 </workflow>
