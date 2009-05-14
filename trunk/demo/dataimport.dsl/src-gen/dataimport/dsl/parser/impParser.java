@@ -1,4 +1,4 @@
-// $ANTLR 3.0 ..//dataimport.dsl/src-gen/dataimport/dsl/parser/imp.g 2009-01-21 10:07:21
+// $ANTLR 3.0 ..//dataimport.dsl/src-gen/dataimport/dsl/parser/imp.g 2009-05-14 09:01:17
 
 package dataimport.dsl.parser;
 
@@ -26,13 +26,13 @@ public class impParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_ID", "RULE_INT", "RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "'import'", "'ext'", "'='", "'{'", "'}'", "'ref'", "'data'", "'persistent'", "'->'", "':'", "'*'", "'int'", "'range'", "'..'", "'boolean'", "'String'", "'['", "']'", "'regex'", "'records'", "'record'", "'next'", "'.'", "'+='"
     };
-    public static final int RULE_ID=5;
-    public static final int RULE_STRING=4;
-    public static final int RULE_INT=6;
-    public static final int RULE_WS=7;
-    public static final int RULE_SL_COMMENT=9;
-    public static final int EOF=-1;
     public static final int RULE_ML_COMMENT=8;
+    public static final int RULE_ID=5;
+    public static final int RULE_WS=7;
+    public static final int EOF=-1;
+    public static final int RULE_INT=6;
+    public static final int RULE_STRING=4;
+    public static final int RULE_SL_COMMENT=9;
 
         public impParser(TokenStream input) {
             super(input);

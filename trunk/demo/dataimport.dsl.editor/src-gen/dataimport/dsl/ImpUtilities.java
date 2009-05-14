@@ -33,19 +33,19 @@ public class ImpUtilities extends AbstractLanguageUtilities {
 
 	List<String> r = new ArrayList<String>();
 	{
-		r.add("range");
-		r.add("regex");
-		r.add("int");
-		r.add("next");
-		r.add("data");
-		r.add("ext");
-		r.add("ref");
-		r.add("record");
-		r.add("persistent");
 		r.add("String");
-		r.add("import");
-		r.add("boolean");
+		r.add("record");
 		r.add("records");
+		r.add("ext");
+		r.add("next");
+		r.add("int");
+		r.add("range");
+		r.add("boolean");
+		r.add("import");
+		r.add("ref");
+		r.add("persistent");
+		r.add("data");
+		r.add("regex");
 	}
 	public List<String> allKeywords() {
 		return r;

@@ -19,13 +19,13 @@ Void internalLink(imp::Jump this) :
 
 Void internalLink(imp::GraphBuild this) :
 	this.link_targetInstance()
- -> 	this.link_ownerRef()
  -> 	this.link_ownerInstance()
+ -> 	this.link_ownerRef()
 ;
 
 Void internalLink(imp::FieldMapping this) :
-	this.link_instance()
- -> 	this.link_field()
+	this.link_field()
+ -> 	this.link_instance()
 ;
 
 Void internalLink(imp::Instance this) :

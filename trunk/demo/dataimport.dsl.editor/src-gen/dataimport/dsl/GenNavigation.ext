@@ -12,11 +12,17 @@ extension org::openarchitectureware::xtext::parser::LinkerUtils;
  */
 emf::EObject findDeclaration(String s, Object grammarelement, Object element) : null;
 
+findDeclaration(String s,xtext::Assignment ass, FieldMapping ele) :
+	switch (ass.feature) {
+       case "field" : ele.field
+       case "instance" : ele.instance
+		default : null
+	};
 findDeclaration(String s,xtext::Assignment ass, GraphBuild ele) :
 	switch (ass.feature) {
        case "targetInstance" : ele.targetInstance
-       case "ownerRef" : ele.ownerRef
        case "ownerInstance" : ele.ownerInstance
+       case "ownerRef" : ele.ownerRef
 		default : null
 	};
 findDeclaration(String s,xtext::Assignment ass, Reference ele) :
@@ -24,20 +30,14 @@ findDeclaration(String s,xtext::Assignment ass, Reference ele) :
        case "type" : ele.type
 		default : null
 	};
-findDeclaration(String s,xtext::Assignment ass, Instance ele) :
-	switch (ass.feature) {
-       case "type" : ele.type
-		default : null
-	};
-findDeclaration(String s,xtext::Assignment ass, FieldMapping ele) :
-	switch (ass.feature) {
-       case "instance" : ele.instance
-       case "field" : ele.field
-		default : null
-	};
 findDeclaration(String s,xtext::Assignment ass, Jump ele) :
 	switch (ass.feature) {
        case "nextRecord" : ele.nextRecord
+		default : null
+	};
+findDeclaration(String s,xtext::Assignment ass, Instance ele) :
+	switch (ass.feature) {
+       case "type" : ele.type
 		default : null
 	};
 /*
@@ -48,16 +48,13 @@ List[UIContentNode] findReferences(String s, Object grammarelement, Object eleme
 
 
 private cached List[emf::EObject] el() : {};
-List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::Reference ele) :
-	el().union(allVisibleElements(ele).typeSelect(imp::GraphBuild).select(e|e.parsedString("ownerRef")==s))
-		.collect(e|e.createContentNode(e.label(),e.image()));
 List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::Attribute ele) :
 	el().union(allVisibleElements(ele).typeSelect(imp::FieldMapping).select(e|e.parsedString("field")==s))
 		.collect(e|e.createContentNode(e.label(),e.image()));
 List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::Instance ele) :
-	el().union(allVisibleElements(ele).typeSelect(imp::FieldMapping).select(e|e.parsedString("instance")==s))
+	el().union(allVisibleElements(ele).typeSelect(imp::GraphBuild).select(e|e.parsedString("targetInstance")==s))
+.union(allVisibleElements(ele).typeSelect(imp::FieldMapping).select(e|e.parsedString("instance")==s))
 .union(allVisibleElements(ele).typeSelect(imp::GraphBuild).select(e|e.parsedString("ownerInstance")==s))
-.union(allVisibleElements(ele).typeSelect(imp::GraphBuild).select(e|e.parsedString("targetInstance")==s))
 		.collect(e|e.createContentNode(e.label(),e.image()));
 List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::RecordHandler ele) :
 	el().union(allVisibleElements(ele).typeSelect(imp::Jump).select(e|e.parsedString("nextRecord")==s))
@@ -65,6 +62,9 @@ List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::RecordH
 List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::DataStructure ele) :
 	el().union(allVisibleElements(ele).typeSelect(imp::Instance).select(e|e.parsedString("type")==s))
 .union(allVisibleElements(ele).typeSelect(imp::Reference).select(e|e.parsedString("type")==s))
+		.collect(e|e.createContentNode(e.label(),e.image()));
+List[UIContentNode] findReferences(String s,xtext::Assignment rule, imp::Reference ele) :
+	el().union(allVisibleElements(ele).typeSelect(imp::GraphBuild).select(e|e.parsedString("ownerRef")==s))
 		.collect(e|e.createContentNode(e.label(),e.image()));
 
 /*

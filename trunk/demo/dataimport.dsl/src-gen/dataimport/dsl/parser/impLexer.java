@@ -1,4 +1,4 @@
-// $ANTLR 3.0 ..//dataimport.dsl/src-gen/dataimport/dsl/parser/imp.g 2009-01-21 10:07:21
+// $ANTLR 3.0 ..//dataimport.dsl/src-gen/dataimport/dsl/parser/imp.g 2009-05-14 09:01:17
 
 package dataimport.dsl.parser;
 
@@ -13,38 +13,38 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class impLexer extends Lexer {
-    public static final int RULE_ID=5;
-    public static final int T29=29;
-    public static final int T28=28;
-    public static final int T27=27;
-    public static final int T26=26;
-    public static final int T25=25;
-    public static final int Tokens=34;
-    public static final int T24=24;
-    public static final int EOF=-1;
-    public static final int RULE_SL_COMMENT=9;
-    public static final int T23=23;
-    public static final int T22=22;
     public static final int T21=21;
-    public static final int T20=20;
     public static final int RULE_ML_COMMENT=8;
-    public static final int RULE_STRING=4;
-    public static final int RULE_INT=6;
-    public static final int T10=10;
-    public static final int T11=11;
-    public static final int T12=12;
-    public static final int T13=13;
     public static final int T14=14;
-    public static final int RULE_WS=7;
-    public static final int T15=15;
+    public static final int T29=29;
+    public static final int RULE_ID=5;
     public static final int T33=33;
-    public static final int T16=16;
-    public static final int T17=17;
+    public static final int T22=22;
+    public static final int T11=11;
+    public static final int RULE_STRING=4;
+    public static final int T12=12;
+    public static final int T28=28;
+    public static final int T23=23;
+    public static final int T13=13;
+    public static final int T20=20;
+    public static final int T10=10;
+    public static final int T25=25;
     public static final int T18=18;
-    public static final int T30=30;
-    public static final int T19=19;
+    public static final int RULE_WS=7;
+    public static final int T26=26;
+    public static final int T15=15;
+    public static final int RULE_INT=6;
+    public static final int EOF=-1;
     public static final int T32=32;
+    public static final int T17=17;
+    public static final int Tokens=34;
     public static final int T31=31;
+    public static final int T16=16;
+    public static final int T27=27;
+    public static final int RULE_SL_COMMENT=9;
+    public static final int T30=30;
+    public static final int T24=24;
+    public static final int T19=19;
 
     	 private List<ErrorMsg> errors = new ArrayList<ErrorMsg>();
     	public List<ErrorMsg> getErrors() {
@@ -1005,17 +1005,34 @@ public class impLexer extends Lexer {
         case 'i':
             {
             switch ( input.LA(2) ) {
-            case 'm':
+            case 'n':
                 {
                 int LA12_24 = input.LA(3);
 
-                if ( (LA12_24=='p') ) {
+                if ( (LA12_24=='t') ) {
                     int LA12_39 = input.LA(4);
 
-                    if ( (LA12_39=='o') ) {
-                        int LA12_51 = input.LA(5);
+                    if ( ((LA12_39>='0' && LA12_39<='9')||(LA12_39>='A' && LA12_39<='Z')||LA12_39=='_'||(LA12_39>='a' && LA12_39<='z')) ) {
+                        alt12=25;
+                    }
+                    else {
+                        alt12=12;}
+                }
+                else {
+                    alt12=25;}
+                }
+                break;
+            case 'm':
+                {
+                int LA12_25 = input.LA(3);
 
-                        if ( (LA12_51=='r') ) {
+                if ( (LA12_25=='p') ) {
+                    int LA12_40 = input.LA(4);
+
+                    if ( (LA12_40=='o') ) {
+                        int LA12_52 = input.LA(5);
+
+                        if ( (LA12_52=='r') ) {
                             int LA12_63 = input.LA(6);
 
                             if ( (LA12_63=='t') ) {
@@ -1035,23 +1052,6 @@ public class impLexer extends Lexer {
                     }
                     else {
                         alt12=25;}
-                }
-                else {
-                    alt12=25;}
-                }
-                break;
-            case 'n':
-                {
-                int LA12_25 = input.LA(3);
-
-                if ( (LA12_25=='t') ) {
-                    int LA12_40 = input.LA(4);
-
-                    if ( ((LA12_40>='0' && LA12_40<='9')||(LA12_40>='A' && LA12_40<='Z')||LA12_40=='_'||(LA12_40>='a' && LA12_40<='z')) ) {
-                        alt12=25;
-                    }
-                    else {
-                        alt12=12;}
                 }
                 else {
                     alt12=25;}
@@ -1629,11 +1629,11 @@ public class impLexer extends Lexer {
             {
             int LA12_23 = input.LA(2);
 
-            if ( (LA12_23=='*') ) {
-                alt12=29;
-            }
-            else if ( (LA12_23=='/') ) {
+            if ( (LA12_23=='/') ) {
                 alt12=30;
+            }
+            else if ( (LA12_23=='*') ) {
+                alt12=29;
             }
             else {
                 NoViableAltException nvae =

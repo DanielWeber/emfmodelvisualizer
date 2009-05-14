@@ -7,10 +7,10 @@ link(emf::EObject this) :
 		all.typeSelect(imp::Reference).collect(e|e.link_type()) ->
 		all.typeSelect(imp::Jump).collect(e|e.link_nextRecord()) ->
 		all.typeSelect(imp::GraphBuild).collect(e|e.link_targetInstance()) ->
-		all.typeSelect(imp::GraphBuild).collect(e|e.link_ownerRef()) ->
 		all.typeSelect(imp::GraphBuild).collect(e|e.link_ownerInstance()) ->
-		all.typeSelect(imp::FieldMapping).collect(e|e.link_instance()) ->
+		all.typeSelect(imp::GraphBuild).collect(e|e.link_ownerRef()) ->
 		all.typeSelect(imp::FieldMapping).collect(e|e.link_field()) ->
+		all.typeSelect(imp::FieldMapping).collect(e|e.link_instance()) ->
 		all.typeSelect(imp::Instance).collect(e|e.link_type()) ->
         null;
 
@@ -42,13 +42,6 @@ Void link_targetInstance(imp::GraphBuild this) :
 );
 
 
-Void link_ownerRef(imp::GraphBuild this) :
-	(let ents = this.allVisibleElements().typeSelect(imp::Reference) :
-
-		this.setOwnerRef(ents.select(e|e.id() == this.parsedString("ownerRef")).first())
-);
-
-
 Void link_ownerInstance(imp::GraphBuild this) :
 	(let ents = this.allVisibleElements().typeSelect(imp::Instance) :
 
@@ -56,19 +49,26 @@ Void link_ownerInstance(imp::GraphBuild this) :
 );
 
 
+Void link_ownerRef(imp::GraphBuild this) :
+	(let ents = this.allVisibleElements().typeSelect(imp::Reference) :
 
-
-Void link_instance(imp::FieldMapping this) :
-	(let ents = this.allVisibleElements().typeSelect(imp::Instance) :
-
-		this.setInstance(ents.select(e|e.id() == this.parsedString("instance")).first())
+		this.setOwnerRef(ents.select(e|e.id() == this.parsedString("ownerRef")).first())
 );
+
+
 
 
 Void link_field(imp::FieldMapping this) :
 	(let ents = this.allVisibleElements().typeSelect(imp::Attribute) :
 
 		this.setField(ents.select(e|e.id() == this.parsedString("field")).first())
+);
+
+
+Void link_instance(imp::FieldMapping this) :
+	(let ents = this.allVisibleElements().typeSelect(imp::Instance) :
+
+		this.setInstance(ents.select(e|e.id() == this.parsedString("instance")).first())
 );
 
 

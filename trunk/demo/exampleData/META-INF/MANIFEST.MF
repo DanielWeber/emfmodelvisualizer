@@ -7,3 +7,4 @@ Require-Bundle: dataimport.dsl.generator,
  dataimport.dsl,
  dataimport.platform,
  org.junit
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
