@@ -15,6 +15,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -92,7 +94,7 @@ public class ModelVisualizationView extends ViewPart {
 		createActions();
 		fillLocalPullDown();
 		fillLocalToolBar();
-		getSite().setSelectionProvider(modelViewer);
+		// getSite().setSelectionProvider(modelViewer);
 
 	}
 
@@ -280,8 +282,21 @@ public class ModelVisualizationView extends ViewPart {
 		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 				new Shell(Display.getCurrent()), new WorkbenchLabelProvider(),
 				new WorkbenchContentProvider());
+		dialog.setTitle("select an oaw-workflow-file");
 		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+		dialog.addFilter(new ViewerFilter() {
 
+			@Override
+			public boolean select(Viewer viewer, Object parentElement,
+					Object element) {
+				if (element instanceof IFile
+						&& !((IFile) element).getFileExtension()
+								.equalsIgnoreCase("oaw"))
+					return false;
+				return true;
+			}
+
+		});
 		IFile selected = null;
 		if (dialog.open() == Window.OK) {
 			Object[] selection = ((ElementTreeSelectionDialog) dialog)
