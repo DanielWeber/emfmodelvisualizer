@@ -100,6 +100,7 @@ SimpleDirectedEdge:
 		("weight" weight=INT)?
 		("width" width=INT)?
 		("style" style=LineStyleEnum)?
+		(association=AssociationEnum "association")?
 		("curvedepth" curvedepth=INT)? 
 		("category" category=STRING)?
 		("userData" userData = Properties )?
@@ -115,50 +116,53 @@ NVPair:
 DataType:
   	TextType | IntegerType | BooleanType;
   	
-TextType: "text";
+TextType:		"text";
 
-IntegerType: "int";
+IntegerType:	"int";
 
-BooleanType: "boolean";	
+BooleanType:	"boolean";	
 	
 Enum DirectionEnum:
-	directed = "->" |
-	undirected = "--";	
+	directed	= "->"	| // 1
+	undirected	= "--"	; // 2
 	
 Enum ColorEnum:
-	white = "white" |      
-	lightGray = "lightGray" |
-	gray = "gray" |      
-	darkGray = "darkGray" |
-	black = "black" |
-	red = "red" |
-	orange = "orange" |
-	yellow = "yellow" |
-	green = "green" |
-	lightGreen = "lightGreen" |
-	darkGreen = "darkGreen" |
-	cyan = "cyan" |
-	lightBlue = "lightBlue" |
-	blue = "blue" |
-	darkBlue = "darkBlue";
+	white		= "white"		| // 1
+	lightGray	= "lightGray"	| // 2
+	gray		= "gray"		| // 3
+	darkGray	= "darkGray"	| // 4
+	black		= "black"		| // 5
+	red			= "red"			| // 6
+	orange		= "orange"		| // 7
+	yellow		= "yellow"		| // 8
+	green		= "green"		| // 9
+	lightGreen	= "lightGreen"	| // 10
+	darkGreen	= "darkGreen"	| // 11
+	cyan		= "cyan"		| // 12
+	lightBlue	= "lightBlue"	| // 13
+	blue		= "blue"		| // 14
+	darkBlue	= "darkBlue"	; // 15
 	
 
 Enum ShapeEnum:
-	ubi_cone = "ubi_cone" |      
-	ubi_cube = "ubi_cube" |      
-	ubi_dodecahedron = "ubi_dodecahedron" |      
-	ubi_icosahedron = "ubi_icosahedron" |      
-	ubi_octahedron = "ubi_octahedron" |      
-	ubi_sphere = "ubi_sphere" |      
-	ubi_torus = "ubi_torus";
-	
-
+	ubi_cone			= "ubi_cone"			|	// 1
+	ubi_cube			= "ubi_cube"			|	// 2
+	ubi_dodecahedron	= "ubi_dodecahedron"	|	// 3
+	ubi_icosahedron		= "ubi_icosahedron"		|	// 4
+	ubi_octahedron		= "ubi_octahedron"		|	// 5
+	ubi_sphere			= "ubi_sphere"			|   // 6
+	ubi_torus			= "ubi_torus"			;	// 7
 	
 Enum LineStyleEnum:
-	solid = "solid" | // 1
-	dashed = "dashed" | // 2
-	dotted = "dotted" | // 3
-	dashDotted = "dashDotted" | // 4
-	dashDotDotted = "dashDotDotted"; // 5
+	solid			= "solid"			|	// 1
+	dashed			= "dashed"			|	// 2
+	dotted			= "dotted"			|	// 3
+	dashDotted		= "dashDotted"		|	// 4
+	dashDotDotted	= "dashDotDotted"	;	// 5
 	
-	
+Enum AssociationEnum:
+	undirected		= "undirected"		|	// 1
+	directed		= "directed"		|	// 2
+	generalization	= "generalization"	|	// 3
+	composition		= "composition"		|	// 4
+	aggreagation	= "aggregation"		;	// 5
