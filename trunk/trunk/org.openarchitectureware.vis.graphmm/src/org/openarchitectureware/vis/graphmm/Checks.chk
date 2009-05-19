@@ -18,5 +18,5 @@ context Node ERROR "node IDs must be unique per model (not just per graph!)":
 context Graph ERROR "graphs must be contained in GraphCollections or a ContainerNode":
 	eContainer != null && (GraphCollection.isInstance( eContainer ) || ContainerNode.isInstance( eContainer ));
 
-context GraphCollection WARNING "curved edge depth are only supported by ZEST viewer":
-	eAllContents.typeSelect(SimpleDirectedEdge).exists(e|e.curvedepth > 0);
+context Edge WARNING "curved edge depth are only supported by ZEST viewer":
+	curvedepth == 0 || curvedepth == null;
