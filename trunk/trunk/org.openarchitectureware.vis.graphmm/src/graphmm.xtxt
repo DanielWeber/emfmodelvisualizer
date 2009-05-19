@@ -93,7 +93,11 @@ Edge:
 SimpleDirectedEdge:
 	source=[Node] direction=DirectionEnum target=[Node]
 		(containment?="containment")? (proxied?="proxied")? (inheritance?="inheritance")?
-		("label" label=STRING)? 
+		("label" label=STRING)?
+		("sourcelabel-left" label=STRING)?
+		("sourcelabel-right" label=STRING)?
+		("targetlabel-left" label=STRING)?
+		("targetlabel-right" label=STRING)?
 		("tooltip" tooltip=STRING)? 
 		("icon" icon=STRING)?
 		("color" color=ColorEnum)? 
