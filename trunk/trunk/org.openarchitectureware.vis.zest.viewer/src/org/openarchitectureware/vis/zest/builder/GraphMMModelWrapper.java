@@ -14,6 +14,19 @@ public class GraphMMModelWrapper {
 	private static Map<String, Color> colorMap = new HashMap<String, Color>();
 	private static Map<String, Integer> styleMap = new HashMap<String, Integer>();
 	
+	public enum Direction {
+		DIRECTED,
+		UNDIRECTED,
+		BIDIRECTED;
+	}
+	
+	public enum Decoration {
+		AGGREGATION,
+		COMPOSITION,
+		GENERALIZATION,
+		NONE;
+	}
+	
 	public GraphMMModelWrapper( EObject graphmmModel ) {
 		if (graphmmModel == null) throw new IllegalArgumentException("model can not be null");
 		this.model = graphmmModel;
@@ -85,8 +98,17 @@ public class GraphMMModelWrapper {
 		return getInt(edge, "curvedepth" );
 	}
 	
-
-
+	public Decoration getAssociationDecoration(EObject edge) {
+		String d = getElement(edge, "association").toString();
+		if(d.equals("aggregation"))
+			return Decoration.AGGREGATION;
+		if(d.equals("composition"))
+			return Decoration.COMPOSITION;
+		if(d.equals("generalization"))
+			return Decoration.GENERALIZATION;
+		return Decoration.NONE;
+	}
+	
 	public String getNodeSourceLocation(EObject node) {
 		return getString(node, "sourceLocation");
 	}
@@ -162,9 +184,13 @@ public class GraphMMModelWrapper {
 		return d;
 	}
 	
-	public boolean isEdgeDirected(EObject edge) {
+	public Direction getEdgeDirection(EObject edge) {
 		String dir = get( edge, "direction").toString();
-		return dir.equals("directed");
+		if(dir.equals("directed"))
+			return Direction.DIRECTED;
+		if(dir.equals("bidirected"))
+			return Direction.BIDIRECTED;
+		return Direction.UNDIRECTED;
 	}
 
 	public String getEdgeIcon(EObject edge) {

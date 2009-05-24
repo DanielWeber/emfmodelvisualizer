@@ -9,6 +9,8 @@ import java.util.Map;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PolygonDecoration;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -123,12 +125,34 @@ public class GraphBuilder {
 			String cat = GraphMMModelWrapper.getCategory(edge);
 			if (isEdgeInGraph(edge, checkedCategories, cat)) {
 				int style = SWT.NONE;
-				if (model.isEdgeDirected(edge)) {
+				switch (model.getEdgeDirection(edge)) {
+				case DIRECTED:
 					style = ZestStyles.CONNECTIONS_DIRECTED;
+					break;
+				case BIDIRECTED:
+					//TODO: how to display 2 arrows?
+					break;
+				case UNDIRECTED:
+					break;
 				}
 				GraphConnection zestConnection = new GraphConnection(graph,
 						style, nodeMap.get(sourceNode), nodeMap.get(targetNode));
 				zestConnection.setHighlightColor(ColorConstants.red);
+				
+				switch (model.getAssociationDecoration(edge)) {
+				case AGGREGATION:
+					zestConnection.setSourceDecoration(getAggregationDecoration());
+					break;
+				case COMPOSITION:
+					zestConnection.setSourceDecoration(getCompositionDecoration());
+					break;
+				case GENERALIZATION:
+					zestConnection.setTargetDecoration(getGeneralizationDecoration());
+					break;
+				case NONE:
+					break;
+				}
+				
 				EdgeData edgeData = new EdgeData();
 				edgeData.setModelEdge(edge);
 				zestConnection.setData(edgeData);
@@ -297,6 +321,41 @@ public class GraphBuilder {
 
 	public Collection<EObject> getGraphs() {
 		return model.getGraphs();
+	}
+	
+	public PolygonDecoration getAggregationDecoration() {
+		PolygonDecoration decoration = new PolygonDecoration();
+		PointList decorationPointList = new PointList();
+		decorationPointList.addPoint(0,0);
+		decorationPointList.addPoint(-2,2);
+		decorationPointList.addPoint(-4,0);
+		decorationPointList.addPoint(-2,-2);
+		decoration.setTemplate(decorationPointList);
+		decoration.setBackgroundColor(ColorConstants.white);
+		return decoration;
+	}
+	
+	public PolygonDecoration getCompositionDecoration() {
+		PolygonDecoration decoration = new PolygonDecoration();
+		PointList decorationPointList = new PointList();
+		decorationPointList.addPoint(0,0);
+		decorationPointList.addPoint(-2,2);
+		decorationPointList.addPoint(-4,0);
+		decorationPointList.addPoint(-2,-2);
+		decoration.setTemplate(decorationPointList);
+		decoration.setBackgroundColor(ColorConstants.black);
+		return decoration;
+	}
+	
+	public PolygonDecoration getGeneralizationDecoration() {
+		PolygonDecoration decoration = new PolygonDecoration();
+		PointList decorationPointList = new PointList();
+		decorationPointList.addPoint(0,0);
+		decorationPointList.addPoint(-2,2);
+		decorationPointList.addPoint(-2,-2);
+		decoration.setTemplate(decorationPointList);
+		decoration.setBackgroundColor(ColorConstants.white);
+		return decoration;
 	}
 
 }
