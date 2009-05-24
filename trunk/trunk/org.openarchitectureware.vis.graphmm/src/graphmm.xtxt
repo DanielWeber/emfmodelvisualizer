@@ -128,7 +128,8 @@ BooleanType:	"boolean";
 	
 Enum DirectionEnum:
 	directed	= "->"	| // 1
-	undirected	= "--"	; // 2
+	undirected	= "--"	| // 2
+	bidirected	= "<>"	; // 3
 	
 Enum ColorEnum:
 	white		= "white"		| // 1
@@ -165,8 +166,6 @@ Enum LineStyleEnum:
 	dashDotDotted	= "dashDotDotted"	;	// 5
 	
 Enum AssociationEnum:
-	undirected		= "undirected"		|	// 1
-	directed		= "directed"		|	// 2
-	generalization	= "generalization"	|	// 3
-	composition		= "composition"		|	// 4
-	aggreagation	= "aggregation"		;	// 5
+	generalization	= "generalization"	|	// 1
+	composition		= "composition"		|	// 2
+	aggregation		= "aggregation"		;	// 3
