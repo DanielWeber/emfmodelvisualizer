@@ -139,7 +139,7 @@ public class GraphBuilder {
 						labelconn.setText(getLabel(edge, pos));
 						Font font = labelconn.getFont();
 						Device device = font.getDevice();
-						labelconn.setFont(new Font(device, "Arial", 16, SWT.BOLD));
+						labelconn.setFont(new Font(device, "Arial", 14, SWT.BOLD));
 						labelconn.setLineColor(ColorConstants.black);
 					}
 				}
