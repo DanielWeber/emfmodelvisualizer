@@ -346,4 +346,9 @@ public class GraphMMModelWrapper {
 	public static Collection<String> getEntries(EObject compartment) {
 		return (isCompartment(compartment)) ?  (Collection<String>) getCollection(compartment, "entries") : null; 
 	}
+
+
+	public String getEdgeEndLabel(EObject edge, String labeltype) {
+		return getString(edge, labeltype);
+	}
 }

@@ -14,6 +14,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -29,6 +30,8 @@ public class GraphBuilder {
 	private GraphMMModelWrapper model = null;
 	private GraphData graphData;
 	private Graph graph;
+	
+	private String[] labelpositions = {"sourcelabelleft", "sourcelabelright", "targetlabelleft", "targetlabelright"};
 
 	public GraphBuilder(EObject graphmmModel) {
 		this.model = new GraphMMModelWrapper(graphmmModel);
@@ -124,6 +127,23 @@ public class GraphBuilder {
 			EObject targetNode = model.getEdgeTarget(edge);
 			String cat = GraphMMModelWrapper.getCategory(edge);
 			if (isEdgeInGraph(edge, checkedCategories, cat)) {
+				
+				// add additional connections for each source/target association label
+				//TODO: find better mechanism
+				for (String pos : labelpositions) {
+					if(hasLabel(edge, pos)) {
+						GraphConnection labelconn = new GraphConnection(graph,
+								ZestStyles.CONNECTIONS_SOLID, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+						//TODO: hack, because all connections are exactly *on* the line in zest.
+						labelconn.setLableLocation(pos.startsWith("source") ? (pos.endsWith("right") ? 0.15 : 0.3) : (pos.endsWith("right") ? 0.85 : 0.7));
+						labelconn.setText(getLabel(edge, pos));
+						Font font = labelconn.getFont();
+						Device device = font.getDevice();
+						labelconn.setFont(new Font(device, "Arial", 16, SWT.BOLD));
+						labelconn.setLineColor(ColorConstants.black);
+					}
+				}
+				
 				int style = SWT.NONE;
 				switch (model.getEdgeDirection(edge)) {
 				case DIRECTED:
@@ -205,6 +225,14 @@ public class GraphBuilder {
 				graphData.getCategories().add(cat);
 			}
 		}
+	}
+
+	private String getLabel(EObject edge, String string) {
+		return model.getEdgeEndLabel(edge, string);
+	}
+
+	private boolean hasLabel(EObject edge, String string) {
+		return (getLabel(edge, string) != null) && (!getLabel(edge, string).equals(""));
 	}
 
 	/**
