@@ -166,8 +166,9 @@ public class ModelVisualizationView extends ViewPart {
 					.setCurrentThreadResourceLoader(resourceLoader);
 
 			WorkflowRunner runner = new WorkflowRunner();
-			final boolean configOK = runner.prepare(workflowFile.getFullPath()
-					.toOSString(), new NullProgressMonitor(), properties);
+			final boolean configOK = runner.prepare(workflowFile
+					.getLocationURI().toString(), new NullProgressMonitor(),
+					properties);
 			if (configOK) {
 				final Issues issues = new IssuesImpl();
 				runner.executeWorkflow(slotContents, issues);
