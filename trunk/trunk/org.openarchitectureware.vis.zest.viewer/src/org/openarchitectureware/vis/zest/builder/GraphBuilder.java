@@ -293,13 +293,13 @@ public class GraphBuilder {
 				graphData.getCategories().add(category);
 			}
 			if (isInGraph(node, checkedCategories, category)) {
+				CompartmentFigure compartmentFigure = new CompartmentFigure();
 				Collection<String> entries = GraphMMModelWrapper
 						.getEntries(compartment);
 				for (String string : entries) {
-					CompartmentFigure compartmentFigure = new CompartmentFigure();
 					compartmentFigure.add(new Label(string));
-					figure.add(compartmentFigure);
 				}
+				figure.add(compartmentFigure);
 			}
 		}
 		figure.setSize(-1, -1);
