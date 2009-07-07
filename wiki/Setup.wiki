@@ -6,8 +6,8 @@ if you want to commit changes register first and then checkout via svn using _ht
 
 = Dependencies =
 at the moment you need the following libraries:
-zest: http://www.eclipse.org/gef/zest/
-oAW: http://www.openarchitectureware.com/
+ * zest: http://www.eclipse.org/gef/zest/
+ * oAW: http://www.openarchitectureware.com/
 
 = Setup the projects in Eclipse =
 If you checkout the projects you'll notice that they don't compile. You have to run the oaw-Workflows of the projects:
