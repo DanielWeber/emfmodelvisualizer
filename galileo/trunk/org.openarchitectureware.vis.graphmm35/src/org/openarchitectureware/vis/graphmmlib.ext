@@ -1,0 +1,35 @@
+import graphmm35;
+
+addUserData( Node node, String name, String value ):
+	( node.userData == null ? node.setUserData( createProperties(node) ) : null ) ->
+	node.userData.nvpairs.add( createNVPair(name,value) );
+	
+// this should be done for Edge as soon as we create a second subclass of Edge
+addUserData( SimpleDirectedEdge edge, String name, String value ): 
+	( edge.userData == null ? edge.setUserData( createProperties(edge) ) : null ) ->
+	edge.userData.nvpairs.add( createNVPair(name,value) );
+	    
+addLayoutHint( Graph graph, String name, String value ):
+	( graph.layoutHints == null ? graph.setLayoutHints( createProperties(graph) ) : null ) ->
+	graph.layoutHints.nvpairs.add( createNVPair(name,value) );
+	
+create Properties createProperties( emf::EObject node ):
+	this;
+	
+NVPair createNVPair( String n, String v ):
+    let this = new NVPair :
+	   setName( n ) -> setValue( v ) -> setType( texttype() ) -> this;
+	   
+cached String uuid( Node this ):
+	JAVA  org.openarchitectureware.vis.ExtensionHelper.uuid( java.lang.Object );
+
+//cached String xtext431SourceLocation( emf::EObject this ):
+//	JAVA  org.openarchitectureware.vis.ExtensionHelper.location431( org.eclipse.emf.ecore.EObject );
+	
+	
+create TextType texttype(): this;   
+
+create IntegerType inttype(): this;   
+
+create BooleanType booleantype(): this;   
+

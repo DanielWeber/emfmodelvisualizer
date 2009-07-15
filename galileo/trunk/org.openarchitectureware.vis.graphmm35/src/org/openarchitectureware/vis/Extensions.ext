@@ -1,0 +1,5 @@
+import graphmm35;
+
+
+cached allNodes( GraphCollection this ):
+	eAllContents.typeSelect(Node);

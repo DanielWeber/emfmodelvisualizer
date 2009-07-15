@@ -1,0 +1,26 @@
+import graphmm35;
+
+
+// the .typeSelect(SimpleDirectedEdge) needs to go away once we have a second subclass of Edge
+postprocess( GraphCollection this ):
+	graphs.nodes.addAll( graphs.umlNodes().transform() ) ->
+	graphs.edges.typeSelect(SimpleDirectedEdge).select(e|UMLNode.isInstance(e.source)).replaceSource() ->
+	graphs.edges.typeSelect(SimpleDirectedEdge).select(e|UMLNode.isInstance(e.target)).replaceTarget() ->
+	graphs.nodes.removeAll( graphs.umlNodes() );
+
+// should be for Edge, once we have an additional subclass
+replaceSource( SimpleDirectedEdge e ):
+	e.setSource( ((UMLNode)e.source).transform() );
+	
+// should be for Edge, once we have an additional subclass
+replaceTarget( SimpleDirectedEdge e ):
+	e.setTarget( ((UMLNode)e.target).transform() );
+	
+create CompartmentNode transform( UMLNode n ):	
+null;
+	
+	
+	
+	
+umlNodes( Graph g ):
+	g.nodes.typeSelect(UMLNode);

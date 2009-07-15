@@ -1,0 +1,19 @@
+<workflow abstract="true">
+	
+	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" platformUri=".."/>
+	
+	<bean class="org.openarchitectureware.vis.Graphmm35StandaloneSetup"/>
+	
+	<component class="org.eclipse.xtend.check.CheckComponent">
+       <metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+       <expression value="graphmodel.eAllContents.union({graphmodel})"/>
+	   <checkFile value="org::openarchitectureware::vis::graphmm::GenChecks"/>
+	   <checkFile value="org::openarchitectureware::vis::graphmm::Checks"/>
+	</component>
+
+	<component class='org.eclipse.xtend.XtendComponent'>
+       <metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+		<invoke value="org::openarchitectureware::vis::postprocessor::postprocess(graphmodel)"/>
+	</component>
+  
+</workflow>
