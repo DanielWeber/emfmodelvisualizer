@@ -1,0 +1,120 @@
+prolog {
+	iconbasepath "platform:/plugin/de.voelter.zest.example/icons/";
+}
+
+graph ClassDiagram {
+	nodes {
+		umlnode car label "Automobile"
+			attributeCompartment compartment attributes {
+				entry "-speed:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getSpeed():Real"
+				entry "+setSpeed(speed:Real)"
+			}
+		;
+		
+		umlnode truck label "Truck"
+			attributeCompartment compartment attributes {
+				entry "-load:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getLoad():Real"
+			}
+		;
+		
+		umlnode wheel label "Wheel"
+			attributeCompartment compartment attributes {
+				entry "-diameter:Real"
+			}
+			methodCompartment compartment methods {
+				entry "+getDiameter():Real"
+			}
+		;
+	}
+	
+	edges {
+		car -> truck;
+		car -- wheel;
+	}
+}
+
+graph CategoryDiagram {
+	nodes {
+		compartmentnode comp label "comp" category "node"
+			compartment comp1 {
+				category "comp"
+				entry "test1"
+			}
+			compartment comp2 {
+				category "comp"
+				entry "test2"
+			}
+			compartment comp3 {
+				category "altcomp"
+				entry "test3"
+			}
+			compartment comp4 {
+				category "altcomp"
+				entry "test4"
+			}
+		; 
+	}
+	edges {
+	}
+}
+
+graph g3 {
+	nodes {
+		umlnode uml label "UML Klasse"
+			attributeCompartment compartment attributes {
+				entry "-name:String"
+			}
+			methodCompartment compartment methods {
+				entry "+getName():String"
+				entry "+setName(name:String)"
+			}
+		;
+		node n1x label "n1";
+		node n2x label "n2";
+		node n3x label "n3";
+		containernode container label "ContainerNode"
+			contained graph subgraph {
+				nodes { 
+					node sc1x label "sc1";
+					node sc2x label "sc2";
+					containernode subcontainer label "AnotherContainerNode"
+						contained graph subsubgraph {
+						nodes { 
+							node ss1 label "ss1";
+							node ss2 label "ss2";
+						}
+						edges {
+							ss1 -> ss2;
+						}		
+					}
+					;
+				}
+				edges {
+					sc1x -> sc2x;
+					sc1x -> subcontainer;
+				}		
+			}
+		;
+	}
+	
+	edges {
+		n1x -> n2x label "label" curvedepth 10;
+		n2x -> container curvedepth 10;
+	}
+}
+
+graph graph2 {
+	nodes {
+		node node1 label "node1";
+		node node2 label "node2";
+	}
+	edges {
+		node1 -> node2;
+	}
+}

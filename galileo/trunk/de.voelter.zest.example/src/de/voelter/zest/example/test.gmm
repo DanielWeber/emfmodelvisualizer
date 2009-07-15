@@ -1,0 +1,58 @@
+prolog {
+	iconbasepath "platform:/plugin/de.voelter.zest.example/icons/";
+}
+
+graph g1 {
+	nodes {
+		node s1 label "S1" tooltip "S1 Tooltip" icon "icon1.gif" category "a"
+			userData 
+				test : text = "This is a test";
+				test2 : int = "2";
+				test3 : boolean = "true";
+			;
+		node s2 label "S2" icon "icon2.gif" category "a";
+		node s3 label "shift click here" source "platform:/resource/de.voelter.zest.example/src/de/voelter/zest/example/test.gmm,100,120";
+		node s4 label "S4" linecolor red category "b";
+		node s5 label "S5" linecolor gray category "b";
+		node s6 label "S6" linecolor darkBlue fillcolor yellow;
+		node s7 label "S7" textcolor green fillcolor blue;
+		node s8 label "S8" textcolor darkBlue;
+		node s9 label "S9" textcolor red;
+		containernode sc label "SCNode"
+			contained graph scchild {
+				nodes { 
+					node sc1 label "sc1";
+					node sc2 label "sc2";
+				}
+				edges {
+					sc1 -> sc2;
+					sc1 -> s6;
+				}		
+			}
+		;
+	}
+
+	edges {
+		s1 -- sc label "containeredge";
+		s1 -- s2 label "Hallo!" tooltip "s1 -> s2" icon "icon2.gif" color black weight -50;
+		s2 -- s3 tooltip "s2 -> s3" color cyan weight 0;
+		s3 -> s1 tooltip "s3 -> s1" color darkGreen weight 50;
+		s4 -> s5 width 3 style dotted;
+		s1 -> s4 width 4 style dashDotted;
+		s1 -> s5 width 2 category "x";
+		s1 -> s5 width 1 category "y";
+		s5 -> s6;
+	}
+}
+
+graph g2 {
+	nodes {
+		node n1 label "n1";
+		node n2 label "n2";
+			
+	}
+	
+	edges {
+		n1 -> n2 label "label";
+	}
+}
