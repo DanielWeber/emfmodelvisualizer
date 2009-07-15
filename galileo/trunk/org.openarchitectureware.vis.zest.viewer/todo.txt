@@ -1,0 +1,30 @@
+* How can I set different arrow heads/tails?
+* what does the node style fisheye do?
+* is there an algorithm that avoid edges
+  "running over" other nodes?
+  
+* drill down... with breadcrumbs for the way back
+* graphcontainer?
+* curved connections?
+* Position festhalten
+* Compartments
+* Hightlight alle Dependencies nach Klick auf Node, und die Knoten am anderen Ende.
+* Is there a "Lasso" selection?
+* Interactively "grow"; how can I turn off the animation that's shown upon redraw?
+* Larger canvas/viewport to use more space in the graph?
+
+Asked Ian:
+
+* Why are graph containers bigger than normal nodes? This is rather ugly...
+* Can I change the size of the area created "under" a graph container?
+* Can I zoom somehow generally? And specifically, into a container?
+
+Solved: 
+
+* How can I select a connection as opposed to a node?
+   ==> [DanielWeber] Just click on it ;)
+    
+* Seems to me the arrow heads only show up 
+  after I select a connection... bug?
+   ==> [DanielWeber] works if style is set when creating the connection. Otherwise the figure is created without that 
+                     flag but updated when the connection is selected the first time.
