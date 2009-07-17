@@ -1,0 +1,67 @@
+«IMPORT dot»
+ 
+«EXTENSION org::openarchitectureware::vis::graphviz::dotlib»
+«EXTENSION org::eclipse::xtend::util::stdlib::io»
+«EXTENSION org::eclipse::xtend::util::stdlib::elementprops»
+
+
+«DEFINE main(String pathToDotExe, String outputFormat) FOR graphvizmodel-»
+	«EXPAND dotFile FOREACH graphs»
+	«EXPAND batFile(pathToDotExe, outputFormat)»
+«ENDDEFINE»
+
+«DEFINE batFile(String pathToDotExe, String outputFormat) FOR graphvizmodel»
+	«FILE "processdot.bat"»
+		@echo off
+		«FOREACH graphs AS g»
+			echo processing «g.filename()» ...
+			"«pathToDotExe»/dot.exe" -T«outputFormat» -O «g.filename()»
+		«ENDFOREACH»
+	«ENDFILE»
+	«FILE "processdot.sh"»
+		«FOREACH graphs AS g»
+			echo processing «g.filename()» ...
+			"«pathToDotExe»/dot" -T«outputFormat» -O «g.filename()»
+		«ENDFOREACH»
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE dotFile FOR graph»
+	«FILE filename()-»
+	«type» "«name»" {
+		«IF getProperty("fontname") != null»
+			graph [fontname="«getProperty("fontname")»"];
+			node [fontname="«getProperty("fontname")»"];
+			edge [fontname="«getProperty("fontname")»"];
+		«ENDIF»
+		«EXPAND stmt FOREACH stmts SEPARATOR ";"»
+	}
+	«ENDFILE-»
+«ENDDEFINE»
+
+«DEFINE stmt FOR stmt»«ENDDEFINE»
+
+«DEFINE stmt FOR node_stmt»
+	"«name»" «EXPAND attr_list FOREACH  attributes»«
+ENDDEFINE»
+
+«DEFINE stmt FOR subgraph»
+	subgraph "cluster_«name»" {
+		«IF getProperty("label") != null»
+		    label = "«getProperty("label")»";
+		«ENDIF»
+		«EXPAND stmt FOREACH stmts SEPARATOR ";"»	
+	}	
+«ENDDEFINE»
+
+«DEFINE stmt FOR edge_stmt_node»
+	"«node_id.name»" «EXPAND edgeRHS FOREACH edgeRHS» «EXPAND attr_list FOREACH  attributes»«
+ENDDEFINE»
+
+«DEFINE edgeRHS FOR edgeRHS»«ENDDEFINE» 
+
+«DEFINE edgeRHS FOR edgeRHS_node» -> "«node.name»" «ENDDEFINE»
+
+«DEFINE attr_list FOR attr_list»[ «EXPAND a_list FOREACH  a_list  SEPARATOR ","» ]«ENDDEFINE»
+
+«DEFINE a_list FOR a_list»«name»="«value»"«ENDDEFINE»
