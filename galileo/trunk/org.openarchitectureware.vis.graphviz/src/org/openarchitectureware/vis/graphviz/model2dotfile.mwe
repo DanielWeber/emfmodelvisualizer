@@ -1,0 +1,38 @@
+<workflow>
+
+	<property name='targetDir' />
+	<property name="topFunctionCallExpression"/>
+	<property name="pathToDotExe" value="%GRAPHVIZ_BIN%"/>
+	<property name="outputFormat" value="gif"/>
+
+	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" platformUri=".."/>
+
+	<bean class="org.openarchitectureware.vis.graphviz.DotStandaloneSetup"/>
+	
+	<component class="org.eclipse.xtend.XtendComponent">
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelPackage value="org.openarchitectureware.vis.graphviz.dot.DotPackage"/>
+		</metaModel>
+		<invoke value="${topFunctionCallExpression}" />
+		<outputSlot value="dotModel" />
+	</component>
+	
+	<!-- currently we have no constraints 
+	<component class="org.eclipse.xtend.check.CheckComponent">
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+       <expression value="dotModel.eAllContents.union({dotModel})"/>
+	   <checkFile value="org::openarchitectureware::graphviz::Checks"/>
+	</component> 
+	-->
+
+	<component class='org.eclipse.xpand2.Generator'>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelPackage value="org.openarchitectureware.vis.graphviz.dot.DotPackage"/>
+		</metaModel>
+		<expand value='org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::main("${pathToDotExe}", "${outputFormat}") FOR dotModel'/>
+		<genPath value='${targetDir}'/>
+	</component>
+  
+</workflow>
