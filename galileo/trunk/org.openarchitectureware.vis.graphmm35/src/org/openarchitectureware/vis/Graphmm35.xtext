@@ -92,27 +92,42 @@ Compartment:
 	"}";
 	
 Edge:
-	SimpleDirectedEdge;
+	SimpleDirectedEdge | ComplexDirectedEdge;
 
 SimpleDirectedEdge:
 	source=[Node] direction=DirectionEnum target=[Node]
-		(containment?="containment")? (proxied?="proxied")? (inheritance?="inheritance")?
 		("label" label=STRING)?
-		("sourcelabelleft" sourcelabelleft=STRING)?
-		("sourcelabelright" sourcelabelright=STRING)?
-		("targetlabelleft" targetlabelleft=STRING)?
-		("targetlabelright" targetlabelright=STRING)?
 		("tooltip" tooltip=STRING)? 
 		("icon" icon=STRING)?
 		("color" color=ColorEnum)? 
 		("weight" weight=INT)?
 		("width" width=INT)?
 		("style" style=LineStyleEnum)?
-		(association=AssociationEnum "association")?
-		("curvedepth" curvedepth=INT)? 
+		("curvedepth" curvedepth=INT)?
 		("category" category=STRING)?
-		("userData" userData = Properties )?
+		("userData" userData = Properties)?
 	";";
+	
+ComplexDirectedEdge:
+	source=[Node] direction=DirectionEnum target=[Node]
+		("label" label=STRING)?
+		("tooltip" tooltip=STRING)? 
+		("icon" icon=STRING)?
+		("color" color=ColorEnum)? 
+		("weight" weight=INT)?
+		("width" width=INT)?
+		("style" style=LineStyleEnum)?
+		("curvedepth" curvedepth=INT)?
+		("category" category=STRING)?
+		("userData" userData = Properties)?
+		(containment?="containment")? (proxied?="proxied")? (inheritance?="inheritance")?
+		(association=AssociationEnum "association")?
+		("sourcelabelleft" sourcelabelleft=STRING)?
+		("sourcelabelright" sourcelabelright=STRING)?
+		("targetlabelleft" targetlabelleft=STRING)?
+		("targetlabelright" targetlabelright=STRING)?
+	";";
+	
 
 Properties:
 	(nvpairs+=NVPair)*;

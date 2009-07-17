@@ -309,6 +309,10 @@ public class GraphMMModelWrapper {
 	{
 		return element.eClass().getName().endsWith("Prolog");
 	}
+	public static boolean isComplexDirectedEdge(EObject element)
+	{
+		return element.eClass().getName().endsWith("ComplexDirectedEdge");
+	}
 	public EObject getModel()
 	{
 		return this.model;

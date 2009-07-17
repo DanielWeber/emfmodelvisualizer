@@ -127,20 +127,21 @@ public class GraphBuilder {
 			EObject targetNode = model.getEdgeTarget(edge);
 			String cat = GraphMMModelWrapper.getCategory(edge);
 			if (isEdgeInGraph(edge, checkedCategories, cat)) {
-				
-				// add additional connections for each source/target association label
-				//TODO: find better mechanism
-				for (String pos : labelpositions) {
-					if(hasLabel(edge, pos)) {
-						GraphConnection labelconn = new GraphConnection(graph,
-								ZestStyles.CONNECTIONS_SOLID, nodeMap.get(sourceNode), nodeMap.get(targetNode));
-						//TODO: hack, because all connections are exactly *on* the line in zest.
-//						labelconn.setLableLocation(pos.startsWith("source") ? (pos.endsWith("right") ? 0.15 : 0.3) : (pos.endsWith("right") ? 0.85 : 0.7));
-						labelconn.setText(getLabel(edge, pos));
-						Font font = labelconn.getFont();
-						Device device = font.getDevice();
-						labelconn.setFont(new Font(device, "Arial", 14, SWT.BOLD));
-						labelconn.setLineColor(ColorConstants.black);
+				if(GraphMMModelWrapper.isComplexDirectedEdge(edge)) {
+					// add additional connections for each source/target association label
+					//TODO: find better mechanism
+					for (String pos : labelpositions) {
+						if(hasLabel(edge, pos)) {
+							GraphConnection labelconn = new GraphConnection(graph,
+									ZestStyles.CONNECTIONS_SOLID, nodeMap.get(sourceNode), nodeMap.get(targetNode));
+							//TODO: hack, because all connections are exactly *on* the line in zest.
+	//						labelconn.setLableLocation(pos.startsWith("source") ? (pos.endsWith("right") ? 0.15 : 0.3) : (pos.endsWith("right") ? 0.85 : 0.7));
+							labelconn.setText(getLabel(edge, pos));
+							Font font = labelconn.getFont();
+							Device device = font.getDevice();
+							labelconn.setFont(new Font(device, "Arial", 14, SWT.BOLD));
+							labelconn.setLineColor(ColorConstants.black);
+						}
 					}
 				}
 				
