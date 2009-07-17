@@ -283,7 +283,7 @@ public class ModelVisualizationView extends ViewPart {
 		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 				new Shell(Display.getCurrent()), new WorkbenchLabelProvider(),
 				new WorkbenchContentProvider());
-		dialog.setTitle("select an oaw-workflow-file");
+		dialog.setTitle("select a workflow-file");
 		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		dialog.addFilter(new ViewerFilter() {
 
@@ -291,8 +291,9 @@ public class ModelVisualizationView extends ViewPart {
 			public boolean select(Viewer viewer, Object parentElement,
 					Object element) {
 				if (element instanceof IFile
-						&& !((IFile) element).getFileExtension()
-								.equalsIgnoreCase("oaw"))
+						&& (!((IFile) element).getFileExtension()
+								.equalsIgnoreCase("oaw") && !((IFile) element).getFileExtension()
+								.equalsIgnoreCase("mwe")))
 					return false;
 				return true;
 			}
