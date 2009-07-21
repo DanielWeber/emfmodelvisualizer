@@ -19,8 +19,6 @@
 		<outputSlot value="graphmodel" />
 	</component>
 	
-	<component class="dummy.Printer"/>
-	
 	<component id="imp-checker" class="org.eclipse.xtend.check.CheckComponent">
 	   <metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
        <expression value="graphmodel.eAllContents.union({graphmodel})"/>
@@ -28,5 +26,6 @@
 	   <checkFile value="org::openarchitectureware::vis::validation::Graphmm35ExpensiveChecks"/>
 	   <checkFile value="org::openarchitectureware::vis::validation::Graphmm35FastChecks"/>
 	</component>
+	
 
 </workflow>
