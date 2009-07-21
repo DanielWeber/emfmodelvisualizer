@@ -136,11 +136,17 @@ public class ModelVisualizationView extends ViewPart {
 		EObject graphmodel = null;
 		graphmodel = runWorkflow(workflowFile);
 
-		if (graphmodel == null)
+		if (graphmodel == null) {
 			MessageDialog.openInformation(new Shell(Display.getCurrent()), "",
 					"there is no model to interpet after workflow execution");
-		else {
-			modelViewer.setInput(graphmodel);
+		} else {
+			String graphmodelClassName = graphmodel.eClass().getName();
+			if ( !graphmodelClassName.endsWith("GraphCollection")) {
+				MessageDialog.openInformation(new Shell(Display.getCurrent()), "",
+					"Top level element of graphmodel workflow slot is of type "+graphmodelClassName+", should be GraphCollection");
+			} else {
+				modelViewer.setInput(graphmodel);
+			}
 		}
 	}
 
@@ -150,8 +156,9 @@ public class ModelVisualizationView extends ViewPart {
 		Map<?, ?> slotContents = new HashMap<String, Object>();
 		EObject graphmodel = null;
 		// configure properties passed to the workflow engine
-		properties.put("basedir", project.getLocation().toFile()
-				.getAbsolutePath());
+		String baseDir = project.getLocation().toFile()
+				.getAbsolutePath();
+		properties.put("basedir", baseDir);
 		// Logging disabled: ResourceLoading does not work. (Bollbach)
 		// ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
 		// Thread.currentThread().setContextClassLoader(
@@ -172,7 +179,13 @@ public class ModelVisualizationView extends ViewPart {
 			if (configOK) {
 				final Issues issues = new IssuesImpl();
 				runner.executeWorkflow(slotContents, issues);
-				graphmodel = (EObject) runner.getContext().get("model");
+
+				for (String s : runner.getContext().getSlotNames()) {
+					System.err.println("slotname: "+s);
+				}
+				// the slot name must be "graphmodel"
+				// somebody had changed it to "model". Took me two hours to debug!!
+				graphmodel = (EObject) runner.getContext().get("graphmodel");
 			}
 		} catch (CoreException ex) {
 			ex.printStackTrace();
@@ -307,7 +320,7 @@ public class ModelVisualizationView extends ViewPart {
 					selected = (IFile) selection[0];
 				else {
 					MessageDialog.openInformation(new Shell(Display
-							.getCurrent()), "", "no oaw-Workflow selected");
+							.getCurrent()), "", "no MWE-Workflow selected");
 				}
 		}
 		if (selected != null) {
