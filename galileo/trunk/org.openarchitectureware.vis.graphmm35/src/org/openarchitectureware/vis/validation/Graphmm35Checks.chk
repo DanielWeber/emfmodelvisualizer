@@ -26,8 +26,11 @@ context SimpleDirectedEdge WARNING "curved edge depth are only supported by ZEST
 context Graph ERROR "name must be specified":
 	name != null;
 	
-context Node ERROR "node IDs must be unique per model (not just per graph!)": 	
+context Node ERROR "node names must be unique per model (not just per graph!)": 	
 	((GraphCollection)eRootContainer).allNodes().select(n|n.name == name).size == 1;
+	
+context Node ERROR "node name must be set!": 	
+	name != null && name != "";
 	
 context Graph ERROR "graphs must be contained in GraphCollections or a ContainerNode":
 	eContainer != null && (GraphCollection.isInstance( eContainer ) || ContainerNode.isInstance( eContainer ));
