@@ -19,14 +19,13 @@ create Properties createProperties( emf::EObject node ):
 NVPair createNVPair( String n, String v ):
     let this = new NVPair :
 	   setName( n ) -> setValue( v ) -> setType( texttype() ) -> this;
+
+String getTMFXtextLocation( emf::EObject this ):
+	JAVA org.openarchitectureware.vis.location.LocationProviderSetup.getLocation( org.eclipse.emf.ecore.EObject );
 	   
 cached String uuid( Node this ):
 	JAVA  org.openarchitectureware.vis.ExtensionHelper.uuid( java.lang.Object );
 
-//cached String xtext431SourceLocation( emf::EObject this ):
-//	JAVA  org.openarchitectureware.vis.ExtensionHelper.location431( org.eclipse.emf.ecore.EObject );
-	
-	
 create TextType texttype(): this;   
 
 create IntegerType inttype(): this;   
