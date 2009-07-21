@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.graphics.Color;
 
 public class GraphMMModelWrapper {
@@ -227,7 +228,9 @@ public class GraphMMModelWrapper {
 
 	private static Object get(EObject element, String featureName) {
 		if (element == null || featureName==null) throw new IllegalArgumentException("Element can not be null");
-		return element.eGet( element.eClass().getEStructuralFeature(featureName) );
+		EStructuralFeature f = element.eClass().getEStructuralFeature(featureName);
+		if ( f == null ) throw new NullPointerException("element of type "+element.eClass().getName()+" has no feature named "+featureName);
+		return element.eGet( f );
 	}
 
 	private static Color getColor( EObject elem, String colorkind ) {
