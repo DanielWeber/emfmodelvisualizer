@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.mwe.core.WorkflowRunner;
 import org.eclipse.emf.mwe.core.issues.Issues;
 import org.eclipse.emf.mwe.core.issues.IssuesImpl;
+import org.eclipse.emf.mwe.core.issues.MWEDiagnostic;
 import org.eclipse.emf.mwe.core.monitor.NullProgressMonitor;
 import org.eclipse.emf.mwe.core.resources.ResourceLoader;
 import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
@@ -23,9 +24,16 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -85,6 +93,24 @@ public class ModelVisualizationView extends ViewPart {
 
 		IActionBars bars = getViewSite().getActionBars();
 		
+		// Drag and drop support
+		// limited to the initial label and the section over the tabs
+		final Label label = new Label(form.getBody(), SWT.CENTER);
+		label.setText("drop Workflow-file (*.mwe) here");
+		    
+		int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+		DropTarget dt = new DropTarget(label, operations);
+		final TextTransfer textTransfer = TextTransfer.getInstance();
+		final FileTransfer fileTransfer = FileTransfer.getInstance();
+		Transfer[]	types = new Transfer[] {fileTransfer, textTransfer};
+		dt.setTransfer(types);
+		WorkflowDropTargetListener dropTargetListener = new WorkflowDropTargetListener(this);
+		dt.addDropListener(dropTargetListener);
+		
+		DropTarget dtForm = new DropTarget(form.getBody(), operations);
+		dtForm.setTransfer(types);
+		dtForm.addDropListener(dropTargetListener);
+
 		modelViewer = new ModelViewer(form.getBody(), toolkit,
 				new EclipseSourceLocator(), bars.getStatusLineManager());
 
@@ -126,7 +152,7 @@ public class ModelVisualizationView extends ViewPart {
 	 * @param workflowFile
 	 *            the workflow file in the workspace
 	 */
-	private void setFilenameAndRedraw(IFile workflowFile) {
+	public void setFilenameAndRedraw(IFile workflowFile) {
 		// remember current workflow
 		currentWorkflowFile = workflowFile;
 		// // add workflow to the drop down menu
@@ -165,6 +191,7 @@ public class ModelVisualizationView extends ViewPart {
 		// MyLog.registerToLogFactory();
 		// ResourceLoader oldResourceLoader = ResourceLoaderFactory
 		// .createResourceLoader();
+		 Issues issues = null;
 		try {
 			ResourceLoader resourceLoader = new OawEclipseProjectResourceAndClassesLoader(
 					project);
@@ -176,7 +203,7 @@ public class ModelVisualizationView extends ViewPart {
 					.getLocationURI().toString(), new NullProgressMonitor(),
 					properties);
 			if (configOK) {
-				final Issues issues = new IssuesImpl();
+			  issues = new IssuesImpl();
 				runner.executeWorkflow(slotContents, issues);
 
 				for (String s : runner.getContext().getSlotNames()) {
@@ -194,6 +221,17 @@ public class ModelVisualizationView extends ViewPart {
 			 Thread.currentThread().setContextClassLoader(oldcl);
 			// MyLog.unregisterFromLogFactory();
 		}
+		//let the user know what went wrong
+		if (issues!=null && issues.hasErrors())
+		{
+			String errors ="";
+			for ( MWEDiagnostic error : issues.getErrors()) {
+				errors += error.getMessage() + "\n";
+			}
+			MessageDialog.openInformation(new Shell(Display.getCurrent()), "",
+					"Errors: "+errors );
+		}
+		
 		return graphmodel;
 	}
 
