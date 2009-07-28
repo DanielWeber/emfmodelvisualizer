@@ -8,7 +8,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.mwe.core.WorkflowRunner;
 import org.eclipse.emf.mwe.core.issues.Issues;
@@ -85,7 +84,7 @@ public class ModelVisualizationView extends ViewPart {
 		toolkit.decorateFormHeading(form);
 
 		IActionBars bars = getViewSite().getActionBars();
-
+		
 		modelViewer = new ModelViewer(form.getBody(), toolkit,
 				new EclipseSourceLocator(), bars.getStatusLineManager());
 
@@ -160,9 +159,9 @@ public class ModelVisualizationView extends ViewPart {
 				.getAbsolutePath();
 		properties.put("basedir", baseDir);
 		// Logging disabled: ResourceLoading does not work. (Bollbach)
-		// ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
-		// Thread.currentThread().setContextClassLoader(
-		// this.getClass().getClassLoader());
+		 ClassLoader oldcl =  this.getClass().getClassLoader();//Thread.currentThread().getContextClassLoader();
+		 Thread.currentThread().setContextClassLoader(
+		 this.getClass().getClassLoader());
 		// MyLog.registerToLogFactory();
 		// ResourceLoader oldResourceLoader = ResourceLoaderFactory
 		// .createResourceLoader();
@@ -187,11 +186,12 @@ public class ModelVisualizationView extends ViewPart {
 				// somebody had changed it to "model". Took me two hours to debug!!
 				graphmodel = (EObject) runner.getContext().get("graphmodel");
 			}
-		} catch (CoreException ex) {
+		} catch (Exception
+				ex) {
 			ex.printStackTrace();
 		} finally {
 			ResourceLoaderFactory.setCurrentThreadResourceLoader(null);
-			// Thread.currentThread().setContextClassLoader(oldcl);
+			 Thread.currentThread().setContextClassLoader(oldcl);
 			// MyLog.unregisterFromLogFactory();
 		}
 		return graphmodel;

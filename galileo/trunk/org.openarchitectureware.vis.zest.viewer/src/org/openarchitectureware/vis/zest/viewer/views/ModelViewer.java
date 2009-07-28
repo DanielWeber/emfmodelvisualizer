@@ -127,13 +127,6 @@ public class ModelViewer implements ISelectionProvider {
 	public ModelViewer(Composite topLevelComposite, FormToolkit toolkit,
 			SourceLocator sourceLocator, IStatusLineManager statusLineManager) {
 		this.topLevelComposite = topLevelComposite;
-		this.topLevelComposite.addDragDetectListener(new DragDetectListener() {
-			
-			public void dragDetected(DragDetectEvent e) {
-				System.out.println("dragDetected");
-				
-			}
-		});
 		this.toolkit = toolkit;
 		this.sourceLocator = sourceLocator;
 		this.statusLineManager = statusLineManager;
