@@ -1,7 +1,11 @@
 package org.openarchitectureware.vis.zest.viewer.views;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -211,7 +215,13 @@ public class ModelVisualizationView extends ViewPart {
 				}
 				// the slot name must be "graphmodel"
 				// somebody had changed it to "model". Took me two hours to debug!!
-				graphmodel = (EObject) runner.getContext().get("graphmodel");
+				String slotName = "graphmodel";
+				List<String> slotList = Arrays.asList(runner.getContext().getSlotNames());
+				//fallback solution because e.g. createMinimal example loads in a different slot
+				if (!slotList.contains(slotName) && slotList.size()>0)
+					slotName = slotList.get(0);
+				
+				graphmodel = (EObject) runner.getContext().get(slotName);
 			}
 		} catch (Exception
 				ex) {
