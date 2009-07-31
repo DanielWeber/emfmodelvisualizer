@@ -29,7 +29,7 @@ public class EclipseSourceLocator implements SourceLocator {
 				String[] l = location.split(",");
 				String resource = l[0];
 				String fromIndex = l[1];
-				String toIndex = l[2];
+				String length = l[2];
 				if ( resource.toLowerCase().startsWith(PLATFORM_RESOURCE)) resource = resource.substring(PLATFORM_RESOURCE.length());
 				if ( resource.toLowerCase().startsWith(PLATFORM_PLUGIN)) resource = resource.substring(PLATFORM_PLUGIN.length());
 				final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -38,8 +38,8 @@ public class EclipseSourceLocator implements SourceLocator {
 					IEditorPart opened = IDE.openEditor(page, file);
 					if (opened instanceof ITextEditor) {
 						int start = Integer.parseInt(fromIndex);
-						int end = Integer.parseInt(toIndex);
-						((ITextEditor) opened).selectAndReveal(start, end-start);
+						int len = Integer.parseInt(length);
+						((ITextEditor) opened).selectAndReveal(start, len);
 					}
 				} catch (PartInitException e) {
 					// TODO Auto-generated catch block

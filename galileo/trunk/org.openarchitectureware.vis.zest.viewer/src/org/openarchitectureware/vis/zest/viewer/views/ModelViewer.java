@@ -950,18 +950,27 @@ public class ModelViewer implements ISelectionProvider {
     * @param n the node whose properties must be shown
 	 */
 	private void updatePropertiesTable(GraphItem n)
-   {
+	{
 		// delete all the existing children
 		for (TableItem item : nodePropertiesTable.getItems()) {
 			item.dispose();
 		}
 		// get all the property name-value pairs and add a
 		// table item for each of them
-      Map<String, String> userDataMap = getUserData(n);
+		Map<String, String> userDataMap = getUserData(n);
 		for (String name : userDataMap.keySet()) {
 			TableItem i1 = new TableItem(nodePropertiesTable, SWT.NULL);
 			i1.setText( new String[]{name, userDataMap.get(name)});
 		}
+		if(n instanceof GraphNode)
+		{
+			String loc = getData((GraphNode)n).getSourceLocation();
+			if ( loc != null ) {
+				TableItem i = new TableItem(nodePropertiesTable, SWT.NULL);
+				i.setText( new String[]{"source loc", loc});
+			}
+		}
+		
 	}
 
    /**
