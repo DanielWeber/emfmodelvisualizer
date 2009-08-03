@@ -187,9 +187,9 @@ public class GraphMMModelWrapper {
 	
 	public Direction getEdgeDirection(EObject edge) {
 		String dir = get( edge, "direction").toString();
-		if(dir.equals("directed"))
+		if(dir.equals("->"))
 			return Direction.DIRECTED;
-		if(dir.equals("bidirected"))
+		if(dir.equals("<>"))
 			return Direction.BIDIRECTED;
 		return Direction.UNDIRECTED;
 	}
