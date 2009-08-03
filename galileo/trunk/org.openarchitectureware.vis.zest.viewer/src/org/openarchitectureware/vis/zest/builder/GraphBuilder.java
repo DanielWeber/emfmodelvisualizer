@@ -296,11 +296,11 @@ public class GraphBuilder {
 			if (isInGraph(node, checkedCategories, category)) {
 				Collection<String> entries = GraphMMModelWrapper
 						.getEntries(compartment);
+				CompartmentFigure compartmentFigure = new CompartmentFigure();
 				for (String string : entries) {
-					CompartmentFigure compartmentFigure = new CompartmentFigure();
 					compartmentFigure.add(new Label(string));
-					figure.add(compartmentFigure);
 				}
+				figure.add(compartmentFigure);
 			}
 		}
 		figure.setSize(-1, -1);
