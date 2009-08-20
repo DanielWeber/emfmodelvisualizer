@@ -27,7 +27,7 @@ cached toGraph(EPackage p):
 		// each graph needs to have a name; 
 		// will result in the filename for the dot
 		// and gif files for the graph
-		.setName( "ecoremetamodel" )
+		.setName( p.name+"metamodel" )
 		// a graph contains statements. Statements
 		// can be nodes, edges or subgraphs. Here we
 		// add a subgraph for the package.
@@ -38,16 +38,23 @@ cached toSubgraph( EPackage p ):
 	// this call maps the package to a subgraph....
 	p.mapToSubgraph()
 		// every subgraph MUST have a name - very important!
-		.setName("ecore")
+		.setName(p.name)
 		// this is the label shown in the diagram
-		.setLabel("ecore")
+		.setLabel(p.name)
 		// again, we cann add statements to graphs:
 		// nodes, edges and additional subgraphs. 
 		// here we add a node for each class in the EPackage
 		.addStatements( p.classes().toNode() )
+		// add all enums as nodes
+		.addStatements (p.enums().toNode())
+		// add all referenced class as nodes (these could be references to other ecore 
+		// models and are therfore not added by the previous statement) 
+		.addStatements( p.classes().eReferences.select(r|EClass.isInstance(r.eType)).toNode() )		
 		// and then we create an edge for each reference
 		// of an EClass to another EClass. 
 		.addStatements( p.classes().eReferences.select(r|EClass.isInstance(r.eType)).toRefEdge() )
+		// add edges for all enums
+		.addStatements( p.classes().eStructuralFeatures.typeSelect(EAttribute).select(e|EEnum.isInstance(e.eAttributeType)).toRefEdge()) 
 		// finally, we create an edge for the inheritance
 		// relationships. Note the difference in the coding
 		// between the implementation for the referneces
@@ -68,7 +75,7 @@ cached toNode( EClass c ):
 		.setShape("record")
 		// sets the label, using the special { and } character
 		// do define compartments in the record shape.
-		.setLabel( "{"+c.name+"|"+c.eAttributes.collect(a|a.name+": "+a.eType.name).toString("\\n")+"}" )
+		.setLabel( "{"+c.name+"|"+c.eAttributes.select(e|!EEnum.isInstance(e.eAttributeType)).collect(a|a.name+": "+a.eType.name).toString("\\n")+"}" )
 		// sets the style to bold lines and filled
 		.setStyle("bold, filled")
 		// fill color, obviously
@@ -76,6 +83,28 @@ cached toNode( EClass c ):
 		// and line color.
 		.setLineColor( "black" )
 ;
+
+// create a Node for an EClass
+cached toNode( EEnum e ):
+	// this one creates the actual node object
+	e.mapToNode()
+		// the record shape is special, it can have
+		// several "compartments", like the UML class
+		// symbol. That's what we need here.
+		.setShape("record")
+		// sets the label, using the special { and } character
+		// do define compartments in the record shape.
+		.setLabel( "{"+e.name+"|"+e.eLiterals.toString("\\n")+"}" )
+		// sets the style to bold lines and filled
+		.setStyle("bold, filled")
+		// fill color, obviously
+		.setFillColor( "grey")
+		// and line color.
+		.setLineColor( "black" )
+;
+
+cached toNode( EReference c ):
+	toNode ((EClass) c.eType);
 
 // creates an edge for an EReference
 cached toRefEdge( EReference r ):
@@ -87,7 +116,7 @@ cached toRefEdge( EReference r ):
 		.setLabel( r.name )
 		// the label at the target end of the 
 		// line
-		.setHeadLabel( "       "+r.lowerBound.toString() + ".." + r.upperBound.toString() )
+		.setHeadLabel( "       "+r.lowerBound.toString() + ".." + r.upperBound.upperBoundAsString() )
 		// set the arrow head type
 		.setArrowHead("vee")
 		// and use a diamond shape at the tail of 
@@ -97,7 +126,24 @@ cached toRefEdge( EReference r ):
 		.setWeight( r.containment ? "50" : "1" )
 ;
 
+cached toRefEdge( EAttribute r ):
+	// creates the actual edge. Parameters
+	// are source node, target node, and the
+	// edge node itself
+	mapToDirectedEdge( r.eContainer, r.eAttributeType, r )
+		// the label on the edge
+		.setLabel( r.name )
+		// and use a diamond shape at the tail of 
+		// the arrow if it's a containment relaitonship
+		.setArrowTail( "diamond")
+		.setArrowHead("none")		
+		// the higher the weight, the shorter and straighter the edge
+		.setWeight( "25" )
+;
 
+String upperBoundAsString (Integer i) :
+	(i==-1)? "*" : i.toString();
+	 
 // this one is used to iterate over all the superclasses
 // for a given class. In a very real sense, the only
 // reson for this function is to declare a variable
@@ -125,3 +171,8 @@ cached toSuperclassEdge( EClass super, EClass child ):
 // in an EPackage
 classes(EPackage p):
 	p.eClassifiers.typeSelect(EClass);
+	
+// helper function returning all the EClasses
+// in an EPackage
+enums(EPackage p):
+	p.eClassifiers.typeSelect(EEnum);	
