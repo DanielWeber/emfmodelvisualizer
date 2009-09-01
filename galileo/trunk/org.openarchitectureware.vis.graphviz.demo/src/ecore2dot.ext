@@ -27,7 +27,7 @@ cached toGraph(EPackage p):
 		// each graph needs to have a name; 
 		// will result in the filename for the dot
 		// and gif files for the graph
-		.setName( p.name+"metamodel" )
+		.setName( p.name )
 		// a graph contains statements. Statements
 		// can be nodes, edges or subgraphs. Here we
 		// add a subgraph for the package.
