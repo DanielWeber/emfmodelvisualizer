@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
- org.antlr.runtime
+ org.antlr.runtime,
+ org.openarchitectureware.vis.graphviz.xtext
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.xtext.example,
  org.xtext.example.services,
