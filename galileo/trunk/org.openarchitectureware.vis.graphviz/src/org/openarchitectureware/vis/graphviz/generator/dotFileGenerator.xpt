@@ -4,12 +4,6 @@
 «EXTENSION org::eclipse::xtend::util::stdlib::io»
 «EXTENSION org::eclipse::xtend::util::stdlib::elementprops»
 
-
-«DEFINE main(String pathToDotExe, String outputFormat) FOR graphvizmodel-»
-	«EXPAND dotFile FOREACH graphs»
-	«EXPAND batFile(pathToDotExe, outputFormat)»
-«ENDDEFINE»
-
 «DEFINE batFile(String pathToDotExe, String outputFormat) FOR graphvizmodel»
 	«FILE "processdot.bat"»
 		@echo off
@@ -24,6 +18,10 @@
 			"«pathToDotExe»/dot" -T«outputFormat» -O «g.filename()»
 		«ENDFOREACH»
 	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE dotFiles FOR graphvizmodel-»
+	«EXPAND dotFile FOREACH graphs»
 «ENDDEFINE»
 
 «DEFINE dotFile FOR graph»

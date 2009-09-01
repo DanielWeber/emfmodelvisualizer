@@ -4,7 +4,9 @@
 	<property name="topFunctionCallExpression"/>
 	<property name="pathToDotExe" value="%GRAPHVIZ_BIN%"/>
 	<property name="outputFormat" value="gif"/>
-
+	<property name="createBatchFile" value="true"/>
+	<property name="executeGraphviz" value="false"/>
+	
 	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" platformUri=".."/>
 
 	<bean class="org.openarchitectureware.vis.graphviz.DotStandaloneSetup"/>
@@ -26,13 +28,35 @@
 	</component> 
 	-->
 
+	<!-- create dot files -->
 	<component class='org.eclipse.xpand2.Generator'>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelPackage value="org.openarchitectureware.vis.graphviz.dot.DotPackage"/>
 		</metaModel>
-		<expand value='org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::main("${pathToDotExe}", "${outputFormat}") FOR dotModel'/>
+		<expand value='org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::dotFiles FOR dotModel'/>
 		<genPath value='${targetDir}'/>
 	</component>
+	
+	<if cond="${createBatchFile}">
+		<component class='org.eclipse.xpand2.Generator'>
+			<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+			<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+				<metaModelPackage value="org.openarchitectureware.vis.graphviz.dot.DotPackage"/>
+			</metaModel>
+			<expand value='org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::batFile("${pathToDotExe}", "${outputFormat}") FOR dotModel'/>
+			<genPath value='${targetDir}'/>
+		</component>
+	</if>		
   
+	<if cond="${executeGraphviz}">
+		<component class="org.eclipse.xtend.XtendComponent">
+			<metaModel class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
+			<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+				<metaModelPackage value="org.openarchitectureware.vis.graphviz.dot.DotPackage"/>
+			</metaModel>
+			<invoke value='org::openarchitectureware::vis::graphviz::runGraphviz::runGraphviz(dotModel,"${pathToDotExe}", "${targetDir}", "${outputFormat}")' />
+		</component>
+	</if>		
+  	
 </workflow>
