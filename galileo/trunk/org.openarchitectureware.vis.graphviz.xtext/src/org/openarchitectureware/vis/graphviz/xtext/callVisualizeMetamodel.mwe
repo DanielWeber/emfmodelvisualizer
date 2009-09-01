@@ -1,0 +1,8 @@
+<!-- 
+This workflow is called by VisualizeMetamodelFragment and acts as wrapper
+around the abstract workflow visualizeMetamodel.mwe. This is necessary as abstract
+workflows can not be executed by using the WorkflowFacade.  
+-->
+<workflow>	
+	<cartridge file="visualizeMetamodel.mwe" inheritAll="true"/>
+</workflow>

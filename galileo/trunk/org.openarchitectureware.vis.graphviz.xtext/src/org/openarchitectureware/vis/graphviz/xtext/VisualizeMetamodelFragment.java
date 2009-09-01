@@ -28,7 +28,7 @@ public class VisualizeMetamodelFragment extends DefaultGeneratorFragment {
 		
 		String targetDir = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath()+"/"+Naming.asPath(GrammarUtil.getNamespace(grammar));
 		
-		String wfFile = "visualizeMetamodel.mwe";
+		String wfFile = "org/openarchitectureware/vis/graphviz/xtext/callVisualizeMetamodel.mwe";
 		Map properties = new HashMap();
 		properties.put ("modelFile", modelFileName);
 		properties.put ("targetDir", targetDir);
