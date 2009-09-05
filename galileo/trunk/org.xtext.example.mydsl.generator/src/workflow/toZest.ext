@@ -15,7 +15,7 @@ create Graph toGraph(Model m):
 	edges.addAll( m.entities().refs().toRefEdge() ) ->
 	edges.addAll( m.entities().select(e|e.extends != null).toInheritanceEdge() );
    
-create SimpleDirectedEdge toInheritanceEdge( Entity e ):
+create ComplexDirectedEdge toInheritanceEdge( Entity e ):
 	setSource( e.toNode() ) ->
 	setTarget( e.extends.toNode() ) ->
 	setLabel( "extends" ) ->
