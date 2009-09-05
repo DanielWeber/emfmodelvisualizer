@@ -36,4 +36,6 @@ Export-Package: nu.bibi.breadcrumb,
  org.openarchitectureware.vis.zest.viewer.views,
  org.openarchitectureware.vis.zest.viewer.views.breadcrumb
 Import-Package: org.eclipse.core.resources,
+ org.eclipse.draw2d,
+ org.eclipse.draw2d.geometry,
  org.openarchitectureware.vis.zest.viewer.source
