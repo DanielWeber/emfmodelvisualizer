@@ -21,6 +21,6 @@ Void runGraphviz (graphvizmodel model, String pathToGraphviz, String targetDir, 
 	model.graphs.forAll(e|execute(
 			(isWindows() && pathToGraphviz.length>0)?
 				"cmd /C \"\""+pathToGraphviz+"/dot\" -T"+outputFormat+" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename()+"\"":
-				"dot -T"+outputFormat+" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename())
+				"/usr/local/bin/dot -T"+outputFormat+" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename())
 			->true)			
 ;	
