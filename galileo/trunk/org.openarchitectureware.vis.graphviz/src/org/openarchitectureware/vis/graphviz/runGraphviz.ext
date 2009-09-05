@@ -8,13 +8,19 @@ Integer executeCommand(String command):
 	JAVA org.openarchitectureware.vis.graphviz.ExecuteCommand.executeCommand(java.lang.String)
 ; 
 
+Boolean isWindows(): 
+	JAVA org.openarchitectureware.vis.graphviz.ExecuteCommand.isWindows()
+; 
+
 Integer execute (String command) :
 	info ("Running "+command) ->
 	executeCommand(command)
 ;
 
 Void runGraphviz (graphvizmodel model, String pathToGraphviz, String targetDir, String outputFormat) :
-	// FIXME: will only work on windows, add support for mac and unix!
-	model.graphs.forAll(e|execute("cmd /C \"\""+pathToGraphviz+"/dot.exe\" -T"+outputFormat+
-		" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename()+"\"")->true)
+	model.graphs.forAll(e|execute(
+			(isWindows() && pathToGraphviz.length>0)?
+				"cmd /C \"\""+pathToGraphviz+"/dot\" -T"+outputFormat+" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename()+"\"":
+				"dot -T"+outputFormat+" -o"+targetDir+"/"+e.name+"."+outputFormat+" "+targetDir+"/"+e.filename())
+			->true)			
 ;	
