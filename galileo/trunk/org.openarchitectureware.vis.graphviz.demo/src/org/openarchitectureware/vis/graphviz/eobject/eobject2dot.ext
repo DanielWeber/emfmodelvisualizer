@@ -1,0 +1,80 @@
+import dot;
+
+extension org::openarchitectureware::vis::graphviz::dotlib;
+ 
+create dot::graphvizmodel toGraphVizmodel(emf::EObject o):
+	addGraph( o.toGraph() )
+; 
+ 
+cached toGraph (emf::EObject o) :
+	let g = o.mapToGraph() :		
+		g.setName(o.name().length>0?o.name():o.fileName()) ->
+		processNode (o,g) -> 
+		g
+;
+
+cached processNode (emf::EObject o, dot::graph g) :
+	(let currentDotId = currentDotId() : 
+		g.addStatement (o.toNode()) ->
+		g.addStatements (o.eContents.toNode ()) ->
+		g.addStatements (o.eContents.toContainmentEdge(o)) ->
+		g.addStatements (o.eCrossReferences().toNode()) ->
+		g.addStatements (o.eCrossReferences().toRefEdge(o)) ->
+		o.eContents.select(e|e.dotId().asInteger()>currentDotId.asInteger()).forAll(e|processNode(e,g)->true)->
+		o.eCrossReferences().select(e|e.dotId().asInteger()>currentDotId.asInteger()).forAll(e|processNode(e,g)->true) ->		
+		o.toNode ())	
+;
+		
+cached toNode (emf::EObject o) :
+	o.mapToNode()
+		.setShape ("record")
+		.setLabel ("{"+o.name()+"|"+o.typeName()+"|"+o.getFeaturesAsString()+"}")
+;
+
+cached toRefEdge(emf::EObject reference, emf::EObject o ):
+	// creates the actual edge. Parameters
+	// are source node, target node, and the
+	// edge node itself
+	mapToDirectedEdge( o, reference, null)
+		// the label on the edge
+		.setLabel(o.getFeatureNamePointingTo(reference))
+		.setArrowHead("normal")
+		.setArrowTail( "none")				
+		// the higher the weight, the shorter and straighter the edge
+		.setWeight( "100" )
+;		
+
+cached toContainmentEdge(emf::EObject reference, emf::EObject o ):
+	// creates the actual edge. Parameters
+	// are source node, target node, and the
+	// edge node itself
+	mapToDirectedEdge( o, reference, null)
+		// the label on the edge
+		.setLabel( reference.getContainingFeatureName())
+		.setArrowHead("none")		
+		.setArrowTail("diamond")				
+		// the higher the weight, the shorter and straighter the edge
+		.setWeight( "25" )
+;		
+
+List[emf::EObject] eCrossReferences (emf::EObject o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.eCrossReferences (org.eclipse.emf.ecore.EObject);
+
+String fileName (emf::EObject o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFilename (org.eclipse.emf.ecore.EObject);
+	
+String name (emf::EObject o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getName (org.eclipse.emf.ecore.EObject);
+	
+String typeName (Object o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getTypeName (java.lang.Object);
+	
+String getContainingFeatureName(emf::EObject o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getContainingFeatureName(org.eclipse.emf.ecore.EObject);
+
+String getFeatureNamePointingTo (emf::EObject o, emf::EObject reference) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFeatureNamePointingTo(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EObject); 		
+	
+String getFeaturesAsString (emf::EObject o) :
+	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFeaturesAsString (org.eclipse.emf.ecore.EObject);
+	 			

@@ -148,6 +148,9 @@ setLabel( dot::subgraph graph, String label ):
 
 cached String dotId( Object o ): 
 	JAVA org.openarchitectureware.vis.graphviz.UidUtil.newUid( java.lang.Object ); 
+
+String currentDotId(): 
+	JAVA org.openarchitectureware.vis.graphviz.UidUtil.currentUid(); 
 	
 setAttribute( dot::subgraph graph, String name, String value ):
 	graph.setProperty( name, value ) -> graph;

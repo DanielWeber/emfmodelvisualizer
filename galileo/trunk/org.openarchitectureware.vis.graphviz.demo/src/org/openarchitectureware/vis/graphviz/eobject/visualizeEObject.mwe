@@ -1,0 +1,13 @@
+<workflow abstract="true">
+
+	<property name="inputSlot"/>
+	<property name="targetDir"/>	
+	<property name="executeGraphviz" value="true"/>
+	<property name="createBatchFile" value="false"/>
+	
+	<component file="org::openarchitectureware::vis::graphviz::model2dotfile.mwe" 
+		targetDir="${targetDir}"
+		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::eobject::eobject2dot::toGraphVizmodel(${inputSlot})"
+		inheritAll="true"/>
+
+</workflow>

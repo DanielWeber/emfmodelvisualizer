@@ -8,4 +8,7 @@ public class UidUtil {
 		return new Integer(uid++).toString();
 	}
 	
+	public static String currentUid () {
+		return new Integer(uid).toString();
+	}
 }
