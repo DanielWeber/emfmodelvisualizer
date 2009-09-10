@@ -56,6 +56,8 @@ ENDDEFINE»
 	"«node_id.name»" «EXPAND edgeRHS FOREACH edgeRHS» «EXPAND attr_list FOREACH  attributes»«
 ENDDEFINE»
 
+«DEFINE stmt FOR attribute»«name»=«value»«ENDDEFINE»
+
 «DEFINE edgeRHS FOR edgeRHS»«ENDDEFINE» 
 
 «DEFINE edgeRHS FOR edgeRHS_node» -> "«node.name»" «ENDDEFINE»
