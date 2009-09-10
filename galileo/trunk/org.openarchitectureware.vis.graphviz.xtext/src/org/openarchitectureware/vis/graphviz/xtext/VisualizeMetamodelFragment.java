@@ -24,7 +24,6 @@ public class VisualizeMetamodelFragment extends DefaultGeneratorFragment {
 		
 		String modelFileName = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath() + "/" + 
 		Naming.asPath(GrammarUtil.getNamespace(grammar)) + "/" + GrammarUtil.getName(grammar)+".ecore";		
-		System.out.println(modelFileName);
 		
 		String targetDir = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath()+"/"+Naming.asPath(GrammarUtil.getNamespace(grammar));
 		
