@@ -41,7 +41,7 @@ public class EObjectUtils {
 		return feature.getName();
 	}
 	
-	public static String getFeatureNamePointingTo (EObject o, EObject reference) {
+	public static String getFeatureNamePointingTo (EObject o, Object reference) {
 		EList<EReference> references = o.eClass().getEAllReferences();
 		for (EReference r: references) {			
 			if (o.eGet(r) == reference) {
@@ -72,12 +72,20 @@ public class EObjectUtils {
 						value = o.eGet(f).toString();
 					}
 					if (f.getEType().getName().equals("EString")) {
-						value = "\\\"" + (String) o.eGet(f) + "\\\"";
+						value = (String) o.eGet(f);
 						if (value!=null) {
+							if (value.equals("\"")) {
+								value = "\\\"";
+							}
+							if (value.equals("\\")) {
+								value = "\\\\";
+							}
+							//value = value.replaceAll("\"", "\\\\\"");
 							value = value.replaceAll("\\}", "\\\\}");
 							value = value.replaceAll("\\{", "\\\\{");
-							value = value.replaceAll("\n", "\\n");
+							value = value.replaceAll("\n", "\\\\n");
 						}
+						value = "\\\"" + value + "\\\"";
 					}									
 				}
 				if (f.getUpperBound()>1 && o.eGet(f)!=null) {

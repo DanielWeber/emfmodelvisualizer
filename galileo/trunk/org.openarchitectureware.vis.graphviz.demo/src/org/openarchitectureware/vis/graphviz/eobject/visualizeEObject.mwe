@@ -1,6 +1,6 @@
 <workflow abstract="true">
 
-	<property name="inputSlot"/>
+	<property name="inputSlot" value="model"/>
 	<property name="targetDir"/>	
 	<property name="executeGraphviz" value="true"/>
 	<property name="createBatchFile" value="false"/>
