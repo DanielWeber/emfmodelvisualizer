@@ -8,7 +8,7 @@ create dot::node_stmt mapToNode( Object source ):
 	setName( source.dotId() );	
 	
 create dot::node_stmt mapToNode( Object source, Object uniqueToken ):
-	setName( source.dotId() );	
+	setName( source.dotId(uniqueToken) );	
 	
 	
 create dot::graph mapToGraph( Object source ):
@@ -148,6 +148,9 @@ setLabel( dot::subgraph graph, String label ):
 
 cached String dotId( Object o ): 
 	JAVA org.openarchitectureware.vis.graphviz.UidUtil.newUid( java.lang.Object ); 
+
+cached String dotId( Object o, Object uniqueToken ): 
+	JAVA org.openarchitectureware.vis.graphviz.UidUtil.newUid( java.lang.Object, java.lang.Object ); 
 
 String currentDotId(): 
 	JAVA org.openarchitectureware.vis.graphviz.UidUtil.currentUid(); 
