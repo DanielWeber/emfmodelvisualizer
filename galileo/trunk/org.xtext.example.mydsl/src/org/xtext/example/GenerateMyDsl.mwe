@@ -68,6 +68,12 @@
 			
 			<fragment class="org.openarchitectureware.vis.graphviz.xtext.VisualizeMetamodelFragment"/>
 			
+			<fragment class="org.openarchitectureware.vis.graphviz.xtext.VisualizeGrammarAsEObjectFragment" 
+				outputFormat="gif"/>
+				
+			<fragment class="org.openarchitectureware.vis.graphviz.xtext.VisualizeGrammarFragment" 
+				showUsedGrammars="true" outputFormat="gif"/>
+			
 		</language>
 	</component>
 </workflow>
