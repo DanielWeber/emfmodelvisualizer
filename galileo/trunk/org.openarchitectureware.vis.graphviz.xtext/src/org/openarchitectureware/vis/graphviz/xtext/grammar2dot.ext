@@ -87,9 +87,14 @@ List[Object] processGroupTokens (List[AbstractElement] tokens, List[Object] star
 
 cached List[Object] processAbstractElement (Alternatives alternatives, List[Object] start, subgraph g, String cardinality) :
 	let end = {} :
-		alternatives.groups.forAll(e|end.addAll(e.processAbstractElement (start, g, e.cardinality))->true) ->
-		doesReturn (cardinality)?addEdges (end, startNode (alternatives), g):null ->
-		isOptional(cardinality)? end.collect(e|e).addAll(start).toList() : end.toList()
+		g.addStatement (alternatives.toNode()) ->
+		g.addStatements (start.collect(e|toEdge(e, alternatives))) ->		
+		alternatives.groups.forAll(e|end.addAll(e.processAbstractElement (alternatives.makeList(), g, e.cardinality))->true) ->
+		g.addStatement (alternatives.toEndNode()) ->
+		g.addStatements (end.collect(e|toEdge(e, alternatives.end()))) ->				
+		doesReturn (cardinality)? g.addStatement (toEdge (alternatives.end(), alternatives)):null ->
+		isOptional(cardinality)? g.addStatement (toEdge (alternatives, alternatives.end())):null->
+		alternatives.end().makeList()
 ;
 
 cached List[Object] processAbstractElement (AbstractNegatedToken token, List[Object] start, subgraph g, String cardinality) :
@@ -124,9 +129,8 @@ cached List[Object] startNodes (List[AbstractElement] elements) :
 ;
 
 cached List[Object] startNode (Alternatives a) :
-	let nodes = {} :
-		a.groups.forAll (e|nodes.addAll(e.startNode())->true) ->
-		nodes.toList();
+	a.makeList() 
+;
 	
 // rules
 
@@ -137,6 +141,10 @@ cached toNode(AbstractRule rule) :
 		.setStyle("filled")
 		.setFillColor (rule.getFillColor())
 ;
+
+cached toNode (Alternatives alternatives) :
+	alternatives.mapToNode()
+		.setShape ("point");
 
 String getFillColor (AbstractRule rule) :
 	"white"
@@ -159,6 +167,15 @@ Void addEndMarker (List[Object] end, subgraph g) :
 	    g.addStatements(end.collect(e|e.toEdge(endMarker)));
 	    
 // elements
+
+
+cached String end(Alternatives alternatives) :
+	alternatives.toString()
+;
+
+cached toEndNode (Alternatives alternatives) :
+	alternatives.end().mapToNode()
+		.setShape ("point");
 
 cached toNode(AbstractElement element) :
 	element.mapToNode()
@@ -226,7 +243,7 @@ node_stmt setupNode (node_stmt node, RuleCall element) :
 //	node.setStyle ("dotted") 
 	node
 ;
-
+	
 cached toEdge(Object start, Object end ):
 	mapToDirectedEdge( start, end, null)
 		.setArrowHead("normal")
