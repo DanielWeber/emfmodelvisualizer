@@ -2,7 +2,7 @@
 	<property name="showUsedGrammars" value="false"/>
 	
 	<component file="org::openarchitectureware::vis::graphviz::model2dotfile.mwe" 
-		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::xtext::grammar2dot::toDot(${inputSlot},${showUsedGrammars})"
+		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::xtext::grammar2dot::toDot(${inputSlot},'${showUsedGrammars}'.toUpperCase()=='TRUE')"
 		inheritAll="true"/>
 	
 </workflow>

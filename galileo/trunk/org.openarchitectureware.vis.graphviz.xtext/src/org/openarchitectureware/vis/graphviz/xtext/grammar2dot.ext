@@ -5,7 +5,8 @@ import dot;
 extension org::openarchitectureware::vis::graphviz::dotlib;
 
 create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars):
-	addGraph( grammar.toGraph(false) )
+	//info ("showUsedGrammars="+showUsedGrammars) ->
+	addGraph( grammar.toGraph(showUsedGrammars) )
 ; 
  
 cached toGraph (Grammar grammar, Boolean showUsedGrammars) :

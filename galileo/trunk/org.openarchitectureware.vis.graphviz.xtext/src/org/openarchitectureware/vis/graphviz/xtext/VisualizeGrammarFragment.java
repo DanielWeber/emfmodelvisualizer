@@ -27,7 +27,7 @@ public class VisualizeGrammarFragment extends DefaultGeneratorFragment {
 		String wfFile = "org/openarchitectureware/vis/graphviz/xtext/visualizeGrammar.mwe";
 		Map properties = new HashMap();
 		properties.put ("targetDir", targetDir);
-		properties.put("showUsedGrammars", Boolean.toString(showUsedGrammars));
+		properties.put("showUsedGrammars", showUsedGrammars);
 		properties.put ("createBatchFile", "false");
 		properties.put ("executeGraphviz", "true");
 		properties.put("inputSlot", "model");
@@ -49,15 +49,15 @@ public class VisualizeGrammarFragment extends DefaultGeneratorFragment {
 		this.outputFormat = outputFormat;
 	}
 	
-	public void setShowUsedGrammars(boolean showUsedGrammars) {
+	public void setShowUsedGrammars(String showUsedGrammars) {
 		this.showUsedGrammars = showUsedGrammars;
 	}
 
-	public boolean isShowUsedGrammars() {
+	public String isShowUsedGrammars() {
 		return showUsedGrammars;
 	}
 
-	private boolean showUsedGrammars = false;
+	private String showUsedGrammars = "false";
 	
 	
 }
