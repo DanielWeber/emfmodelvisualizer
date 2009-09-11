@@ -4,6 +4,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.openarchitectureware.vis.graphviz.StringConverter;
 
 public class EObjectUtils {
 
@@ -74,18 +75,10 @@ public class EObjectUtils {
 					if (f.getEType().getName().equals("EString")) {
 						value = (String) o.eGet(f);
 						if (value!=null) {
-							if (value.equals("\"")) {
-								value = "\\\"";
-							}
-							if (value.equals("\\")) {
-								value = "\\\\";
-							}
-							//value = value.replaceAll("\"", "\\\\\"");
-							value = value.replaceAll("\\}", "\\\\}");
-							value = value.replaceAll("\\{", "\\\\{");
-							value = value.replaceAll("\n", "\\\\n");
+							value = "\"" + value + "\"";
+							value = StringConverter.makeDotString (value);
 						}
-						value = "\\\"" + value + "\\\"";
+						
 					}									
 				}
 				if (f.getUpperBound()>1 && o.eGet(f)!=null) {
