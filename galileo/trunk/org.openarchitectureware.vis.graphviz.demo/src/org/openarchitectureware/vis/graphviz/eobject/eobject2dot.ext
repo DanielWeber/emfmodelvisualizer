@@ -23,8 +23,8 @@ cached processNode (emf::EObject o, dot::graph g) :
 	(let currentDotId = currentDotId() :
 		g.addStatement (o.toNode()) ->
 		//info ("processNode o="+o.toString()+" dotId="+o.dotId()+"currentDotId="+currentDotId) ->
-		g.addStatements (o.eContents.select(e|!e.filter(o)).toNode ()) ->
-		g.addStatements (o.eContents.select(e|!e.filter(o)).toContainmentEdge(o)) ->
+		g.addStatements (o.eContents.select(e|!e.filter(o)).collect(e|e.toNode ())) ->
+		g.addStatements (o.eContents.select(e|!e.filter(o)).collect(e|e.toContainmentEdge(o))) ->
 		g.addStatements (o.eCrossReferences().select(e|!e.filter(o)).collect (e|e.toNode())) ->
 		g.addStatements (o.eCrossReferences().select(e|!e.filter(o)).collect (e|e.toRefEdge(o))) ->
 		o.eContents.select(e|!e.filter(o) && e.dotId().asInteger()>currentDotId.asInteger()).forAll(e|processNode(e,g)->true)->
