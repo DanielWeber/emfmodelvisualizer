@@ -158,7 +158,8 @@ String currentDotId():
 setAttribute( dot::subgraph graph, String name, String value ):
 	graph.setProperty( name, value ) -> graph;
 
-		
+String dotString (String s):
+	JAVA org.openarchitectureware.vis.graphviz.StringConverter.makeDotString (java.lang.String);
 		
 		
 filename( graph this ): name+".dot";		
