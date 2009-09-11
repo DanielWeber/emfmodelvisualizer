@@ -162,7 +162,7 @@ Void addEndMarker (List[Object] end, subgraph g) :
 
 cached toNode(AbstractElement element) :
 	element.mapToNode()
-		.setLabel (element.getLabel())
+		.setLabel (dotString(element.getLabel()))
 		.setupNode(element)
 ;
 
