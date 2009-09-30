@@ -1,6 +1,8 @@
 package org.openarchitectureware.vis.graphviz;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -63,5 +65,13 @@ public class ExecuteCommand {
 	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
  
 	}
-	
+
+	public static String getCanonicalPath (String fileName) {
+		File file = new File (fileName);			
+		try {
+			return file.getCanonicalPath().toString();
+		} catch (IOException e) {
+			return fileName;
+		}			
+	}
 }
