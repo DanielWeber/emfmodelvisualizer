@@ -1,0 +1,11 @@
+import blockDiagram;
+
+String getXtextSourceLocation( emf::EObject this) :
+	JAVA  org.openarchitectureware.vis.blockdiagram.model.view.SourceLocation.getLocation( org.eclipse.emf.ecore.EObject);
+
+String getXtextSourceLocation( emf::EObject this, String string ) :
+	JAVA  org.openarchitectureware.vis.blockdiagram.model.view.SourceLocation.getLocation( org.eclipse.emf.ecore.EObject, java.lang.String);
+
+ShapeAttributes setDataObject_( ShapeAttributes this, emf::EObject o) :
+	JAVA  org.openarchitectureware.vis.blockdiagram.model.view.SourceLocation.setDataObject( org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.ShapeAttributes, org.eclipse.emf.ecore.EObject);
+	

@@ -1,0 +1,25 @@
+process (xtext::GeneratedMetamodel this ) :
+	process (ePackage)
+;
+
+process (ecore::EPackage this) :
+	eClassifiers.process ()
+;
+
+process (ecore::EClassifier this) :
+	null
+;
+
+process (ecore::EClass this) :
+	eStructuralFeatures.process()
+;
+	
+process(ecore::EStructuralFeature this) :
+	null
+;		
+process(ecore::EAttribute this) :
+	{"spacing", "lineStyle", "lineWidth", "fontName", "fontStyle", "fontSize",
+	"fontColor", "color", "colorEnum", "inset", "labelPlacement", "tooltip", 
+	"sourceLocation", "sourceDecoration", "targetDecoration",
+	"position", "alignment", "mode"}.contains (name) ? setUnsettable(true) : null
+;
