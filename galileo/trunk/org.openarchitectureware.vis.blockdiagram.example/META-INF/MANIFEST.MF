@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: blockdiagram.metamodel.example
+Bundle-SymbolicName: org.openarchitectureware.vis.blockdiagram.example
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.emf.mwe.core;bundle-version="0.7.0",
+ org.openarchitectureware.vis.blockdiagram.metamodel;bundle-version="1.0.0",
+ org.eclipse.emf.mwe.utils;bundle-version="0.7.0",
+ org.eclipse.emf.ecore.xmi;bundle-version="2.5.0",
+ org.eclipse.xtext;bundle-version="0.7.0",
+ org.eclipse.xtext.log4j;bundle-version="1.2.15",
+ org.eclipse.xtend;bundle-version="0.7.0",
+ org.eclipse.xtend.typesystem.emf;bundle-version="0.7.0",
+ com.ibm.icu;bundle-version="4.0.1",
+ org.junit4;bundle-version="4.5.0"

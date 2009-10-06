@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Model visualization"
+            id="org.openarchitectureware.vis.blockdiagram.model.view">
+      </category>
+      <view
+            name="Block Diagram Model View"
+            icon="icons/sample.gif"
+            category="org.openarchitectureware.vis.blockdiagram.model.view"
+            class="org.openarchitectureware.vis.blockdiagram.model.view.BlockDiagramModelView"
+            id="org.openarchitectureware.vis.blockdiagram.model.view.BlockDiagramModelView">
+      </view>
+   </extension>
+
+</plugin>
