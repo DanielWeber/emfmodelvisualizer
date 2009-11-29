@@ -122,10 +122,12 @@ setName( dot::subgraph g, String name ):
 	g.setName( name ) -> g;		
 
 addStatements( dot::subgraph g, List[dot::stmt] s ): 
+	info ("addStatements(subgraph), s="+s.toString()) ->
 	g.stmts.addAll( s ) -> g;
  
 addStatements( dot::graph g, List[dot::stmt] s ):
 	s.exists(e|e == null) ? "el null".syserr() : null ->
+	info ("addStatements(graph), s="+s.toString()) ->
 	g.stmts.addAll( s ) -> g;
  
 addStatement( dot::subgraph g, dot::stmt s ): 
