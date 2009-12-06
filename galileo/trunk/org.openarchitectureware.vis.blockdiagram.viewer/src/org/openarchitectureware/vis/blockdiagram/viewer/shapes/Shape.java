@@ -26,17 +26,14 @@ public abstract class Shape extends Item {
 			figure = createFigure();
 			if (isSelectable()) {
 				figure.addMouseListener(new org.eclipse.draw2d.MouseListener() {
-					@Override
 					public void mouseReleased(org.eclipse.draw2d.MouseEvent arg0) {
 						canvas.setSelection (Shape.this);	
 					}
 					
-					@Override
 					public void mousePressed(org.eclipse.draw2d.MouseEvent arg0) {
 						// TODO Auto-generated method stub				
 					}
 					
-					@Override
 					public void mouseDoubleClicked(org.eclipse.draw2d.MouseEvent arg0) {
 						// TODO Auto-generated method stub				
 					}

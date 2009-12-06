@@ -49,7 +49,6 @@ public class BlockDiagramContentProvider implements
 	protected FontManager fontManager = new FontManager();
 	protected ImageManager imageManager = new ImageManager();
 
-	@Override
 	public org.openarchitectureware.vis.blockdiagram.viewer.shapes.Shape getDiagramShape(
 			Object object, BlockDiagramCanvas canvas) {
 		if (object instanceof BlockShape) {
@@ -257,19 +256,16 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public void dispose() {
 		colorManager.dispose();
 		fontManager.dispose();
 	}
 
-	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof BlockShape) {
 			BlockShape blockShape = (BlockShape) parentElement;
@@ -282,7 +278,6 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public Object getParent(Object element) {
 		if (element instanceof org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.Shape) {
 			Shape shape = (org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.Shape) element;
@@ -293,7 +288,6 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof BlockShape) {
 			BlockShape blockShape = (BlockShape) element;
@@ -308,7 +302,6 @@ public class BlockDiagramContentProvider implements
 		return false;
 	}
 
-	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof Diagram) {
 			Diagram d = (Diagram) inputElement;
@@ -317,7 +310,6 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public IFigure getRootFigure(Object object, BlockDiagramCanvas canvas) {
 		Figure f = new Figure();
 		if (object instanceof Diagram) {
@@ -359,7 +351,6 @@ public class BlockDiagramContentProvider implements
 		return PositionConstants.TOP;
 	}
 
-	@Override
 	public Connection getConnection(Object object, BlockDiagramCanvas canvas) {
 		if (object instanceof org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) {
 			org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection connection = (org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) object;
@@ -432,7 +423,6 @@ public class BlockDiagramContentProvider implements
 		return Position.center;
 	}
 
-	@Override
 	public Object[] getConnections(Object object) {
 		if (object instanceof Diagram) {
 			Diagram diagram = (Diagram) object;
@@ -441,7 +431,6 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public Object getSource(Object object) {
 		if (object instanceof org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) {
 			org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection connection = (org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) object;
@@ -450,7 +439,6 @@ public class BlockDiagramContentProvider implements
 		return null;
 	}
 
-	@Override
 	public Object getTarget(Object object) {
 		if (object instanceof org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) {
 			org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection connection = (org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SimpleConnection) object;

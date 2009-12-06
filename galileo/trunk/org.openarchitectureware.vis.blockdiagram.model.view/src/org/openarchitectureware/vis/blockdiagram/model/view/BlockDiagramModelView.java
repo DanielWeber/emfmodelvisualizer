@@ -69,7 +69,6 @@ public class BlockDiagramModelView extends ViewPart {
 		
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			
-			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection ss = (IStructuredSelection) event
@@ -90,7 +89,6 @@ public class BlockDiagramModelView extends ViewPart {
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection ss = (IStructuredSelection) event

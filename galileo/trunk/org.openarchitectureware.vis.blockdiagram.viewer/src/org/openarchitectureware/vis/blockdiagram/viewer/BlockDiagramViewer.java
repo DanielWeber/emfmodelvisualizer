@@ -93,17 +93,14 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		
 		canvas.addMouseListener(new MouseListener() {
 			
-			@Override
 			public void mouseUp(MouseEvent e) {
 				// do nothing
 			}
 			
-			@Override
 			public void mouseDown(MouseEvent e) {
 				// do nothing				
 			}
 			
-			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				DoubleClickEvent doubleClickEvent = new DoubleClickEvent(BlockDiagramViewer.this, getSelection());
 				fireDoubleClick(doubleClickEvent);								
