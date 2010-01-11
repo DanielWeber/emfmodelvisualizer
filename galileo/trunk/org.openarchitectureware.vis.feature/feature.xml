@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.openarchitectureware.visualization.feature"
+      label="openArchitectureWare Visualization Feature"
+      version="1.0.0.qualifier"
+      provider-name="Markus Völter">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.xtext.util"/>
+      <import plugin="org.eclipse.emf.ecore"/>
+      <import plugin="org.eclipse.emf.common"/>
+      <import plugin="org.antlr.runtime"/>
+      <import plugin="org.eclipse.xtend"/>
+      <import plugin="org.eclipse.xtext.generator" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="de.itemis.xtext.antlr" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.log4j" version="1.2.15" match="greaterOrEqual"/>
+      <import plugin="com.ibm.icu" version="4.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.xtend" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.mwe.core.source" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.mwe.utils" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.codegen.ecore" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.core" version="0.7.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.common"/>
+      <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+   <plugin
+         id="org.openarchitectureware.vis.graphviz"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openarchitectureware.vis.graphviz.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
