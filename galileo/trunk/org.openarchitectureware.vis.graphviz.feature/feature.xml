@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.openarchitectureware.visualization.feature"
+      id="org.openarchitectureware.vis.graphviz.feature"
       label="openArchitectureWare Visualization Feature"
       version="1.0.0.qualifier"
       provider-name="Markus Völter">
