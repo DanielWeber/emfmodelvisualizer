@@ -1,0 +1,165 @@
+import dot;
+
+extension org::eclipse::xtend::util::stdlib::io;
+extension org::eclipse::xtend::util::stdlib::naming;
+extension org::eclipse::xtend::util::stdlib::elementprops;
+
+create dot::node_stmt mapToNode( Object source ):
+	setName( source.dotId() );	
+	
+create dot::node_stmt mapToNode( Object source, Object uniqueToken ):
+	setName( source.dotId(uniqueToken) );	
+	
+	
+create dot::graph mapToGraph( Object source ):
+    setType(dot::graphtype::digraph) ->
+	setFont( "arial" );
+
+create dot::graph mapToGraph( Object source, Object uniqueToken ):
+    setType(dot::graphtype::digraph) ->
+	setFont( "arial" );
+ 
+
+create dot::subgraph mapToSubgraph( Object source ):
+    this;
+
+create dot::subgraph mapToSubgraph( Object source, Object uniqueToken ):
+    this;
+
+create dot::edge_stmt_node mapToEdge( Object source, Object target, Object token ):
+	setNode_id(source.toNodeId()) ->
+	edgeRHS.add(target.toRHS(token, source)) -> 
+	this; 
+
+create dot::edgeRHS_node toRHS( Object o, Object source, Object token ):
+	setOp(dot::edgeop::directed) -> 
+	setNode( o.toNodeId() ) ->
+	this;
+
+
+setAttribute( dot::edge_stmt_node edge, String name, String value ):
+	edge.attributes.add( attr( edge, name, value ) ) -> edge;
+	
+setAttribute( dot::node_stmt node, String name, String value ):
+	node.attributes.add( attr( node, name, value ) ) -> node;
+	
+
+addGraph( graphvizmodel m, graph g ):
+	m.graphs.add( g ) -> m;
+
+addGraphs( graphvizmodel m, Collection[graph] gc ):
+	m.graphs.addAll( gc ) -> m;
+
+setArrowHead( dot::edge_stmt_node edge, String kind ):
+	edge.attributes.add( attr( edge, "arrowhead", kind ) ) -> edge;
+
+setArrowTail( dot::edge_stmt_node edge, String kind ):
+	edge.attributes.add( attr( edge, "arrowtail", kind ) ) -> edge;
+
+setStyle( dot::edge_stmt_node edge, String kind ):
+	edge.attributes.add( attr( edge, "style", kind ) ) -> edge;
+
+setWeight( dot::edge_stmt_node edge, String weight ):
+	edge.attributes.add( attr( edge, "weight", weight ) ) -> edge;
+
+setStyle( dot::node_stmt node, String kind ):
+	node.attributes.add( attr( node, "style", kind ) ) -> node;
+
+setColor( dot::edge_stmt_node edge, String color ):
+	edge.attributes.add( attr( edge, "color", color ) ) -> 
+	edge.attributes.add( attr( edge, "fontcolor", color ) ) -> 
+	edge;
+
+setFontColor( dot::edge_stmt_node edge, String color ):
+	edge.attributes.add( attr( edge, "fontcolor", color ) ) -> edge;
+
+setFont( dot::edge_stmt_node edge, String font ):
+	edge.attributes.add( attr( edge, "fontname", font ) ) -> edge;
+
+setFont( dot::node_stmt node, String font ):
+	node.attributes.add( attr( node, "fontname", font ) ) -> node;
+
+setFontSize( dot::edge_stmt_node edge, String font ):
+	edge.attributes.add( attr( edge, "fontsize", font ) ) -> edge;
+
+setFontSize( dot::node_stmt node, String font ):
+	node.attributes.add( attr( node, "fontsize", font ) ) -> node;
+
+setFont( dot::graph g, String font ):
+	g.setProperty( "fontname", font ) -> g;
+
+mapToDirectedEdge( Object source, Object target, Object token ):
+	mapToEdge(source, target, token);
+	
+dot::node_id toNodeId(Object o):
+	let id = new dot::node_id: id.setName(o.dotId()) -> id;
+
+setLabel( node_stmt n, String name ):	
+	n.attributes.add( attr( n, "label", name ) ) -> n;
+
+setLabel( edge_stmt_node n, String name ):	
+	n.attributes.add( attr( n, "label", name ) ) -> n;
+	
+setHeadLabel( edge_stmt_node n, String name ):	
+	n.attributes.add( attr( n, "headlabel", name ) ) -> n;
+	
+setTailLabel( edge_stmt_node n, String name ):	
+	n.attributes.add( attr( n, "taillabel", name ) ) -> n;
+	
+setShape( node_stmt n, String shape ):	
+	n.attributes.add( attr( n, "shape", shape ) ) -> n;
+	
+create dot::attr_list attr( Object ctx, String name, String value ):
+	a_list.add( ctx.attrIMPL(name, value) );
+ 		
+create dot::a_list attrIMPL( Object ctx, String name, String value ):
+	setName( name ) -> setValue( value );
+ 
+setName( dot::node_stmt stmt, String name ):
+	stmt.setName( name ) -> stmt;		
+
+setName( dot::subgraph g, String name ):
+	g.setName( name ) -> g;		
+
+addStatements( dot::subgraph g, List[dot::stmt] s ):
+	g.stmts.addAll( s ) -> g;
+ 
+addStatements( dot::graph g, List[dot::stmt] s ):
+	s.exists(e|e == null) ? "el null".syserr() : null ->
+	g.stmts.addAll( s ) -> g;
+ 
+addStatement( dot::subgraph g, dot::stmt s ): 
+	g.stmts.add( s ) -> g;
+ 
+addStatement( dot::graph g, dot::stmt s ): 
+	g.stmts.add( s ) -> g;
+ 
+setLabel( dot::node_stmt s, List[String] parts ):
+	s.setLabel( "{"+parts.toString("|")+"}" ) -> s;
+		
+setFillColor( dot::node_stmt node, String color ):
+	node.attributes.add( attr( node, "fillcolor", color ) ) -> node;
+	
+setLineColor( dot::node_stmt node, String color ):
+	node.attributes.add( attr( node, "color", color ) ) -> node;
+	
+setLabel( dot::subgraph graph, String label ):
+	graph.setProperty( "label", label ) -> graph;
+
+cached String dotId( Object o ): 
+	JAVA org.openarchitectureware.vis.graphviz.UidUtil.newUid( java.lang.Object ); 
+
+cached String dotId( Object o, Object uniqueToken ): 
+	JAVA org.openarchitectureware.vis.graphviz.UidUtil.newUid( java.lang.Object, java.lang.Object ); 
+
+String currentDotId(): 
+	JAVA org.openarchitectureware.vis.graphviz.UidUtil.currentUid(); 
+	
+setAttribute( dot::subgraph graph, String name, String value ):
+	graph.setProperty( name, value ) -> graph;
+
+String dotString (String s):
+	JAVA org.openarchitectureware.vis.graphviz.StringConverter.makeDotString (java.lang.String);
+		
+		
+filename( graph this ): name+".dot";		
