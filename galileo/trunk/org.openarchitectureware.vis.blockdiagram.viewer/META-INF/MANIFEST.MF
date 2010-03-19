@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Block Diagram Viewer
 Bundle-SymbolicName: org.openarchitectureware.vis.blockdiagram.viewer
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.draw2d;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.0"
 Export-Package: org.openarchitectureware.vis.blockdiagram.viewer,
