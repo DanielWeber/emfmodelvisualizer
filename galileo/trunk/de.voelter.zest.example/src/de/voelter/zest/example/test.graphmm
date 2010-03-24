@@ -4,7 +4,7 @@ prolog {
 graph g1 {
 	nodes {
 		node s1 label "S1" tooltip "S1 Tooltip" icon "icon1.gif" category "a"
-			userData 
+			userData
 				test : text = "This is a test";
 				test2 : int = "2";
 				test3 : boolean = "true";
@@ -19,14 +19,13 @@ graph g1 {
 		node s9 label "S9" textcolor red;
 		containernode sc label "SCNode"
 			contained graph scchild {
-				nodes { 
+				nodes {
 					node sc1 label "sc1";
 					node sc2 label "sc2";
 				}
 				edges {
 					sc1 -> sc2;
-					sc1 -> s6;
-				}		
+				}
 			}
 		;
 	}
@@ -48,9 +47,9 @@ graph g2 {
 	nodes {
 		node n1 label "n1";
 		node n2 label "n2";
-			
+
 	}
-	
+
 	edges {
 		n1 -> n2 label "label";
 	}
