@@ -10,7 +10,7 @@ In order to build the Eclipse projects, you have to have TMF XText installed in 
 In addition to that, you need
 
  * zest: http://www.eclipse.org/gef/zest/
- * GraphViz: http://TODO
+ * !GraphViz: http://www.graphviz.org
 
 depending on the particular visualization you're interested in.
 
@@ -23,8 +23,8 @@ After checking out the projects you'll notice that they don't compile (because c
 
 Then run the following MWE-Workflows:
 
- * org.openarchitectureware.vis.graphmm35/src/org/openarchitectureware/vis/GenerateGraphmm35.mwe)
- * org.openarchitectureware.graphviz/src/org/openarchitectureware/vis/graphviz/GenerateDot.mwe)
- * org.openarchitectureware.vis.blockdiagram.metamodel/src/org/openarchitectureware/vis/blockdiagram/metamodel/GenerateBlockDiagram.mwe)
+ * org.openarchitectureware.vis.graphmm35/src/org/openarchitectureware/vis/!GenerateGraphmm35.mwe)
+ * org.openarchitectureware.graphviz/src/org/openarchitectureware/vis/graphviz/!GenerateDot.mwe)
+ * org.openarchitectureware.vis.blockdiagram.metamodel/src/org/openarchitectureware/vis/blockdiagram/metamodel/!GenerateBlockDiagram.mwe)
 
 And all compilation errors should be gone.
