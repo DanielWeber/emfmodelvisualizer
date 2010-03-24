@@ -81,7 +81,7 @@ public class OawEclipseProjectResourceAndClassesLoader extends
 	@Override
 	protected URL loadFromContextClassLoader(final String path) {
 		URL u = super.loadFromContextClassLoader(path);
-		System.out.println(path+":--:"+u.toString());
+      System.out.println(path + ":--:" + String.valueOf(u));
 		return u;
 	}
 

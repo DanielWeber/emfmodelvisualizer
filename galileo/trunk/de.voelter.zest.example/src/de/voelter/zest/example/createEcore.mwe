@@ -1,28 +1,26 @@
 <workflow>
 	<property name='modelFile' value="platform:/resource/de.voelter.zest.example/src/Ecore.ecore"/>
-	<bean class="org.eclipse.mwe.emf.StandaloneSetup">
-    	<platformUri value=".."/>
-	</bean>
-    <bean class="org.openarchitectureware.vis.graphmm.MetaModelRegistration"/>
-	
-  
-	<component id="read" class="org.eclipse.mwe.emf.Reader">
+	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" platformUri=".."/>
+    <bean class="org.openarchitectureware.vis.Graphmm35StandaloneSetup"/>
+
+	<component id="read" class="org.eclipse.emf.mwe.utils.Reader">
 		<useSingleGlobalResourceSet value="true"/>
 		<modelSlot value="model"/>
 		<uri value="${modelFile}"/>
-	</component>	
-  
-	<component class="oaw.xtend.XtendComponent">
-		<metaModel id="mm" class="org.eclipse.m2t.type.emf.EmfRegistryMetaModel"/>
+	</component>
+
+	<component class="org.eclipse.xtend.XtendComponent">
+		<metaModel id="mm" class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
 		<invoke value="ecore2zest::top(model)" />
 		<outputSlot value="graphmodel" />
 	</component>
-	
-	<component class="oaw.check.CheckComponent">
-       <metaModel id="mm" class="org.eclipse.m2t.type.emf.EmfRegistryMetaModel"/>
+
+	<component class="org.eclipse.xtend.check.CheckComponent">
+       <metaModel id="mm" class="org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel"/>
        <expression value="graphmodel.eAllContents.union({graphmodel})"/>
-	   <checkFile value="org::openarchitectureware::vis::graphmm::GenChecks"/>
-	   <checkFile value="org::openarchitectureware::vis::graphmm::Checks"/>
+	   <checkFile value="org::openarchitectureware::vis::validation::Graphmm35Checks"/>
+	   <checkFile value="org::openarchitectureware::vis::validation::Graphmm35ExpensiveChecks"/>
+	   <checkFile value="org::openarchitectureware::vis::validation::Graphmm35FastChecks"/>
 	</component>
-  	
+
 </workflow>
