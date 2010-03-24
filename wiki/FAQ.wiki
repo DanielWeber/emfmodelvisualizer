@@ -3,5 +3,5 @@
 = "there is no model to interpet after workflow execution" =
 
 an error occured during execution of the workflow that caused the model transformation to fail and there is no model in the slot to interpret. 
- * make sure you load a workflow from a plugin that is in the workspace in the filesystem. imports that are just a pointer to a projects real location can not be used.
- * try to strip down your workflow to the visualization steps, if you are running a generator before that failes, the model won't be created. try making a workflow that only loads the model or invokes the model-transformation 
+ * make sure you load a workflow from a plugin that is in the workspace in the filesystem. Imports that are just a pointer to a projects real location can not be used.
+ * try to strip down your workflow to the visualization steps, if you are running a generator before that fails, the model won't be created. Try making a workflow that only loads the model or invokes the model-transformation 

@@ -5,13 +5,26 @@
 if you want to commit changes register first and then checkout via svn using _https_, your google account username and the google provided password.
 
 = Dependencies =
-at the moment you need the following libraries:
+In order to build the Eclipse projects, you have to have TMF XText installed in your development environment.
+
+In addition to that, you need
+
  * zest: http://www.eclipse.org/gef/zest/
- * oAW: http://www.openarchitectureware.com/
+ * GraphViz: http://TODO
+
+depending on the particular visualization you're interested in.
 
 = Setup the projects in Eclipse =
-If you checkout the projects you'll notice that they don't compile. You have to run the oaw-Workflows of the projects:
- * org.openarchitectureware.vis.graphmm
- * org.openarchitectureware.graphviz
+After checking out the projects you'll notice that they don't compile (because classes refer to generated code). You have to run a few MWE workflows to generate the missing artifacts. But before that, you'll have to fix build path errors by creating a new directory named src-gen in each of the following projects:
 
-To do that you have to remove the src-gen folder from the buildpath and then run the oaw-workflows. After generation add the src-gen folder again.
+ * org.openarchitectureware.vis.graphmm35
+ * org.openarchitectureware.graphviz
+ * org.openarchitectureware.vis.blockdiagram.metamodel
+
+Then run the following MWE-Workflows:
+
+ * org.openarchitectureware.vis.graphmm35/src/org/openarchitectureware/vis/GenerateGraphmm35.mwe)
+ * org.openarchitectureware.graphviz/src/org/openarchitectureware/vis/graphviz/GenerateDot.mwe)
+ * org.openarchitectureware.vis.blockdiagram.metamodel/src/org/openarchitectureware/vis/blockdiagram/metamodel/GenerateBlockDiagram.mwe)
+
+And all compilation errors should be gone.
