@@ -1,6 +1,6 @@
 #summary This is a collection of TODOs.
 
-This page summarizes the status of several topics. This page was kicked off by a discussion between Daniel und Christoph. Please feel free to add your comments and thoughts. 
+This page summarizes the status of several topics. This page was kicked off by a discussion between Daniel and Christoph. Please feel free to add your comments and thoughts. 
 
 == Prepare for a release ==
 
@@ -16,13 +16,13 @@ FIXME: Define features which we want to provide
 
 == Compatibility with Helios ==
 
-Helios and Xtext might bring some changes which are not compatible with Gallileo. The current Trunk should be reactivated und used for the Helios Release. The Galileo branch should exist in parallel. A brief documentation of the branches is required.
+Helios and Xtext might bring some changes which are not compatible with Galileo . The current Trunk should be reactivated und used for the Helios Release. The Galileo branch should exist in parallel. A brief documentation of the branches is required.
 
 == Documentation ==
 
 * The documentation should be updated (see Issue 21).
 
-CKulla: Will provide documentation on Xtext Grammar visualiaztion, ecore Metamodel and eobject visualization. Will also provided block diagram documentation (only if is released, imho not ready yet).
+CKulla: Will provide documentation on Xtext Grammar visualization, ecore Metamodel and eobject visualization. Will also provided block diagram documentation (only if is released, imho not ready yet).
 
 * Decision about the documentation format required. Provide help in eclipse format. 
 How is Xtext doing this?
