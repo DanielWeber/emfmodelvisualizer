@@ -1,0 +1,52 @@
+#summary One-sentence summary of this page.
+
+This is a collection of TODOs. This page should summarize the status and discussion of the individual topics. This page was kicked off by a discussion between Daniel und Christoph. Please feel free to add your comments and thoughts. 
+
+== Prepare for a release ==
+
+* The project needs eclipse feature projects and an update site project in order to release it (see Issues 18,19 and 25).
+
+FIXME: Define features which we want to provide
+
+* Is it planned to include this project in a future oaw release? 
+
+* Are packages and project names ok? Is there a convention for oaw?
+
+* Setup automated build - Maybe with tycho and maven 3?
+
+== Compatibility with Helios ==
+
+Helios and Xtext might bring some changes which are not compatible with Gallileo. The current Trunk should be reactivated und used for the Helios Release. The Galileo branch should exist in parallel. A brief documentation of the branches is required.
+
+== Documentation ==
+
+* The documentation should be updated (see Issue 21).
+
+CKulla: Will provide documentation on Xtext Grammar visualiaztion, ecore Metamodel and eobject visualization. Will also provided block diagram documentation (only if is released, imho not ready yet).
+
+* Decision about the documentation format required. Provide help in eclipse format. 
+How is Xtext doing this?
+
+== Zest ==
+
+* Add transformation from Zest to Graphviz and vice versa.
+
+* Add SVG export
+
+* Enhance view to automatically reflect changes in the source model
+
+* Check class loader issues
+
+== Blockdiagram ==
+
+* Integrate fixes from Daniel
+
+* Add svg export
+
+* Enhance workflow selection
+
+* Enhance view to automatically reflect changes in the source model
+
+== Tests ==
+
+There are not tests atm :(. We should really have some.
