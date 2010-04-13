@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary This is a collection of TODOs.
 
 This is a collection of TODOs. This page should summarize the status and discussion of the individual topics. This page was kicked off by a discussion between Daniel und Christoph. Please feel free to add your comments and thoughts. 
 
