@@ -27,6 +27,8 @@ CKulla: Will provide documentation on Xtext Grammar visualization, ecore Metamod
 * Decision about the documentation format required. Provide help in eclipse format. 
 How is Xtext doing this?
 
+Daniel Weber: Just checked how EGit [http://wiki.eclipse.org/EGit/Contributor_Guide#Documentation generates Eclipse help] from their [http://wiki.eclipse.org/EGit/User_Guide wiki pages]. They use ant tasks provided by [http://wiki.eclipse.org/Mylyn/WikiText WikiText], seems to be simple enough. The only problem is that WikiText does not yet support Google Code's Wiki Syntax, see [https://bugs.eclipse.org/bugs/show_bug.cgi?id=291239 bug 291239]. An implementation for !MoinMoin was started here: http://code.google.com/p/moinmoinwikitext/ . As Google claims their wiki was "inspired by MoinMoin", this might be a start.
+
 == Zest ==
 
 * Add transformation from Zest to Graphviz and vice versa.
