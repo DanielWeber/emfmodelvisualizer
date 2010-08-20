@@ -1,0 +1,4 @@
+bin/
+src-gen/
+plugin.xml_gen
+MANIFEST.MF_gen
