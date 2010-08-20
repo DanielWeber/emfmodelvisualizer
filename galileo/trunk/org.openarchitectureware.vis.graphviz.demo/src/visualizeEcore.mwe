@@ -1,8 +1,0 @@
-<workflow>
-
-	<cartridge file="visualizeMetamodel.mwe" 
-		modelFile="platform:/resource/org.openarchitectureware.vis.graphviz.demo/src/Ecore.ecore"
-		targetDir="src-gen"
-		/>
-
-</workflow>

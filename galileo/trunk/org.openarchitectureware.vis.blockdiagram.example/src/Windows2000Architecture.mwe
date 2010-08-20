@@ -1,8 +1,0 @@
-<workflow>
-	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" platformUri=".."/>
-	
-	<component class="org.eclipse.xtext.MweReader" uri="classpath:/Windows2000Architecture.blockdiagram">
-		<register class="org.openarchitectureware.vis.blockdiagram.metamodel.BlockDiagramStandaloneSetup"/>
-		<outputSlot value="blockdiagram"/>
-	</component>	
-</workflow>	

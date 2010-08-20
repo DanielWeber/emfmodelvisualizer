@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: org.openarchitectureware.graphviz.ecoredemo
-Bundle-SymbolicName: org.openarchitectureware.graphviz.ecoredemo; singleton:=true
-Bundle-Version: 1.0.0
-Require-Bundle: org.openarchitectureware.dependencies,
- org.openarchitectureware.graphviz;bundle-version="1.0.0"
