@@ -1,9 +1,0 @@
-import dot;
-
-extension org::openarchitectureware::graphviz::Extensions reexport;
-extension org::openarchitectureware::graphviz::GenEditorExtensions reexport;
-
-/*
- * use this file to overwrite the label() and the image()
- * extension for your model elements
- */

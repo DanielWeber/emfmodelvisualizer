@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Doc Plug-in
-Bundle-SymbolicName: org.openarchitectureware.vis.doc
-Bundle-Version: 1.0.0
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: J2SE-1.5

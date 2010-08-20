@@ -1,9 +1,0 @@
-import imp;
-
-extension dataimport::dsl::Extensions;
-extension dataimport::dsl::GenLinking reexport;
-
-/*
- * If you need more sophisticated linking semantic just overwrite the linking extensions here and add your own logic.
- * Have a look at the generated dataimport::dsl::GenLinking (typically located in src-gen)
- */

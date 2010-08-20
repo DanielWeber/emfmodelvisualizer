@@ -1,6 +1,0 @@
-<workflow>
-	
-	<component file="ecoredemo/xmind/xmindCreateMetamodelGraph" 
-		modelUri="src/Ecore.ecore"/>
-	
-</workflow>

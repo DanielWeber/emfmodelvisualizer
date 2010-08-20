@@ -1,6 +1,0 @@
-«IMPORT imp»
-
-«DEFINE main FOR ImportSpec»
-	«EXPAND data::root FOREACH dataSection.dataStructures»
-	«EXPAND importer::root»
-«ENDDEFINE»

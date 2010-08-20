@@ -1,6 +1,0 @@
-<workflow>
-	
-	<component file="ecoredemo/ubigraph/ubigraphCreateMetamodelGraph" 
-		modelUri="src/Ecore.ecore"/>
-	
-</workflow>
