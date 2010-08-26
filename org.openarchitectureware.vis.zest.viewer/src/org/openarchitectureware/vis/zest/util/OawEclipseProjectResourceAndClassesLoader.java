@@ -18,13 +18,13 @@ import org.eclipse.jdt.core.JavaCore;
  * This ResourceLoader is capable of loading resources from a specific Java project within
  * the workspace. Typical use is when invoking a workflow from within a plugin. It can
  * also load classes of the project's classpath.
- * 
+ *
  * @author PhilippBollbach
- * 
+ *
  *         inspired by the OawEclipseProjectResourceLoader by
  * @author Axel Terfloth (axel.terfloth@itemis.de)
  * @author Karsten Thoms (karsten.thoms@itemis.de)
- * 
+ *
  */
 public class OawEclipseProjectResourceAndClassesLoader extends
 		ResourceLoaderDefaultImpl {
@@ -58,17 +58,17 @@ public class OawEclipseProjectResourceAndClassesLoader extends
 						urls.add(ResourcesPlugin.getWorkspace().getRoot()
 								.getLocation().append(
 										javacp[i].getPath().append("bin"))
-								.toFile().toURL());
+								.toFile().toURI().toURL());
 					//add the source folders of the project
 					else if (javacp[i].getEntryKind() == 3)
 						urls.add(ResourcesPlugin.getWorkspace().getRoot()
 								.getLocation().append(javacp[i].getPath())
-								.toFile().toURL());
+								.toFile().toURI().toURL());
 				} else {
 					//add jars except xtext because they are already loaded by the vis-plugin
-					if (!javacp[i].getPath().toFile().toURL().toString().contains("org.eclipse.xtext"))
+					if (!javacp[i].getPath().toFile().toURI().toURL().toString().contains("org.eclipse.xtext"))
 					{
-						urls.add(javacp[i].getPath().toFile().toURL());
+						urls.add(javacp[i].getPath().toFile().toURI().toURL());
 					}
 				}
 

@@ -9,14 +9,14 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.openarchitectureware.vis.graphmm35.Graphmm35Factory;
+import org.openarchitectureware.vis.graphmm.GraphmmFactory;
 import org.openarchitectureware.vis.zest.builder.GraphMMModelWrapper;
 
 /**
  * An adapter factory that creates IPropertySource implementations for graphmm
  * objects. Allows us to fill Eclipse's property view with a model's user data
  * (and maybe more).
- * 
+ *
  * @author DaWeber
  */
 public class GraphPropertySourceAdapterFactory implements IAdapterFactory {
@@ -24,7 +24,7 @@ public class GraphPropertySourceAdapterFactory implements IAdapterFactory {
 	/**
 	 * Adapts a user data map to {@link IPropertySource}, using the provided
 	 * key/value pairs.
-	 * 
+	 *
 	 * @author DaWeber
 	 */
 	private static final class UserData2PropertySource implements
@@ -48,7 +48,7 @@ public class GraphPropertySourceAdapterFactory implements IAdapterFactory {
 
 		/**
 		 * Creates property descriptors from the object's user data
-		 * 
+		 *
 		 * @see org.eclipse.ui.views.properties.IPropertySource#
 		 *      getPropertyDescriptors()
 		 */
@@ -89,17 +89,16 @@ public class GraphPropertySourceAdapterFactory implements IAdapterFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
 	 * java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject, Class adapterType) {
+	public Object getAdapter(final Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
 		if (adaptableObject instanceof EObject) {
 			EObject target = (EObject) adaptableObject;
 			// Make sure it is a graphmm EObject
-			if (Graphmm35Factory.eINSTANCE.getEPackage().getEClassifiers().contains(
+			if (GraphmmFactory.eINSTANCE.getEPackage().getEClassifiers().contains(
 					target.eClass())) {
 				return new UserData2PropertySource(GraphMMModelWrapper
 						.getUserDataMap(target));
@@ -110,7 +109,7 @@ public class GraphPropertySourceAdapterFactory implements IAdapterFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
 	public Class<?>[] getAdapterList() {

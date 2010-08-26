@@ -1,0 +1,28 @@
+module org.openarchitectureware.vis.trafo2graphmm
+
+var trafocall = ""
+
+Workflow {
+	bean = org.eclipse.emf.mwe.utils.StandaloneSetup{
+		platformUri = ".."
+		registerGeneratedEPackage = "org.openarchitectureware.vis.graphmm.GraphmmPackage"
+	}
+
+	bean = org.openarchitectureware.vis.GraphmmStandaloneSetup : gmmsetup {	}
+	component = location.LocationProviderSetup {
+		register = gmmsetup
+	}
+
+	component = org.eclipse.xtend.XtendComponent {
+		metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel : emfRegistry {}
+		invoke = "${trafocall}"
+		outputSlot = "graphmodel"
+	}
+
+	// TODO Java validation?
+	component = org.eclipse.xtend.check.CheckComponent {
+		metaModel = emfRegistry
+		expression = "graphmodel.eAllContents.union({graphmodel})"
+		checkFile = "org::openarchitectureware::vis::validation::GraphmmChecks"
+	}
+}

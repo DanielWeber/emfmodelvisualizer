@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+  <extension point="org.eclipse.emf.ecore.generated_package">
+    <package 
+       uri = "http://www.openarchitectureware.org/vis/Graphmm" 
+       class = "org.openarchitectureware.vis.graphmm.GraphmmPackage"
+       genModel = "org/openarchitectureware/vis/Graphmm.genmodel" /> 
+	
+  </extension>
+
+
+
+
+
+</plugin>

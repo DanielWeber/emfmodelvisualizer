@@ -1,0 +1,18 @@
+module org.openarchitectureware.vis.postprocessow
+
+Workflow {
+	bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
+		platformUri = ".."
+	}
+
+	component = org.eclipse.xtend.check.CheckComponent {
+		metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+	    checkFile = "org::openarchitectureware::vis::validation::GraphmmChecks"
+	}
+
+	component = org.eclipse.xtend.XtendComponent {
+		metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+		invoke = "org::openarchitectureware::vis::postprocessor::postprocess(graphmodel)"
+	}
+
+}

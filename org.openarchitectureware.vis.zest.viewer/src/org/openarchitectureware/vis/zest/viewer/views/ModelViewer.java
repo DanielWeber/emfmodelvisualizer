@@ -81,7 +81,7 @@ import org.openarchitectureware.vis.zest.viewer.views.breadcrumb.GraphBreadcrumb
  * This class provides a viewer that renders graphmm instances using ZEST. The
  * graphmm model instance must be handed in using #setInput. The viewer does not
  * care where this instance is coming from.
- * 
+ *
  * @author MarkusVoelter
  * @author DanielWeber
  */
@@ -93,7 +93,7 @@ public class ModelViewer implements ISelectionProvider {
 	private static final int LAYOUT_TREE_HORI = 3;
 	private static final int ENTER = 13;
 	private static final int BACKSPACE = 8;
-	
+
 	private final SourceLocator sourceLocator;
 	private final Composite topLevelComposite;
 	private Table nodePropertiesTable;
@@ -111,7 +111,7 @@ public class ModelViewer implements ISelectionProvider {
 
 	/**
 	 * Constructor. Does not create any widgets.
-	 * 
+	 *
 	 * @param topLevelComposite
 	 *            The composite this viewer should embed its widgets in
 	 * @param toolkit
@@ -130,17 +130,17 @@ public class ModelViewer implements ISelectionProvider {
 		this.statusLineManager = statusLineManager;
 		this.listeners = new ListenerList();
 	}
-	
+
 	/**
 	 * callback when the focus is set
 	 */
 	public void setFocus() {
 		if ( currGraph() != null ) currGraph().setFocus();
 	}
-	
+
 	/**
 	 * Method that updates the model view to display the given graph model
-	 * 
+	 *
 	 * @param graphmodel
 	 *            the model to be displayed by this viewer
 	 */
@@ -150,7 +150,7 @@ public class ModelViewer implements ISelectionProvider {
 		graphbuilder = new GraphBuilder(graphmodel);
 		// delete all the content in the view from possible previous
 		// workflows and graphs
-		int childcount = topLevelComposite.getChildren().length; 
+		int childcount = topLevelComposite.getChildren().length;
 		for (int i = childcount-1; i >= 0; i--) {
 			topLevelComposite.getChildren()[i].dispose();
 		}
@@ -160,13 +160,13 @@ public class ModelViewer implements ISelectionProvider {
 		graphSection.setText("Graphs");
 		tabFolderForGraphs = new CTabFolder (graphSection, SWT.NONE);
 		graphSection.setClient(tabFolderForGraphs);
-		
+
 		// Highlight the selected tab using a color gradient
 		toolkit.getColors().initializeSectionToolBarColors();
 		Color selectedColor = toolkit.getColors().getColor(IFormColors.TB_BG);
 		tabFolderForGraphs.setSelectionBackground(new Color[] { selectedColor,
         toolkit.getColors().getBackground() }, new int[] { 100 }, true);
-		
+
 		createRightSideComposite();
 		populateTabFolderWithGraphs();
 		topLevelSashForm.setWeights(new int[] {90,10});
@@ -182,9 +182,9 @@ public class ModelViewer implements ISelectionProvider {
 	   Section section = toolkit.createSection(topLevelSashForm, Section.TITLE_BAR);
 		rightSideComposite = toolkit.createComposite(section, SWT.NONE);
 		section.setClient(rightSideComposite);
-		section.setText("Layout, Categories and Properties");   
+		section.setText("Layout, Categories and Properties");
 		rightSideComposite.setLayout( new GridLayout(1, true) );
-		
+
 		// the layout combo box provides ZEST's four different
 		// layout alternatives to choose from.
 		layoutCombo = new CCombo(rightSideComposite, comboStyle());
@@ -204,7 +204,7 @@ public class ModelViewer implements ISelectionProvider {
 				onLayoutComboSelectionChanged();
 			}
 		} );
-		
+
 		// ComboBox to enable/disable the drill down feature for the current graph
 		cboxDrillDown = new Button(rightSideComposite,SWT.CHECK | SWT.FLAT);
 		cboxDrillDown.setText("Subgraphs as Drill Down");
@@ -221,7 +221,7 @@ public class ModelViewer implements ISelectionProvider {
 		});
 		//still buggy with GraphContainer and the zestrootlayer association
 		cboxDrillDown.setEnabled(false);
-		
+
 		// we then add another (vertical) sash that is used to change
 		// the size proportions of the filter and the properties tables
 		SashForm rightSash = new SashForm(rightSideComposite,SWT.VERTICAL);
@@ -231,7 +231,7 @@ public class ModelViewer implements ISelectionProvider {
 		gdRightSash.grabExcessVerticalSpace = true;
 		gdRightSash.grabExcessHorizontalSpace = true;
 		rightSash.setLayoutData( gdRightSash );
-		
+
 		// this is the (as of yet empty) filter table
 		// the items will be checkbox style - to be added later
 		filterTable = toolkit.createTable(rightSash, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL );
@@ -241,7 +241,7 @@ public class ModelViewer implements ISelectionProvider {
 				onFilterTableSelectionChanged();
 			}
 		});
-		
+
 		// this table is used to show a node's properties in a table
 		// two columns: name and value
 		nodePropertiesTable = toolkit.createTable( rightSash, SWT.BORDER | SWT.FULL_SELECTION);
@@ -254,16 +254,16 @@ public class ModelViewer implements ISelectionProvider {
 		TableColumn col2 = new TableColumn(nodePropertiesTable, SWT.NONE);
 		col2.setText("Value");
 		col2.setWidth(60);
-		
+
 		rightSash.setWeights(new int[] {60,40});
 		rightSideComposite.pack();
-		
+
 	}
 
 	/**
 	 * "Calculates" a style for our CCombo so that a border is used if the
 	 * toolkit currently uses borders.
-	 * 
+	 *
 	 * @return SWT style bits according to the {@link #toolkit}'s current
 	 *         settings.
 	 */
@@ -279,7 +279,7 @@ public class ModelViewer implements ISelectionProvider {
 	}
 
 	/**
-	 * if the layout combo selection is changed, we grab 
+	 * if the layout combo selection is changed, we grab
 	 * the index and call the graph re-layouting method
 	 * Note that we use integer constants to refer to the
 	 * layouts - the values of the constants conform to the
@@ -289,14 +289,14 @@ public class ModelViewer implements ISelectionProvider {
 		final int layoutIndex = layoutCombo.getSelectionIndex();
 		setGraphLayout(currTabItem(), layoutIndex);
 	}
-	
+
 	/**
 	 * resets the layout of a graph and redraws it.
 	 * @param tabItem the tab item containing the graph
 	 * @param layoutId the new layout ID
 	 */
 	private void setGraphLayout(CTabItem tabItem, final int layoutId) {
-		// we store the layout with the tab so we can 
+		// we store the layout with the tab so we can
 		// readjust the combo box when the tab is (re-)selected
 		getData(tabItem).setLayoutId(layoutId);
 		// then we get the actual graph from the tab
@@ -321,8 +321,8 @@ public class ModelViewer implements ISelectionProvider {
 		}
 		// and set it on the graph
 		g.setLayoutAlgorithm(graphlayout, true);
-	} 
-	
+	}
+
 	/**
 	 * this method populates the tabbed pane with the
 	 * tab items that contain the actual graphs.
@@ -344,7 +344,7 @@ public class ModelViewer implements ISelectionProvider {
 		}
 		// force layout
 		tabFolderForGraphs.layout();
-		// update the filter table 
+		// update the filter table
 		updateFilterTable();
 		// update the layout combo
 		updateLayoutCombo();
@@ -356,7 +356,7 @@ public class ModelViewer implements ISelectionProvider {
 			public void widgetSelected(SelectionEvent e) {
 				onTabFolderSelectionChanged();
 			}
-		});		
+		});
 	}
 
 	/**
@@ -369,7 +369,7 @@ public class ModelViewer implements ISelectionProvider {
 		cboxDrillDown.setSelection(getData(currTabItem()).isDrilldownEnabled());
 		clearStatusBar();
 	}
-	
+
 	/**
 	 * Actually populates the graph into the tab item
 	 * @param graphModel the EObject model of the graph
@@ -396,7 +396,7 @@ public class ModelViewer implements ISelectionProvider {
 			layout.marginHeight = 2;
 			composite.setLayout(layout);
 			item.setControl(composite);
-			
+
 			//configure the breadcrumb
 			GraphBreadcrumbViewer viewer = new GraphBreadcrumbViewer(composite,SWT.NONE,graphModel);
 			viewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -404,23 +404,23 @@ public class ModelViewer implements ISelectionProvider {
 			viewer.setInput(graphModel);
 			viewer.setSelection(new StructuredSelection(graphModel));
 			//the GraphCollection should not be visible
-			viewer.setRootVisible(false);			
+			viewer.setRootVisible(false);
 			addListeners(viewer);
 			getData(item).setBreadCrumb(viewer);
 		}
 		else composite = (Composite)item.getControl();
-		
+
 		// get the filter configuration from the current tab
 		Set<String> checkedFilters = getData(item).getCheckedFilters();
 		// and create the new graph. Note how the "old" filter configuration
 		// is used -- if no filter configuration is available (checkedFilters == null)
 		// all nodes are added (i.e. nothing is filtered out)
 		final Graph newGraph = constructGraph(graphModel, checkedFilters, getData(item).isDrilldownEnabled());
-		
+
 		addGraphListeners(newGraph);
 		newGraph.setLayoutData(new GridData(GridData.FILL_BOTH));
 		newGraph.setParent(composite);
-		
+
 		//set tabtext with topgraph-name
 		if (GraphMMModelWrapper.isOneOfTopGraphs(graphModel)||item.getText()==null)
 			item.setText( getData(newGraph).getName() );
@@ -457,10 +457,10 @@ public class ModelViewer implements ISelectionProvider {
 		Menu menu = constructMenuManager().createContextMenu(newGraph);
 		newGraph.setMenu(menu);
 		newGraph.setFocus();
-		
+
 		clearStatusBar();
 	}
-	
+
 	/**
 	 * adds a set of listeners to the graph
 	 */
@@ -490,7 +490,7 @@ public class ModelViewer implements ISelectionProvider {
 						}
 					}
 				}
-				
+
 				if (complete && typedKeys.length()>0){
 					clearStatusBar();
 					selectedNodes = Collections.emptyList();
@@ -550,7 +550,7 @@ public class ModelViewer implements ISelectionProvider {
 			}
 		});
 	}
-	
+
 	private void setCurrentBreadCrumbViewer(EObject node){
 		getData(currTabItem()).getBreadCrumb().setSelection(new StructuredSelection(node));
 		getData(currTabItem()).getBreadCrumb().setInput(node);
@@ -628,15 +628,15 @@ public class ModelViewer implements ISelectionProvider {
 	private CTabItem currTabItem() {
 		return tabFolderForGraphs.getSelection();
 	}
-	
+
 	/**
-	 * returns the currently selected graph by 
+	 * returns the currently selected graph by
 	 * using the GraphData of the currently selected
-	 * tab item 
+	 * tab item
 	 * @return the currently selected graph
 	 */
 	private Graph currGraph() {
-		if ( graphbuilder == null ) return null; 
+		if ( graphbuilder == null ) return null;
 		return getData(currTabItem()).getGraph();
 	}
 
@@ -645,7 +645,7 @@ public class ModelViewer implements ISelectionProvider {
 	 */
 	private void updateFilterTable() {
 		// delete all the "old" items
-		int itemcount = filterTable.getItems().length; 
+		int itemcount = filterTable.getItems().length;
 		for (int i = itemcount-1; i >= 0; i--) {
 			filterTable.getItems()[i].dispose();
 		}
@@ -664,8 +664,8 @@ public class ModelViewer implements ISelectionProvider {
 			if ( checked.contains(category)) t.setChecked(true);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * when the selection in the filter table changes,
 	 * we need to update the filter list and rebuild the
 	 * graph
@@ -686,7 +686,7 @@ public class ModelViewer implements ISelectionProvider {
 		createGraphIntoTabItem(graphmodel, currTabItem());
 	}
 
-	
+
 	/**
 	 * constructs the actual graph
 	 * @param graphModel the model from which to build the graph
@@ -708,12 +708,12 @@ public class ModelViewer implements ISelectionProvider {
 				onGraphSelectionChanged(g);
 			}
 		});
-		//getSite().registerContextMenu(menuMgr, viewer);		
+		//getSite().registerContextMenu(menuMgr, viewer);
 		return g;
 	}
 	private MenuManager constructMenuManager()
 	{
-		
+
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		fillContextMenu(menuMgr);
@@ -725,7 +725,7 @@ public class ModelViewer implements ISelectionProvider {
 		return menuMgr;
 	}
 
-	
+
 	abstract class SelectRelatedAction extends Action {
 		public SelectRelatedAction(String label) {
 			super( label );
@@ -755,7 +755,7 @@ public class ModelViewer implements ISelectionProvider {
 		protected abstract void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection);
 		protected abstract void handleUpstreamConnection(GraphConnection c, Set<GraphItem> newSelection);
 	}
-	
+
 	class SelectDownstreamRelatedNodeAction extends SelectRelatedAction {
 		public SelectDownstreamRelatedNodeAction() {
 			super( "Select Related Nodes (downstream)");
@@ -768,7 +768,7 @@ public class ModelViewer implements ISelectionProvider {
 			newSelection.add( c.getDestination() );
 		}
 	}
-	
+
 	class SelectUpstreamRelatedNodeAction extends SelectRelatedAction {
 		public SelectUpstreamRelatedNodeAction() {
 			super( "Select Related Nodes (upstream)");
@@ -781,7 +781,7 @@ public class ModelViewer implements ISelectionProvider {
 		protected void handleDownstreamConnection(GraphConnection c, Set<GraphItem> newSelection) {
 		}
 	}
-	
+
 	class SelectAllRelatedNodeAction extends SelectRelatedAction {
 		public SelectAllRelatedNodeAction() {
 			super( "Select Related Nodes");
@@ -795,7 +795,7 @@ public class ModelViewer implements ISelectionProvider {
 			newSelection.add( c.getDestination() );
 		}
 	}
-	
+
 	class SelectConnectionsAction extends SelectRelatedAction {
 		public SelectConnectionsAction() {
 			super( "Select Connections");
@@ -809,7 +809,7 @@ public class ModelViewer implements ISelectionProvider {
 			newSelection.add( c );
 		}
 	}
-	
+
 	class DrillDownNode extends Action
 	{
 		public DrillDownNode() {
@@ -826,7 +826,7 @@ public class ModelViewer implements ISelectionProvider {
 					EObject graphModelNode = ((NodeData)n.getData()).getModelNode();
 
 					setCurrentBreadCrumbViewer(graphModelNode);
-					
+
 					EObject subGraph = getData(currTabItem()).getWrappedGraphModel().getContainedGraph(graphModelNode);
 					if (subGraph != null){
 						createGraphIntoTabItem(subGraph, currTabItem());
@@ -834,7 +834,7 @@ public class ModelViewer implements ISelectionProvider {
 			}
 		}
 	}
-	
+
 	class ClimbUpNode extends Action
 	{
 		public ClimbUpNode() {
@@ -852,7 +852,7 @@ public class ModelViewer implements ISelectionProvider {
 				}
 		}
 	}
-	
+
 	private void fillContextMenu(IMenuManager menuMgr) {
 		menuMgr.add(new Action("Show properties view") {
 			@Override
@@ -867,21 +867,21 @@ public class ModelViewer implements ISelectionProvider {
 			}
 		});
 		if ( (currGraph() != null) && (currGraph().getSelection().size() != 0) ) {
-			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 			menuMgr.add( new SelectAllRelatedNodeAction() );
 			menuMgr.add( new SelectDownstreamRelatedNodeAction() );
 			menuMgr.add( new SelectUpstreamRelatedNodeAction() );
-			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 			menuMgr.add( new SelectConnectionsAction() );
 			if (getData(currTabItem()).isDrilldownEnabled() && (currGraph().getSelection().size() == 1)){
 				if (currGraph().getSelection().get(0) instanceof GraphNode && GraphMMModelWrapper.isContainerNode(getData((GraphNode)currGraph().getSelection().get(0)).getModelNode())) {
-					menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+					menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 					menuMgr.add(new DrillDownNode());
 				}
 			}
 		}
-		if ( (currGraph() != null && getData(currTabItem()).isDrilldownEnabled() && !GraphMMModelWrapper.isOneOfTopGraphs(getData(currGraph()).getModelNode()))){ 
-			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));		
+		if ( (currGraph() != null && getData(currTabItem()).isDrilldownEnabled() && !GraphMMModelWrapper.isOneOfTopGraphs(getData(currGraph()).getModelNode()))){
+			menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 			menuMgr.add(new ClimbUpNode());
 		}
 	}
@@ -889,7 +889,7 @@ public class ModelViewer implements ISelectionProvider {
 	/**
 	 * when the mouse is clicked on a node this method is called
 	 * @param graph the graph on which we click
-	 * @param event the event 
+	 * @param event the event
 	 */
 	@SuppressWarnings("unchecked")
 	private void onGraphMouseEvent(final Graph graph, MouseEvent event) {
@@ -915,21 +915,21 @@ public class ModelViewer implements ISelectionProvider {
 	/**
 	 * when the graph is selected (i.e. somebody clicked on a node or edge) we
 	 * update the properties table
-	 * 
+	 *
 	 * @param graph
 	 *            the graph that was clicked on
 	 */
 	@SuppressWarnings("unchecked")
 	private void onGraphSelectionChanged(final Graph graph) {
 		List<GraphItem> selectedNodes = graph.getSelection();
-		// if there's one node selected only, then 
+		// if there's one node selected only, then
 		// update it's properties in the table
 		if ( selectedNodes.size() == 1 ) {
 			GraphItem n = (GraphItem)selectedNodes.get(0);
 			updatePropertiesTable(n);
 		}
 	}
-	
+
 	/**
 	 * open the editor with the source of the node on
 	 * which the user had clicked
@@ -941,10 +941,10 @@ public class ModelViewer implements ISelectionProvider {
 			sourceLocator.locate(location);
 		}
 	}
-	
+
 	/**
     * updates the table that shows a node's properties
-    * 
+    *
     * @param n the node whose properties must be shown
 	 */
 	private void updatePropertiesTable(GraphItem n)
@@ -968,7 +968,7 @@ public class ModelViewer implements ISelectionProvider {
 				i.setText( new String[]{"source loc", loc});
 			}
 		}
-		
+
 	}
 
    /**
@@ -987,7 +987,7 @@ public class ModelViewer implements ISelectionProvider {
       }
       return null;
    }
-	
+
 	/**
 	 * returns the NodeData structure for a node
 	 * @param n the node for which the data structure
@@ -997,7 +997,7 @@ public class ModelViewer implements ISelectionProvider {
 	private NodeData getData(GraphNode n) {
 		return (NodeData)n.getData();
 	}
-	
+
 	/**
 	 * returns the EdgeData structure for a connection
 	 * @param c the edge for which the data structure
@@ -1007,7 +1007,7 @@ public class ModelViewer implements ISelectionProvider {
 	private EdgeData getData(GraphConnection c) {
 		return (EdgeData)c.getData();
 	}
-	
+
 	/**
 	 * returns the GraphData structure for a graph
 	 * @param g the graph for which the data structure
@@ -1017,7 +1017,7 @@ public class ModelViewer implements ISelectionProvider {
 	private GraphData getData(Graph g) {
 		return (GraphData)g.getData();
 	}
-	
+
 	/**
 	 * returns the TabItemData structure for a tab item
 	 * @param item the item for which the data structure
@@ -1044,7 +1044,7 @@ public class ModelViewer implements ISelectionProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
 	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
@@ -1058,15 +1058,15 @@ public class ModelViewer implements ISelectionProvider {
 	 *         if there is no graph. Note that the selection will be filled with
 	 *         graphmm model objects (instead of zest graph items). That's
 	 *         similar to what JFace viewers do.
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
 	 */
 	public ISelection getSelection() {
 		ISelection ret = StructuredSelection.EMPTY;
 		Graph currGraph = currGraph();
 		if (null != currGraph) {
-			@SuppressWarnings("unchecked")
-			List graphSelection = currGraph.getSelection();
+			@SuppressWarnings("rawtypes")
+         List graphSelection = currGraph.getSelection();
 			List<EObject> selectedElements = new ArrayList<EObject>(
 					graphSelection.size());
 			// extract model objects and put them into the selectedElements list
@@ -1086,7 +1086,7 @@ public class ModelViewer implements ISelectionProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
 	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
@@ -1099,7 +1099,7 @@ public class ModelViewer implements ISelectionProvider {
 	/**
 	 * Propagates selection changes in contained graphs to registered
 	 * {@link ISelectionChangedListener}s
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
 	 *      .jface.viewers.ISelection)
 	 */

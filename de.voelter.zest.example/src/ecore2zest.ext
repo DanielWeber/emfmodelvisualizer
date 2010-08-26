@@ -1,5 +1,5 @@
 import ecore;
-import graphmm35;
+import graphmm;
 
 extension org::openarchitectureware::vis::graphmmlib;
 
@@ -34,17 +34,20 @@ create SimpleDirectedEdge toInheritanceEdge( EClass super, EClass sub, Object tk
 	setTarget( sub.toNode(tkn) );
 
 create SimpleNode toNode( EPackage p, Object tkn ):
+	setName( tkn.toString() + "_" + p.name ) ->
 	setLabel( p.name ) ->
 	setCategory("package") ->
 	setFillcolor( ColorEnum::white);
 
 create SimpleNode toNode( EClass cls, Object tkn ):
+	setName( tkn.toString() + "_" + cls.name ) ->
 	setLabel( cls.name ) ->
 	setFillcolor( cls.abstract ? ColorEnum::white : ColorEnum::lightGray );
 
 create SimpleNode toNode( EAttribute attr, Object tkn ):
-	setCategory( "attributes" ) ->
+	setName( tkn.toString() + "_" + attr.eContainingClass.name + "::" + attr.name ) ->
 	setLabel( attr.name ) ->
+	setCategory( "attributes" ) ->
 	setFillcolor( ColorEnum::lightGreen );
 
 create SimpleDirectedEdge toEdge( EReference ref, Object tkn ):

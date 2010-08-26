@@ -74,9 +74,6 @@ public class WorkflowDropTargetListener implements DropTargetListener {
 	}
 
 	public void drop(DropTargetEvent event) {
-		if (textTransfer.isSupportedType(event.currentDataType)) {
-			String text = (String) event.data;
-		}
 		if (fileTransfer.isSupportedType(event.currentDataType)) {
 			String[] files = (String[]) event.data;
 			if (files.length > 0) {

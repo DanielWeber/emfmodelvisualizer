@@ -1,0 +1,36 @@
+import graphmm;
+
+extension org::openarchitectureware::vis::Extensions;
+
+/*
+ * This check file is used to specify constraints for the derived metamodels.
+ * They will be executed by the editor when the user saves a file.
+ * At generation time they will be executed as well.
+ *
+ * Example:
+ *
+ * import myDsl;
+ *
+ * context Class WARNING "Name should start with a capital" :
+ *    name.toFirstUpper() == name;
+ */
+
+// should be for Edge, once we have an additional subclass
+context SimpleDirectedEdge ERROR "weight must be between -100 and +100" :
+   weight >= -100 && weight <= 100;
+
+// should be for Edge, once we have an additional subclass
+context SimpleDirectedEdge WARNING "curved edge depth are only supported by ZEST viewer":
+	curvedepth == 0 || curvedepth == null;
+
+context Graph ERROR "name must be specified":
+	name != null;
+
+context Node ERROR "node names must be unique per model (not just per graph!)":
+	((GraphCollection)eRootContainer).allNodes().select(n|n.name == name).size == 1;
+
+context Node ERROR "node name must be set!":
+	name != null && name != "";
+
+context Graph ERROR "graphs must be contained in GraphCollections or a ContainerNode":
+	eContainer != null && (GraphCollection.isInstance( eContainer ) || ContainerNode.isInstance( eContainer ));
