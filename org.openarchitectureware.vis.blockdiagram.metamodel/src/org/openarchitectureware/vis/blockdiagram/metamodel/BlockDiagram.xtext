@@ -10,37 +10,37 @@ Model:
 
 Prolog:
 	"prolog" "{"
-		("iconbasepath" iconBasePath=STRING ";"?)?		
+		("iconbasepath" iconBasePath=STRING ";"?)?
 	"}";
-	
+
 // A diagram represents an entire block diagram (see http://en.wikipedia.org/wiki/Block_diagram).
-// The diagram consists out of shapes and connections. Shapes are recursivly nested in each other 
-// starting with the rootShape.  
+// The diagram consists out of shapes and connections. Shapes are recursivly nested in each other
+// starting with the rootShape.
 
 Diagram:
 	"diagram" (name=ID)? "{"
-	
+
 	    ("shapes" layout=Layout "{"
 			// these values are defaults for all childs (and grandchilds)
 			(defaultValues=DefaultValues)?
-			(shapes+=Shape)+	    
+			(shapes+=Shape)+
 	    "}" ";"?)
-			
+
 		("connections" "{"
 			(connections+=Connection)+
 		"}" ";"? )?
-	
+
 		(userProperties=Properties)?
-	
+
 	"}" ";"?;
 
 // Base class for all shape types
 
 Shape:
 	BlockShape | SpaceShape | LayoutShape;
-	
-// A block shape represents an rectangular shape with a border, a text label and an icon. 
-// A block shape can contain child shapes. The layout (either horizontal or vertical) defines how 
+
+// A block shape represents an rectangular shape with a border, a text label and an icon.
+// A block shape can contain child shapes. The layout (either horizontal or vertical) defines how
 // the childs are positioned.
 
 BlockShape:
@@ -55,48 +55,48 @@ BlockShape:
 	  "}")? ";"?;
 
 DefaultValues:
-	"default" 
-	("spacing" spacing=INT)? 
+	"default"
+	("spacing" spacing=INT)?
 	attributes=ShapeAttributes;
-	
-ShapeAttributes:	
+
+ShapeAttributes:
 	("inset" inset=INT)?
-	("labelPlacement" labelPlacement=LabelPlacementEnum)?	
-	("fillColor" fillColor=Color)?	
+	("labelPlacement" labelPlacement=LabelPlacementEnum)?
+	("fillColor" fillColor=Color)?
 	lineAttributes=LineAttributes
-	fontAttributes=FontAttributes	 
-	("tooltip" tooltip=STRING)?	
+	fontAttributes=FontAttributes
+	("tooltip" tooltip=STRING)?
 	// FIXME: isn't this more like a property and should not be a first class member of the shape attributes?
 	("source" sourceLocation=STRING)?
 	// the eObject provides a link to a model object. May be filled during m2m transformation
 	("eObject" dataObject=[ecore::EObject])?
-	("properties" userProperties=Properties)?;	
-	
-// A space shape represents an rectangluar area of a certain width. 
+	("properties" userProperties=Properties)?;
+
+// A space shape represents an rectangluar area of a certain width.
 // Used to specify a certain distance between adjacent shapes
-	
+
 SpaceShape:
 	"space" (name=ID)? "width" width=INT ";"?;
-	
+
 // A shaps that draws a line
-	
-LayoutShape:	 	
+
+LayoutShape:
 	"layout" (name=ID)? layout=Layout
 	"{"
 		(shapes+=Shape)+
   	"}"
   	 ";"?;
-	 
+
 Connection:
 	SimpleConnection;
-	
+
 SimpleConnection:
-	"connection" (name=ID)? 
-	"source" source=[Shape] 
-	"target" target=[Shape] 
+	"connection" (name=ID)?
+	"source" source=[Shape]
+	"target" target=[Shape]
 	lineAttributes=LineAttributes
-	("fillColor" fillColor=Color)? 
-	("sourceDecoration" sourceDecoration=ConnectionDecorationEnum)?  	
+	("fillColor" fillColor=Color)?
+	("sourceDecoration" sourceDecoration=ConnectionDecorationEnum)?
 	("targetDecoration" targetDecoration=ConnectionDecorationEnum)?
 	("labels" "{"
 		(label+=ConnectorLabel)*
@@ -105,46 +105,46 @@ SimpleConnection:
 
 Layout:
 	ToolbarLayout | FlowLayout | FillLayout;
-	
-ToolbarLayout:	
+
+ToolbarLayout:
 	"toolbarLayout" layout=LayoutOrientationEnum ("spacing" spacing=INT)?;
-	
+
 FlowLayout:
-	"flowLayout" layout=LayoutOrientationEnum ("spacing" spacing=INT)?; 
+	"flowLayout" layout=LayoutOrientationEnum ("spacing" spacing=INT)?;
 
 FillLayout:
-	"fillLayout" layout=LayoutOrientationEnum ("mode" mode=FillLayoutEnum)? ("spacing" spacing=INT)?; 
+	"fillLayout" layout=LayoutOrientationEnum ("mode" mode=FillLayoutEnum)? ("spacing" spacing=INT)?;
 
 Color:
 	colorEnum = ColorEnum | color=STRING;
 
 Properties:
 	nvPairs+=NVPair+;
-	
+
 FontAttributes:
 	("fontName" fontName=STRING)?
 	("fontSize" fontSize=INT)?
 	("fontStyle" fontStyle=FontStyleEnum)?
 	("fontColor" fontColor=Color)?;
-	
+
 LineAttributes:
 	("lineColor" lineColor=Color)?
 	("lineStyle" lineStyle=LineStyleEnum)?
 	("lineWidth" lineWidth=INT)?;
-	
+
 ConnectorLabel:
-	"label" (name=ID "text")? "text" label=STRING 
+	"label" (name=ID "text")? "text" label=STRING
 	("position" position=ConnectionLabelPositionEnum)?
 	("alignment" alignment=ConnectionLabelAlignmentEnum)?
 	fontAttributes=FontAttributes ";"?;
-	
+
 NVPair:
 	"name" name=STRING "value" value=STRING;
-	 	
+
 // --------------------------------------------------------------------------
 // Enums
 // --------------------------------------------------------------------------
-	
+
 enum LabelPlacementEnum:
 	north |
 	northwest |
@@ -154,11 +154,11 @@ enum LabelPlacementEnum:
 	southwest |
 	south |
 	southeast;
-	 
+
 enum LayoutOrientationEnum:
 	vertical |
-	horizontal;		
-			
+	horizontal;
+
 enum ColorEnum:
 	black |
 	white |
@@ -175,33 +175,33 @@ enum ColorEnum:
 	lightBlue	|
 	blue		|
 	darkBlue;
-	
+
 enum LineStyleEnum:
 	solid			|
 	dashed			|
 	dotted			|
 	dashDotted		|
 	dashDotDotted;
-		
+
 enum FontStyleEnum:
 	normal |
 	bold |
 	italic;
-	
+
 enum ConnectionLabelPositionEnum:
 	source |
 	center |
 	target;
-	
+
 enum ConnectionLabelAlignmentEnum:
 	west |
 	center |
 	east;
-		
+
 enum ConnectionDecorationEnum:
 	noDecoration |
 	arrowhead;
-	
+
 enum FillLayoutEnum:
-	proportional | 
-	samesize;			
+	proportional |
+	samesize;
