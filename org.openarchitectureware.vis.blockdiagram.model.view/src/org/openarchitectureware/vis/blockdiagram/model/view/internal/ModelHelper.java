@@ -1,6 +1,5 @@
 package org.openarchitectureware.vis.blockdiagram.model.view.internal;
 
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.emf.ecore.EObject;
 import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.BlockDiagramPackage;
 import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.BlockShape;
@@ -16,7 +15,6 @@ import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.LayoutSh
 import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.LineStyleEnum;
 import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.Shape;
 import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.ShapeAttributes;
-import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.SpaceShape;
 
 // This class must not have any dependencies to SWT classes. 
 // It is intended to be used in other contexts later.

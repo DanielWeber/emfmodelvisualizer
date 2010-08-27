@@ -33,16 +33,16 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 	Map<Shape, Object> shapeObjectMap = new HashMap<Shape, Object>(10);
 	Map<Object, Shape> objectShapeMap = new HashMap<Object, Shape>(10);
 	Map<Object, Connection> objectConnectionMap = new HashMap<Object, Connection>(10);
-	
+
 	List<ISelectionChangedListener> selectionChangedListeners = new Vector<ISelectionChangedListener>();
-	
+
 	public BlockDiagramViewer (Composite parent) {
 		this.canvas = new BlockDiagramCanvas(parent);
 		hookControl(this.canvas);
-		canvas.getViewport().setContentsTracksWidth(true); 				
+		canvas.getViewport().setContentsTracksWidth(true);
 	}
 
-	public void setContentProvider(IContentProvider contentProvider) {	
+	public void setContentProvider(IContentProvider contentProvider) {
 		if (contentProvider instanceof IBlockDiagramContentProvider) {
 			super.setContentProvider(contentProvider);
 		} else {
@@ -51,13 +51,13 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		}
 	}
 
-	// hook called whenever the input data of the viewer changed (triggered by setInput). 
+	// hook called whenever the input data of the viewer changed (triggered by setInput).
     protected void inputChanged(Object input, Object oldInput) {
     	shapeObjectMap.clear();
     	objectShapeMap.clear();
     	objectConnectionMap.clear();
     	canvas.setContents (null);
-    	
+
     	if (input!=null) {
     		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
     			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
@@ -90,24 +90,24 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 				}
 			}
 		});
-		
+
 		canvas.addMouseListener(new MouseListener() {
-			
+
 			public void mouseUp(MouseEvent e) {
 				// do nothing
 			}
-			
+
 			public void mouseDown(MouseEvent e) {
-				// do nothing				
+				// do nothing
 			}
-			
+
 			public void mouseDoubleClick(MouseEvent e) {
 				DoubleClickEvent doubleClickEvent = new DoubleClickEvent(BlockDiagramViewer.this, getSelection());
-				fireDoubleClick(doubleClickEvent);								
+				fireDoubleClick(doubleClickEvent);
 			}
 		});
 	}
-    
+
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		if (!selectionChangedListeners.contains(listener)) {
 			selectionChangedListeners.add(listener);
@@ -119,24 +119,24 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 			selectionChangedListeners.remove(listener);
 		}
 	}
-    
+
 
     private Connection createConnection(Object o) {
 		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
 			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
-			Connection connection = contentProvider.getConnection(o, canvas);			
+			Connection connection = contentProvider.getConnection(o, canvas);
 			if (connection!=null) {
-				Object source = contentProvider.getSource(o);				
-				Object target = contentProvider.getTarget(o);				
+				Object source = contentProvider.getSource(o);
+				Object target = contentProvider.getTarget(o);
 				connection.setSource (objectShapeMap.get(source));
-				connection.setTarget (objectShapeMap.get(target));				
+				connection.setTarget (objectShapeMap.get(target));
 				objectConnectionMap.put(o, connection);
 			}
 			return connection;
 		}
 		return null;
 	}
-	
+
 	private Shape createShape(Object input) {
 		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
 			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
@@ -155,10 +155,10 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		}
 		return null;
 	}
-    
-	// --------------------------------------------------------------------	
+
+	// --------------------------------------------------------------------
 	// implementation of abstract methods from StructuredViewer
-	// --------------------------------------------------------------------	
+	// --------------------------------------------------------------------
 
 	@Override
 	protected Widget doFindInputItem(Object element) {
@@ -173,7 +173,7 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 
 	@Override
 	protected void doUpdateItem(Widget item, Object element, boolean fullMap) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
 	@SuppressWarnings("unchecked")
@@ -189,20 +189,19 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 	@Override
 	protected void internalRefresh(Object element) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reveal(Object element) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void setSelectionToWidget(List l, boolean reveal) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

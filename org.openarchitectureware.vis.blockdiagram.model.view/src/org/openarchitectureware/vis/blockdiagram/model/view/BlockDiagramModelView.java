@@ -1,6 +1,5 @@
 package org.openarchitectureware.vis.blockdiagram.model.view;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;

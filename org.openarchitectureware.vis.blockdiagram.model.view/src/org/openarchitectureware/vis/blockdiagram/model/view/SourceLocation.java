@@ -1,9 +1,9 @@
 package org.openarchitectureware.vis.blockdiagram.model.view;
 
 import org.eclipse.emf.ecore.EObject;
-import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.ShapeAttributes;
 import org.eclipse.xtext.parsetree.NodeAdapter;
 import org.eclipse.xtext.parsetree.NodeUtil;
+import org.openarchitectureware.vis.blockdiagram.metamodel.blockDiagram.ShapeAttributes;
 
 public class SourceLocation {
 
