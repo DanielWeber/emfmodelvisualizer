@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,56 +28,63 @@ import org.openarchitectureware.vis.blockdiagram.viewer.shapes.Shape;
 
 // jface class
 
-public class BlockDiagramViewer extends StructuredViewer implements ISelectionProvider {
+public class BlockDiagramViewer extends StructuredViewer implements
+		ISelectionProvider {
 
 	BlockDiagramCanvas canvas;
 	Map<Shape, Object> shapeObjectMap = new HashMap<Shape, Object>(10);
 	Map<Object, Shape> objectShapeMap = new HashMap<Object, Shape>(10);
-	Map<Object, Connection> objectConnectionMap = new HashMap<Object, Connection>(10);
+	Map<Object, Connection> objectConnectionMap = new HashMap<Object, Connection>(
+			10);
+	Map<Connection, Object> connectionObjectMap = new HashMap<Connection, Object>(
+			10);
 
 	List<ISelectionChangedListener> selectionChangedListeners = new Vector<ISelectionChangedListener>();
 
-	public BlockDiagramViewer (Composite parent) {
+	public BlockDiagramViewer(Composite parent) {
 		this.canvas = new BlockDiagramCanvas(parent);
 		hookControl(this.canvas);
 		canvas.getViewport().setContentsTracksWidth(true);
+		canvas.setBackground(parent.getDisplay()
+				.getSystemColor(SWT.COLOR_WHITE));
 	}
 
 	public void setContentProvider(IContentProvider contentProvider) {
 		if (contentProvider instanceof IBlockDiagramContentProvider) {
 			super.setContentProvider(contentProvider);
 		} else {
-			throw new IllegalArgumentException
-				("Invalid content provider, only IBlockDiagramContentProvider is supported.");
+			throw new IllegalArgumentException(
+					"Invalid content provider, only IBlockDiagramContentProvider is supported.");
 		}
 	}
 
-	// hook called whenever the input data of the viewer changed (triggered by setInput).
-    protected void inputChanged(Object input, Object oldInput) {
-    	shapeObjectMap.clear();
-    	objectShapeMap.clear();
-    	objectConnectionMap.clear();
-    	canvas.setContents (null);
+	// hook called whenever the input data of the viewer changed (triggered by
+	// setInput).
+	protected void inputChanged(Object input, Object oldInput) {
+		shapeObjectMap.clear();
+		objectShapeMap.clear();
+		objectConnectionMap.clear();
+		canvas.setContents(null);
 
-    	if (input!=null) {
-    		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
-    			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
+		if (input != null) {
+			if (getContentProvider() instanceof IBlockDiagramContentProvider) {
+				IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
 				IFigure f = contentProvider.getRootFigure(input, canvas);
-				for (Object o: contentProvider.getElements(input)) {
-					Shape shape = createShape (o);
-					if (shape!=null)
+				for (Object o : contentProvider.getElements(input)) {
+					Shape shape = createShape(o);
+					if (shape != null)
 						f.add(shape.getFigure());
 				}
-				for (Object o: contentProvider.getConnections(input)) {
-					Connection connection = createConnection (o);
-					if (connection!=null) {
+				for (Object o : contentProvider.getConnections(input)) {
+					Connection connection = createConnection(o);
+					if (connection != null) {
 						f.add(connection.getFigure());
 					}
 				}
 				canvas.setContents(f);
-    		}
-    	}
-    }
+			}
+		}
+	}
 
 	protected void hookControl(Control control) {
 		super.hookControl(control);
@@ -84,8 +92,9 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		canvas.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ISelection structuredSelection = getSelection();
-				SelectionChangedEvent event = new SelectionChangedEvent(BlockDiagramViewer.this, structuredSelection);
-				for (ISelectionChangedListener scl:selectionChangedListeners) {
+				SelectionChangedEvent event = new SelectionChangedEvent(
+						BlockDiagramViewer.this, structuredSelection);
+				for (ISelectionChangedListener scl : selectionChangedListeners) {
 					scl.selectionChanged(event);
 				}
 			}
@@ -102,7 +111,8 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 			}
 
 			public void mouseDoubleClick(MouseEvent e) {
-				DoubleClickEvent doubleClickEvent = new DoubleClickEvent(BlockDiagramViewer.this, getSelection());
+				DoubleClickEvent doubleClickEvent = new DoubleClickEvent(
+						BlockDiagramViewer.this, getSelection());
 				fireDoubleClick(doubleClickEvent);
 			}
 		});
@@ -114,23 +124,24 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		}
 	}
 
-	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
 		if (selectionChangedListeners.contains(listener)) {
 			selectionChangedListeners.remove(listener);
 		}
 	}
 
-
-    private Connection createConnection(Object o) {
+	private Connection createConnection(Object o) {
 		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
 			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
 			Connection connection = contentProvider.getConnection(o, canvas);
-			if (connection!=null) {
+			if (connection != null) {
 				Object source = contentProvider.getSource(o);
 				Object target = contentProvider.getTarget(o);
-				connection.setSource (objectShapeMap.get(source));
-				connection.setTarget (objectShapeMap.get(target));
+				connection.setSource(objectShapeMap.get(source));
+				connection.setTarget(objectShapeMap.get(target));
 				objectConnectionMap.put(o, connection);
+				connectionObjectMap.put(connection, o);
 			}
 			return connection;
 		}
@@ -141,12 +152,12 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		if (getContentProvider() instanceof IBlockDiagramContentProvider) {
 			IBlockDiagramContentProvider contentProvider = (IBlockDiagramContentProvider) getContentProvider();
 			Shape shape = contentProvider.getDiagramShape(input, canvas);
-			if (shape!=null) {
-				shapeObjectMap.put (shape, input);
+			if (shape != null) {
+				shapeObjectMap.put(shape, input);
 				objectShapeMap.put(input, shape);
 				if (shape instanceof ContainerShape) {
-					for (Object o: contentProvider.getChildren(input)) {
-						Shape child = createShape (o);
+					for (Object o : contentProvider.getChildren(input)) {
+						Shape child = createShape(o);
 						((ContainerShape) shape).addChild(child);
 					}
 				}
@@ -167,7 +178,8 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 
 	@Override
 	protected Widget doFindItem(Object element) {
-		// TODO: is this correct? What is difference between doFindItem and doFindInputItem?
+		// TODO: is this correct? What is difference between doFindItem and
+		// doFindInputItem?
 		return doFindInputItem(element);
 	}
 
@@ -176,12 +188,16 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 		// TODO Auto-generated method stub
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected List getSelectionFromWidget() {
-		List rv = new ArrayList(canvas.getSelection().size());
-		for (Shape s:canvas.getSelection()) {
-			rv.add(shapeObjectMap.get(s));
+		List<Object> rv = new ArrayList<Object>(canvas.getSelection().size());
+		for (Object s : canvas.getSelection()) {
+			if (s instanceof Shape) {
+				rv.add(shapeObjectMap.get(s));
+			} else if (s instanceof Connection) {
+				rv.add(connectionObjectMap.get(s));
+			}
 		}
 		return rv;
 	}
@@ -198,10 +214,10 @@ public class BlockDiagramViewer extends StructuredViewer implements ISelectionPr
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void setSelectionToWidget(List l, boolean reveal) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

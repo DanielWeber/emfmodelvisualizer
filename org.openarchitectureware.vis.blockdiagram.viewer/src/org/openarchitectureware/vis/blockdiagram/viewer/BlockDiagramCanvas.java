@@ -9,29 +9,34 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.openarchitectureware.vis.blockdiagram.viewer.shapes.Connection;
 import org.openarchitectureware.vis.blockdiagram.viewer.shapes.Shape;
 
 // SWT class (no jface)
 
 public class BlockDiagramCanvas extends FigureCanvas {
 
-	List<Shape> selectedShapes = new ArrayList<Shape>();
+	List<Object> selectedShapes = new ArrayList<Object>();
 	private List<SelectionListener> selectionListeners = new Vector<SelectionListener>();
-	
+
 	public BlockDiagramCanvas(Composite parent) {
 		super(parent);
 	}
 
-	public List<Shape> getSelection() {
+	public List<Object> getSelection() {
 		return selectedShapes;
 	}
-	
-	protected void clearSelection () {
-		for (Shape s:selectedShapes) 
-			s.highlight(false);
+
+	protected void clearSelection() {
+		for (Object s : selectedShapes) {
+			if (s instanceof Shape)
+				((Shape) s).highlight(false);
+			if (s instanceof Connection)
+				((Connection) s).highlight(false);
+		}
 		selectedShapes.clear();
 	}
-	
+
 	public void setSelection(Shape shape) {
 		clearSelection();
 		if (shape != null) {
@@ -40,7 +45,16 @@ public class BlockDiagramCanvas extends FigureCanvas {
 			fireSelectionEvent(shape);
 		}
 	}
-	
+
+	public void setSelection(Connection conn) {
+		clearSelection();
+		if (conn != null) {
+			conn.highlight(true);
+			selectedShapes.add(conn);
+			fireSelectionEvent(conn);
+		}
+	}
+
 	public void addSelectionListener(SelectionListener selectionListener) {
 		if (!selectionListeners.contains(selectionListener)) {
 			selectionListeners.add(selectionListener);
@@ -52,13 +66,13 @@ public class BlockDiagramCanvas extends FigureCanvas {
 			selectionListeners.remove(selectionListener);
 		}
 	}
-	
-	protected void fireSelectionEvent(Shape shape) {
-		for (SelectionListener l: selectionListeners) {
+
+	protected void fireSelectionEvent(Object selection) {
+		for (SelectionListener l : selectionListeners) {
 			Event swtEvent = new Event();
-			swtEvent.item = shape;
+			// swtEvent.item = shape;
 			swtEvent.widget = this;
 			l.widgetSelected(new SelectionEvent(swtEvent));
-		}		
+		}
 	}
 }
