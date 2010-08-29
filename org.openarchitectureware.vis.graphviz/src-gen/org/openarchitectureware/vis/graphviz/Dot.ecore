@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="dot"
+    nsURI="http://www.openarchitectureware.org/vis/graphviz/Dot" nsPrefix="dot">
+  <eClassifiers xsi:type="ecore:EClass" name="graphvizmodel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="graphs" upperBound="-1"
+        eType="#//graph" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="graph">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="strict" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//graphtype"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stmts" upperBound="-1"
+        eType="#//stmt" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="stmt"/>
+  <eClassifiers xsi:type="ecore:EClass" name="edge_stmt_node" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node_id" eType="#//node_id"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="edgeRHS" upperBound="-1"
+        eType="#//edgeRHS" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//attr_list" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="edge_stmt_subgraph" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subgraph" eType="#//subgraph"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="edgeRHS" eType="#//edgeRHS"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//attr_list" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="node_stmt" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//attr_list" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="attribute" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="attr_stmt" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//attributetype"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//attr_list" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="attr_list">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="a_list" upperBound="-1"
+        eType="#//a_list" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="a_list">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="subgraph" eSuperTypes="#//stmt">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stmts" upperBound="-1"
+        eType="#//stmt" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="edgeRHS">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="#//edgeop"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="edgeRHS_node" eSuperTypes="#//edgeRHS">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node" eType="#//node_id"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="edgeRHS_subgraph" eSuperTypes="#//edgeRHS">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subgraph" eType="#//subgraph"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="node_id">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="edgeop">
+    <eLiterals name="directed" literal="->"/>
+    <eLiterals name="undirected" value="1" literal="--"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="graphtype">
+    <eLiterals name="graph" literal="graph"/>
+    <eLiterals name="digraph" value="1" literal="digraph"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="attributetype">
+    <eLiterals name="graph" literal="graph"/>
+    <eLiterals name="node" value="1" literal="node"/>
+    <eLiterals name="edge" value="2" literal="edge"/>
+  </eClassifiers>
+</ecore:EPackage>
