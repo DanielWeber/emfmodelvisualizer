@@ -1,0 +1,12 @@
+module org.openarchitectureware.vis.graphviz.ecore.VisualizeEObject
+
+var inputSlot = "model"
+var targetDir = "src-gen"
+
+Workflow {
+
+	component = @org.openarchitectureware.vis.graphviz.Model2DotFile auto-inject {
+		targetDir = "${targetDir}"
+		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::ecore::eobject2dot::toGraphVizmodel(${inputSlot})"		
+	}
+}

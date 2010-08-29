@@ -65,22 +65,22 @@ cached toContainmentEdge(emf::EObject reference, emf::EObject o ):
 ;		
 
 List[emf::EObject] eCrossReferences (emf::EObject o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.eCrossReferences (org.eclipse.emf.ecore.EObject);
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.eCrossReferences (org.eclipse.emf.ecore.EObject);
 
 String fileName (emf::EObject o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFilename (org.eclipse.emf.ecore.EObject);
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getFilename (org.eclipse.emf.ecore.EObject);
 	
 String name (emf::EObject o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getName (org.eclipse.emf.ecore.EObject);
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getName (org.eclipse.emf.ecore.EObject);
 	
 String typeName (Object o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getTypeName (java.lang.Object);
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getTypeName (java.lang.Object);
 	
 String getContainingFeatureName(emf::EObject o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getContainingFeatureName(org.eclipse.emf.ecore.EObject);
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getContainingFeatureName(org.eclipse.emf.ecore.EObject);
 
 String getFeatureNamePointingTo (emf::EObject o, Object reference) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFeatureNamePointingTo(org.eclipse.emf.ecore.EObject, java.lang.Object); 		
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getFeatureNamePointingTo(org.eclipse.emf.ecore.EObject, java.lang.Object); 		
 	
 String getFeaturesAsString (emf::EObject o) :
-	JAVA org.openarchitectureware.vis.graphviz.eobject.EObjectUtils.getFeaturesAsString (org.eclipse.emf.ecore.EObject);	
+	JAVA org.openarchitectureware.vis.graphviz.ecore.EObjectUtils.getFeaturesAsString (org.eclipse.emf.ecore.EObject);	

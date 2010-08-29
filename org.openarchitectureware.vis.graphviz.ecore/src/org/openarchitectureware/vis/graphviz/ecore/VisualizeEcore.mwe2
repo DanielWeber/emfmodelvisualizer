@@ -1,7 +1,7 @@
 module org.openarchitectureware.vis.graphviz.ecore.VisualizeEcore
 
 var modelFile
-var targetDir
+var targetDir = "src-gen"
 
 Workflow {
 

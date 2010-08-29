@@ -1,9 +1,10 @@
 module org.openarchitectureware.vis.graphviz.ecore.VisualizeEcoreEcore
 
+var targetDir = "src-gen"
+
 Workflow {
 
 	component = @VisualizeEcore auto-inject {
 		modelFile = "http://www.eclipse.org/emf/2002/Ecore"
-		targetDir = "src-gen"		
 	}
 }

@@ -1,4 +1,4 @@
-package org.openarchitectureware.vis.graphviz.eobject;
+package org.openarchitectureware.vis.graphviz.ecore;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
