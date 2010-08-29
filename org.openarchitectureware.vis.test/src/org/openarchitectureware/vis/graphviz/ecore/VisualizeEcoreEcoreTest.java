@@ -14,6 +14,6 @@ public class VisualizeEcoreEcoreTest {
 	public void ecoreEcoreVisualization() {
 		Injector injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
 		Mwe2Runner mweRunner = injector.getInstance(Mwe2Runner.class);
-		mweRunner.run("org.openarchitectureware.vis.graphviz.ecore.visualizeEcoreEcore", new HashMap<String, String>());
+		mweRunner.run("org.openarchitectureware.vis.graphviz.ecore.VisualizeEcoreEcore", new HashMap<String, String>());
 	}
 }

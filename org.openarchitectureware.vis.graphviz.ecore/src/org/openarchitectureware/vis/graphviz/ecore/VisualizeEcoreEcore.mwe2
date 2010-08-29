@@ -1,4 +1,4 @@
-module org.openarchitectureware.vis.graphviz.ecore.visualizeEcoreEcore
+module org.openarchitectureware.vis.graphviz.ecore.VisualizeEcoreEcore
 
 Workflow {
 
