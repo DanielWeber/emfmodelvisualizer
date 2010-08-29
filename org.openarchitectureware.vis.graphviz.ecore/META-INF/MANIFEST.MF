@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Demo
+Bundle-SymbolicName: org.openarchitectureware.vis.graphviz.ecore
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.ecore,
+ org.eclipse.xtend.util.stdlib,
+ org.openarchitectureware.vis.graphviz,
+ org.eclipse.emf.mwe.ui;resolution:=optional,
+ org.eclipse.emf.mwe.core;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.openarchitectureware.vis.graphviz.eobject

@@ -1,4 +1,8 @@
 bin/
-src-gen/
+# Do not ignore the src-gen directory itself only it content's.
+# Otherwise the projects will have an invalid configuration in eclipse as
+# the src-gen folder is not present.
+src-gen/*
 plugin.xml_gen
 MANIFEST.MF_gen
+.antlr-generator-*.jar

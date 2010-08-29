@@ -1,0 +1,3 @@
+Cleanup EObjectUtils
+
+Add support for maps in eobject2dot

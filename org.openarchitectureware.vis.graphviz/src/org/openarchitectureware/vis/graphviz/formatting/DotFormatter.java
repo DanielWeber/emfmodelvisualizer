@@ -9,7 +9,7 @@ import org.eclipse.xtext.formatting.impl.FormattingConfig;
 /**
  * This class contains custom formatting description.
  * 
- * see : http://wiki.eclipse.org/Xtext/Documentation#Formatting
+ * see : http://www.eclipse.org/Xtext/documentation/latest/xtext.html#formatting
  * on how and when to use it 
  * 
  * Also see {@link org.eclipse.xtext.xtext.XtextFormattingTokenSerializer} as an example
@@ -20,6 +20,10 @@ public class DotFormatter extends AbstractDeclarativeFormatter {
 	protected void configureFormatting(FormattingConfig c) {
 		org.openarchitectureware.vis.graphviz.services.DotGrammarAccess f = (org.openarchitectureware.vis.graphviz.services.DotGrammarAccess) getGrammarAccess();
 
-		//...
+		c.setLinewrap(0, 1, 2).before(f.getSL_COMMENTRule());
+		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());
+		c.setLinewrap(0, 1, 1).after(f.getML_COMMENTRule());
+
+		// ...
 	}
 }

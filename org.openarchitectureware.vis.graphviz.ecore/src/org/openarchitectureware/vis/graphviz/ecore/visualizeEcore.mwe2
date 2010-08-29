@@ -1,0 +1,19 @@
+module org.openarchitectureware.vis.graphviz.ecore.VisualizeEcore
+
+var modelFile
+var targetDir
+
+Workflow {
+
+	component = org.eclipse.emf.mwe.utils.Reader {
+		uri = "${modelFile}"
+		modelSlot = "model"
+	}
+
+	component = @org.openarchitectureware.vis.graphviz.Model2DotFile auto-inject {
+		targetDir = "${targetDir}"
+		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::ecore::ecore2dot::toGraphVizmodel(model)"		
+	}
+	
+}
+		

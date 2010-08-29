@@ -1,0 +1,53 @@
+module org.openarchitectureware.vis.graphviz.Model2DotFile
+
+var targetDir
+var topFunctionCallExpression
+var pathToDotExe = "%GRAPHVIZ_BIN%"
+var outputFormat = "gif"
+var createBatchFile = false
+var executeGraphviz = true
+
+Workflow {
+
+	bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
+		platformUri = ".."
+		registerGeneratedEPackage = "org.openarchitectureware.vis.graphviz.dot.DotPackage" 
+		
+	}
+	
+	bean = org.openarchitectureware.vis.graphviz.DotStandaloneSetup {}
+	
+	component = org.eclipse.xtend.XtendComponent {
+		metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+		invoke = "${topFunctionCallExpression}"
+		outputSlot = "dotModel"
+	}
+	
+	// create dot files
+	component = org.eclipse.xpand2.Generator {
+		metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+		expand = 'org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::dotFiles FOR dotModel'
+		genPath = '${targetDir}'
+	}
+	
+	component = org.eclipse.emf.mwe.core.container.IfComponent {
+		cond = "${createBatchFile}"
+		component = org.eclipse.xpand2.Generator {
+			metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+			expand = 'org::openarchitectureware::vis::graphviz::generator::dotFileGenerator::batFile("${pathToDotExe}", "${outputFormat}") FOR dotModel'
+			genPath = '${targetDir}'				
+		}
+	}
+	
+	component = org.eclipse.emf.mwe.core.container.IfComponent {
+		cond = "${executeGraphviz}"
+		
+		component = org.eclipse.xtend.util.stdlib.ExtIssueReporter {}
+		
+		component = org.eclipse.xtend.XtendComponent {
+			metaModel = org.eclipse.xtend.typesystem.emf.EmfRegistryMetaModel {}
+			invoke = 'org::openarchitectureware::vis::graphviz::runGraphviz::runGraphviz(dotModel,"${pathToDotExe}", "${targetDir}", "${outputFormat}")' 
+		}
+	}
+	
+}

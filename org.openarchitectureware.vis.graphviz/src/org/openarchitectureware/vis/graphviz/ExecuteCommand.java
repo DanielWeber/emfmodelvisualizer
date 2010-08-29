@@ -5,36 +5,68 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 public class ExecuteCommand {
 
+	static class InputStreamHandler extends Thread {
+		/**
+		 * Stream being read
+		 */
+
+		private InputStream m_stream;
+
+		/**
+		 * The StringBuffer holding the captured output
+		 */
+
+		private StringBuffer m_captureBuffer;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param
+		 */
+
+		InputStreamHandler(StringBuffer captureBuffer, InputStream stream) {
+			m_stream = stream;
+			m_captureBuffer = captureBuffer;
+			start();
+		}
+
+		/**
+		 * Stream the data.
+		 */
+
+		public void run() {
+			try {
+				int nextChar;
+				while ((nextChar = m_stream.read()) != -1) {
+					m_captureBuffer.append((char) nextChar);
+				}
+			} catch (IOException ioe) {
+			}
+		}
+	}
+
 	public static int executeCommand(String command) {
 		try {
-			String line;
-			InputStream stdout = null;
-			InputStream stderr = null;
-
 			Process p = Runtime.getRuntime().exec(command);
-			stderr = p.getErrorStream();
-			stdout = p.getInputStream();
 
-			// clean up if any output in stdout
-			BufferedReader brCleanUp = new BufferedReader(
-					new InputStreamReader(stdout));
-			while ((line = brCleanUp.readLine()) != null) {
-				org.eclipse.xtend.util.stdlib.IOExtensions.info(line);
-			}
-			brCleanUp.close();
+			StringBuffer inBuffer = new StringBuffer();
+			InputStream inStream = p.getInputStream();
+			new InputStreamHandler(inBuffer, inStream);
 
-			// clean up if any output in stderr
-			brCleanUp = new BufferedReader(new InputStreamReader(stderr));
-			while ((line = brCleanUp.readLine()) != null) {
-				org.eclipse.xtend.util.stdlib.IOExtensions.error(line);
-			}
-			brCleanUp.close();
+			StringBuffer errBuffer = new StringBuffer();
+			InputStream errStream = p.getErrorStream();
+			new InputStreamHandler(errBuffer, errStream);
 
 			p.waitFor();
+
+			if (inBuffer.length()>0)
+				org.eclipse.xtend.util.stdlib.IOExtensions.info(inBuffer);
+			if (errBuffer.length()>0)
+				org.eclipse.xtend.util.stdlib.IOExtensions.error(errBuffer);
+
 			return p.exitValue();
 		} catch (Exception err) {
 			err.printStackTrace();
@@ -42,36 +74,36 @@ public class ExecuteCommand {
 		return 0;
 	}
 
-	public static boolean isWindows(){
-		 
+	public static boolean isWindows() {
+
 		String os = System.getProperty("os.name").toLowerCase();
-		//windows
-	    return (os.indexOf( "win" ) >= 0); 
- 
-	}
- 
-	public static boolean isMac(){
- 
-		String os = System.getProperty("os.name").toLowerCase();
-		//Mac
-	    return (os.indexOf( "mac" ) >= 0); 
- 
-	}
- 
-	public static boolean isUnix(){
- 
-		String os = System.getProperty("os.name").toLowerCase();
-		//linux or unix
-	    return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
- 
+		// windows
+		return (os.indexOf("win") >= 0);
+
 	}
 
-	public static String getCanonicalPath (String fileName) {
-		File file = new File (fileName);			
+	public static boolean isMac() {
+
+		String os = System.getProperty("os.name").toLowerCase();
+		// Mac
+		return (os.indexOf("mac") >= 0);
+
+	}
+
+	public static boolean isUnix() {
+
+		String os = System.getProperty("os.name").toLowerCase();
+		// linux or unix
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+
+	}
+
+	public static String getCanonicalPath(String fileName) {
+		File file = new File(fileName);
 		try {
 			return file.getCanonicalPath().toString();
 		} catch (IOException e) {
 			return fileName;
-		}			
+		}
 	}
 }

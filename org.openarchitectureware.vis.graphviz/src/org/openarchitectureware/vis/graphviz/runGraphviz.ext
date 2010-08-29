@@ -1,6 +1,7 @@
 import dot;
 
 extension org::eclipse::xtend::util::stdlib::io;
+extension org::eclipse::xtend::util::stdlib::issues;
 
 extension org::openarchitectureware::vis::graphviz::dotlib;
 
@@ -18,7 +19,9 @@ String getCanonicalPath(String fileName) :
 
 Integer execute (String command) :
 	info ("Running "+command) ->
-	executeCommand(command)
+	(let exitCode = executeCommand(command) :
+		exitCode>0?(error("Execution exited abnormal with exit code "+exitCode+". Command: "+command) -> reportError("Execution exited abnormal with exit code "+exitCode+". Command: "+command)):null ->
+		exitCode)
 ;
 
 Void runGraphviz (graphvizmodel model, String pathToGraphviz, String targetDir, String outputFormat) :

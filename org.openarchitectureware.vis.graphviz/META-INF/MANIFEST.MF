@@ -2,24 +2,23 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.openarchitectureware.vis.graphviz
 Bundle-Vendor: My Company
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-SymbolicName: org.openarchitectureware.vis.graphviz; singleton:=true
-Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional;visibility:=reexport,
- de.itemis.xtext.antlr;resolution:=optional;visibility:=reexport,
- org.apache.commons.logging;resolution:=optional;visibility:=reexport,
- org.eclipse.emf.codegen.ecore;resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.log4j;resolution:=optional;visibility:=reexport,
- org.eclipse.emf.mwe.utils;resolution:=optional;visibility:=reexport,
- org.eclipse.emf.mwe.core;resolution:=optional;visibility:=reexport,
- com.ibm.icu;resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.xtend;resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.util;visibility:=reexport,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.common;visibility:=reexport,
- org.antlr.runtime;visibility:=reexport
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.apache.commons.logging;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ com.ibm.icu;resolution:=optional,
+ org.eclipse.xtext.xtend;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime,
+ org.eclipse.xtend.util.stdlib
+Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openarchitectureware.vis.graphviz,
  org.openarchitectureware.vis.graphviz.services,
@@ -28,4 +27,6 @@ Export-Package: org.openarchitectureware.vis.graphviz,
  org.openarchitectureware.vis.graphviz.dot.util,
  org.openarchitectureware.vis.graphviz.parseTreeConstruction,
  org.openarchitectureware.vis.graphviz.parser.antlr,
+ org.openarchitectureware.vis.graphviz.parser.antlr.internal,
  org.openarchitectureware.vis.graphviz.validation
+Bundle-ClassPath: .
