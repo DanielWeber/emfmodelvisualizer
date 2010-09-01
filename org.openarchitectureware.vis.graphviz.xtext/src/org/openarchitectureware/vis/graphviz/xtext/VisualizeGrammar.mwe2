@@ -1,0 +1,15 @@
+module org.openarchitectureware.vis.graphviz.xtext.VisualizeGrammar
+
+var showUsedGrammars = false
+var targetDir = "src-gen"
+var inputSlot
+
+/**
+ * This workflow visualizes an Xtext Grammar instance
+ */
+Workflow {
+
+	component = @org.openarchitectureware.vis.graphviz.Model2DotFile auto-inject {
+		topFunctionCallExpression = "org::openarchitectureware::vis::graphviz::xtext::grammar2dot::toDot(${inputSlot},'${showUsedGrammars}'.toUpperCase()=='TRUE')"
+	}
+}

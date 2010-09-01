@@ -1,27 +1,30 @@
 import xtext;
 import dot;
 
-//extension org::eclipse::xtend::util::stdlib::io;
+extension org::eclipse::xtend::util::stdlib::io;
 extension org::openarchitectureware::vis::graphviz::dotlib;
 
 create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars):
-	//info ("showUsedGrammars="+showUsedGrammars) ->
-	addGraph( grammar.toGraph(showUsedGrammars) )
+	addGraph( grammar.toGraph(showUsedGrammars, true) )
+; 
+
+create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName):
+	addGraph( grammar.toGraph(showUsedGrammars, sortRulesByName))
 ; 
  
-cached toGraph (Grammar grammar, Boolean showUsedGrammars) :
+cached toGraph (Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName) :
 	grammar.mapToGraph()
 		.setName(grammar.name+"Grammar")
 		.addStatement(let a = new attribute: a.setName("rankdir") -> a.setValue("LR") -> a)	
-		.addStatement (grammar.toSubgraph(showUsedGrammars))
+		.addStatement (grammar.toSubgraph(showUsedGrammars, sortRulesByName))
 ;
 		
-cached toSubgraph (Grammar grammar, Boolean showUsedGrammars) :
+cached toSubgraph (Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName) :
 	let g = grammar.mapToSubgraph() :	
 		g.setName(grammar.name) ->
 		g.setLabel(grammar.name) ->
-		showUsedGrammars?g.addStatements (grammar.usedGrammars.toSubgraph (true)):null ->
-		grammar.rules.processRule(g) ->
+		showUsedGrammars?g.addStatements (grammar.usedGrammars.toSubgraph (showUsedGrammars, sortRulesByName)):null ->
+		(sortRulesByName?grammar.rules.sortBy(e|e.name):grammar.rules).processRule(g) ->
 		g
 ;
 
@@ -30,8 +33,8 @@ cached processRule (AbstractRule rule, subgraph g) :
 	g.addStatement (rule.toNode()) ->
 	(let end = rule.alternatives.processAbstractElement (makeList(rule), g, rule.alternatives.cardinality) :
 		addEndMarker(end, g)) 
-;
-		
+;	
+
 List[Object] processBase (AbstractElement element, List[Object] start, subgraph g,String cardinality) :
 	g.addStatement(element.toNode()) ->
 	g.addStatements(start.collect(e|toEdge(e, element))) ->
@@ -66,30 +69,34 @@ cached List[Object] processAbstractElement (RuleCall element, List[Object] start
 ;
 
 cached List[Object] processAbstractElement (Group group, List[Object] start, subgraph g, String cardinality) :
-	let end = group.tokens.processGroupTokens (start, g) :
+	let end = group.elements.processGroupElements (start, g) :
 		doesReturn (cardinality)?addEdges (end, startNode (group), g):null ->
 		isOptional(cardinality)?end.collect(e|e).addAll(start).toList():end.toList()
 ;
 
-List[Object] processGroupTokens (List[AbstractElement] tokens, List[Object] start, subgraph g) :
+List[Object] processGroupElements (List[AbstractElement] tokens, List[Object] start, subgraph g) :
 	tokens.size>0
 	?
 		(let end = tokens.first().processAbstractElement (start, g, tokens.first().cardinality) :
 			tokens.size>1
 			?	
 				(let first = tokens.first() :
-					tokens.reject(e|e==first).processGroupTokens (end, g))
+					tokens.reject(e|e==first).processGroupElements (end, g))
 			:
 				end)
 	:
 		start
 ;
 
+cached List[Object] processAbstractElement (Assignment assignment, List[Object] start, subgraph g, String cardinality) :
+	processAbstractElement (assignment.terminal, start, g, cardinality)
+;
+
 cached List[Object] processAbstractElement (Alternatives alternatives, List[Object] start, subgraph g, String cardinality) :
 	let end = {} :
 		g.addStatement (alternatives.toNode()) ->
 		g.addStatements (start.collect(e|toEdge(e, alternatives))) ->		
-		alternatives.groups.forAll(e|end.addAll(e.processAbstractElement (alternatives.makeList(), g, e.cardinality))->true) ->
+		alternatives.elements.forAll(e|end.addAll(e.processAbstractElement (alternatives.makeList(), g, e.cardinality))->true) ->
 		g.addStatement (alternatives.toEndNode()) ->
 		g.addStatements (end.collect(e|toEdge(e, alternatives.end()))) ->				
 		doesReturn (cardinality)? g.addStatement (toEdge (alternatives.end(), alternatives)):null ->
@@ -105,6 +112,10 @@ cached List[Object] processAbstractElement (AbstractNegatedToken token, List[Obj
 		isOptional(cardinality)?end.collect(e|e).addAll(start).toList():end.toList())
 ;
 
+// ignore Action elments
+cached List[Object] processAbstractElement (Action action, List[Object] start, subgraph g, String cardinality) :
+	start;
+	
 // start nodes
 
 cached List[Object] startNode (AbstractElement element) :
@@ -112,7 +123,7 @@ cached List[Object] startNode (AbstractElement element) :
 ;
 
 cached List[Object] startNode (Group g) :
-	startNodes (g.tokens)	
+	startNodes (g.elements)	
 ;
 
 cached List[Object] startNodes (List[AbstractElement] elements) :
@@ -180,15 +191,18 @@ cached toEndNode (Alternatives alternatives) :
 cached toNode(AbstractElement element) :
 	element.mapToNode()
 		.setLabel (dotString(element.getLabel()))
+		.setShape("box")
+		.setStyle("filled")
 		.setupNode(element)
 ;
 
 String getLabel (AbstractElement element) :
-	"Unsupported element"
+	info ("Unsupported element: "+element) ->
+	"Unsupported element "
 ;
 
 String getLabel (Keyword keyword) :
-	"'"+keyword.value+"'"
+	keyword.value
 ;
 
 String getLabel (Assignment assignment) :
@@ -201,10 +215,6 @@ String getLabel (CrossReference cr) :
 
 String getLabel (RuleCall ruleCall) :
 	ruleCall.rule.name
-;
-
-String getLabel (CharacterRange range) :
-	range.left.value + ".." + range.right.value
 ;
 
 String getLabel (CharacterRange range) :
@@ -224,11 +234,15 @@ String getLabel (Wildcard wildcard) :
 ;
 
 String getLabel (EnumLiteralDeclaration ld) :
-	"'"+ld.literal.value+"'"
+	ld.literal.value
 ;
 
 node_stmt setupNode (node_stmt node, AbstractElement element) :
-	node
+	node.setFillColor("grey")
+;
+
+node_stmt setupNode (node_stmt node, Keyword element) :
+	node.setFillColor("white")
 ;
 
 node_stmt setupNode (node_stmt node, Assignment element) :
@@ -236,12 +250,11 @@ node_stmt setupNode (node_stmt node, Assignment element) :
 ;
 
 node_stmt setupNode (node_stmt node, CrossReference element) :
-	node.setStyle ("dashed")
+	node.setFillColor("grey") //node.setStyle ("dashed")
 ;
 
 node_stmt setupNode (node_stmt node, RuleCall element) :
-//	node.setStyle ("dotted") 
-	node
+	node.setFillColor("grey")
 ;
 	
 cached toEdge(Object start, Object end ):

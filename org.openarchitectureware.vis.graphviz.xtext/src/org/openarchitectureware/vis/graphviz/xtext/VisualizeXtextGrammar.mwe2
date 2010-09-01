@@ -1,0 +1,27 @@
+module org.openarchitectureware.vis.graphviz.xtext.VisualizeXtextGrammar
+
+var targetDir = "src-gen"
+
+/**
+ * This workflow visualizes Xtext's grammar.
+ */
+Workflow {
+
+//	component = org.eclipse.emf.mwe.utils.Reader {
+//		uri = "org/eclipse/xtext/Xtext.xtext"
+//		modelSlot = "model"
+//	}
+	
+	component = org.eclipse.xtext.mwe.Reader {
+		register = org.eclipse.xtext.XtextStandaloneSetup {}		
+		useJavaClassPath = true
+		uriFilter = org.eclipse.xtext.mwe.NameBasedFilter { regularExpression = "org/eclipse/xtext/Xtext\\.xtext" }
+		validate = org.eclipse.xtext.mwe.Validator { validateAll = true }
+		load = org.eclipse.xtext.mwe.SlotEntry {
+			firstOnly = true
+			slot = "model"
+		}
+	}
+
+	component = @VisualizeGrammar auto-inject { inputSlot = "model" }
+}

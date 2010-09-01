@@ -1,0 +1,13 @@
+module org.openarchitectureware.vis.graphviz.xtext.VisualizeGrammarMetamodel
+
+var targetDir = "src-gen"
+
+/**
+ * This workflow visualizes the Xtext Grammar Metamodel
+ */
+Workflow {
+
+	component = @org.openarchitectureware.vis.graphviz.ecore.VisualizeEcore auto-inject {
+		modelFile = "http://www.eclipse.org/2008/Xtext"
+	}
+}
