@@ -11,6 +11,8 @@ import org.eclipse.xtext.generator.DefaultGeneratorFragment;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.generator.Naming;
 
+import com.google.inject.Inject;
+
 /**
  * A Xtext generator fragment to transform the grammar into a
  * graphviz dot file and generate pictures by executing graphviz.
@@ -18,11 +20,15 @@ import org.eclipse.xtext.generator.Naming;
  * @author Christoph Kulla
  */
 public class VisualizeGrammarFragment extends DefaultGeneratorFragment {
+
+	@Inject
+	Naming naming;
 	
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
+
 		super.generate (grammar, ctx);
 				
-		String targetDir = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath()+"/"+Naming.asPath(GrammarUtil.getNamespace(grammar));
+		String targetDir = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath()+"/"+naming.asPath(GrammarUtil.getNamespace(grammar));
 		
 		String wfFile = "org/openarchitectureware/vis/graphviz/xtext/visualizeGrammar.mwe";
 		Map properties = new HashMap();
