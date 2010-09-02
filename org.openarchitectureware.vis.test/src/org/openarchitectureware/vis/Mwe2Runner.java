@@ -1,4 +1,4 @@
-package org.openarchitectureware.vis.graphviz.ecore;
+package org.openarchitectureware.vis;
 
 import java.util.HashMap;
 import java.util.List;

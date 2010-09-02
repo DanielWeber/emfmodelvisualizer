@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
 import org.junit.Test;
+import org.openarchitectureware.vis.Mwe2Runner;
 
 import com.google.inject.Injector;
 

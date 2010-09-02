@@ -4,7 +4,8 @@ Bundle-Name: Test
 Bundle-SymbolicName: org.openarchitectureware.vis.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.openarchitectureware.vis.graphviz.ecore;bundle-version="1.0.0",
+Require-Bundle: org.openarchitectureware.vis.graphviz.ecore,
+ org.openarchitectureware.vis.graphviz.xtext,
  com.google.inject;bundle-version="2.0.0",
  org.junit,
  org.eclipse.emf.mwe2.launch;bundle-version="1.0.0",
