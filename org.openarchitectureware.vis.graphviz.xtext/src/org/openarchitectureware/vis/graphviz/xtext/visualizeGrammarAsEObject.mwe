@@ -1,3 +1,0 @@
-<workflow>	
-	<component file="org::openarchitectureware::vis::graphviz::eobject::visualizeEObject.mwe" inheritAll="true"/>	
-</workflow>
