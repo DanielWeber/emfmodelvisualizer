@@ -124,18 +124,13 @@ cached List[Object] innerProcessAltervatives (Alternatives alternatives, subgrap
 			list(startPoint, endPoint)))
 ;
 
-//cached List[Object] processAbstractElement (NegatedToken token, subgraph g) :
-//	let result = processAbstractElement(token.terminal, g) :
-//		token.terminal.toNode().setLabel ("!" + token.terminal.toNode().getLabel()) ->
-//		result
-//;
-
-//cached List[Object] processAbstractElement (UntilToken token, subgraph g) :
-//	let result = processAbstractElement(token.terminal, g) :
-//		token.terminal.toNode().setLabel ("-> " + token.terminal.toNode().getLabel()) ->
-//		result
-//;
-
+cached List[Object] processAbstractElement (AbstractNegatedToken element, subgraph g) :
+ 	g.addStatement(element.toNode()) ->
+ 	(let r = processAbstractElement (element.terminal, g) :
+ 		g.addStatement (toEdge (element, r.first())) ->
+ 		processCardinality (list (element, r.last()), element.cardinality, g))
+;
+	
 // ignore Action elments
 cached Object processAbstractElement (Action action, subgraph g) :
 	null
@@ -197,6 +192,14 @@ cached toNode(AbstractElement element) :
 		.setupNode(element)
 ;
 
+ String getLabel (NegatedToken element) :
+	"!"
+;
+
+String getLabel (UntilToken element) :
+	"->"
+;
+
 String getLabel (AbstractElement element) :
 	info ("Unsupported element: "+element) ->
 	"Unsupported element "
@@ -243,6 +246,10 @@ node_stmt setupNode (node_stmt node, CharacterRange element) :
 ;
 
 node_stmt setupNode (node_stmt node, AbstractNegatedToken element) :
+	node.setFillColor("white")
+;
+
+node_stmt setupNode (node_stmt node, Wildcard element) :
 	node.setFillColor("white")
 ;
 
