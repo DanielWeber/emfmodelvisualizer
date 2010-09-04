@@ -30,119 +30,131 @@ cached toSubgraph (Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesB
 
 cached processRule (AbstractRule rule, subgraph g) :
 	//info(rule) ->
-	g.addStatement (rule.toNode()) ->
-	(let end = rule.alternatives.processAbstractElement (makeList(rule), g, rule.alternatives.cardinality) :
-		addEndMarker(end, g)) 
+	let ruleGraph = rule.mapToSubgraph() :
+		g.addStatement (ruleGraph) ->
+		ruleGraph.setName (rule.name) ->
+		ruleGraph.setLabel (rule.name) ->
+		ruleGraph.addStatement (rule.toNode()) ->
+		ruleGraph.setAttribute("style", "dotted") ->
+		(let pair = rule.alternatives.processAbstractElement (ruleGraph) :
+			ruleGraph.addStatement (toEdge (rule, pair.first())) ->
+			(let p = point (rule) :
+				ruleGraph.addStatement (p.toNode()) ->
+				ruleGraph.addStatement (toEdge (pair.last(), p)))) 
 ;	
-
-List[Object] processBase (AbstractElement element, List[Object] start, subgraph g,String cardinality) :
-	g.addStatement(element.toNode()) ->
-	g.addStatements(start.collect(e|toEdge(e, element))) ->
-	switch (cardinality) {
-	case "*": 
-		(g.addStatement (toEdge (element,element)) ->
-		start.add(element)) 
-	case "+": 
-		(g.addStatement (toEdge (element,element)) ->
-		makeList (element))
-	case "?":
-		start.add(element)
-	default: 
-		makeList (element)
-	}
-;
 		
-cached List[Object] processAbstractElement (AbstractElement element, List[Object] start, subgraph g,String cardinality) :
-	processBase (element, start, g, cardinality)
+List[Object] processCardinality (List[Object] elements, String cardinality, subgraph g) :
+	processCardinalityOptional(processCardinalityReturn (elements, cardinality, g), cardinality, g)
+;
+			
+List[Object] processCardinalityReturn (List[Object] elements, String cardinality, subgraph g) :
+	doesReturn (cardinality) ? 
+		(let start = point (elements, "start") :
+			(let end = point (elements, "end") :
+				g.addStatement(start.toNode()) ->
+				g.addStatement(end.toNode()) ->
+				g.addStatement(toEdge (start, elements.first())) ->
+				g.addStatement(toEdge (elements.last(), end)) ->
+				g.addStatement(toEdge (end,start)) ->
+				list (start,end)))
+	 : 
+	 	elements
+;
+	
+List[Object] processCardinalityOptional (List[Object] elements, String cardinality, subgraph g) :
+	isOptional (cardinality) ? 
+		(let start = point (elements, "start") :
+			(let end = point (elements, "end") :
+				g.addStatement(start.toNode()) ->
+				g.addStatement(end.toNode()) ->
+				g.addStatement(toEdge (start, elements.first())) ->
+				g.addStatement(toEdge (elements.last(), end)) ->
+				g.addStatement(toEdge (start,end)) ->
+				list (start,end)))
+	 : 
+	 	elements
 ;
 
-cached List[Object] processAbstractElement (CrossReference element, List[Object] start, subgraph g,String cardinality) :
-	let rv = processBase (element, start, g, cardinality) :
-		//g.addStatement (toCrossReferenceEdge (element)) ->
-		rv
+cached List[Object] processAbstractElement (AbstractElement element, subgraph g) :
+	g.addStatement(element.toNode()) ->
+	processCardinality(list (element), element.cardinality, g)
 ;
 
-cached List[Object] processAbstractElement (RuleCall element, List[Object] start, subgraph g,String cardinality) :
-	let rv = processBase (element, start, g, cardinality) :
-		//g.addStatement (toRuleCallEdge (element, element.rule)) ->
-		rv
+cached List[Object] processAbstractElement (Group group, subgraph g) :
+	processCardinality (group.elements.processElementList (g), group.cardinality, g)
 ;
 
-cached List[Object] processAbstractElement (Group group, List[Object] start, subgraph g, String cardinality) :
-	let end = group.elements.processGroupElements (start, g) :
-		doesReturn (cardinality)?addEdges (end, startNode (group), g):null ->
-		isOptional(cardinality)?end.collect(e|e).addAll(start).toList():end.toList()
-;
-
-List[Object] processGroupElements (List[AbstractElement] tokens, List[Object] start, subgraph g) :
-	tokens.size>0
-	?
-		(let end = tokens.first().processAbstractElement (start, g, tokens.first().cardinality) :
-			tokens.size>1
-			?	
-				(let first = tokens.first() :
-					tokens.reject(e|e==first).processGroupElements (end, g))
-			:
-				end)
+cached List[Object] processElementList (List[AbstractElement] elements, subgraph g) :
+	elements.size>0?
+	(let start = processAbstractElement(elements.first(), g) :
+		(start!=null?
+			(let end = processElementList (elements.withoutFirst(), g) :
+				(end!=null?g.addStatement (toEdge (start.last(), end.first())):null) ->
+				list (start.first(), end!=null?end.last():start.last()))
+		:
+			processElementList (elements.withoutFirst(), g)))
 	:
-		start
+	null
 ;
 
-cached List[Object] processAbstractElement (Assignment assignment, List[Object] start, subgraph g, String cardinality) :
-	processAbstractElement (assignment.terminal, start, g, cardinality)
+cached List[Object] processAbstractElement (UnorderedGroup group, subgraph g) :
+	processCardinality (group.elements.processElementList (g), group.cardinality, g)
 ;
 
-cached List[Object] processAbstractElement (Alternatives alternatives, List[Object] start, subgraph g, String cardinality) :
-	let end = {} :
-		g.addStatement (alternatives.toNode()) ->
-		g.addStatements (start.collect(e|toEdge(e, alternatives))) ->		
-		alternatives.elements.forAll(e|end.addAll(e.processAbstractElement (alternatives.makeList(), g, e.cardinality))->true) ->
-		g.addStatement (alternatives.toEndNode()) ->
-		g.addStatements (end.collect(e|toEdge(e, alternatives.end()))) ->				
-		doesReturn (cardinality)? g.addStatement (toEdge (alternatives.end(), alternatives)):null ->
-		isOptional(cardinality)? g.addStatement (toEdge (alternatives, alternatives.end())):null->
-		alternatives.end().makeList()
+cached List[Object] processAbstractElement (Assignment assignment, subgraph g) :
+	processCardinality (processAbstractElement (assignment.terminal, g), assignment.cardinality, g)
 ;
 
-cached List[Object] processAbstractElement (AbstractNegatedToken token, List[Object] start, subgraph g, String cardinality) :
-	g.addStatement(token.toNode()) ->
-	g.addStatements(start.collect(e|toEdge(e, token))) ->
-	(let end = processAbstractElement (token.terminal, token.makeList(), g, token.terminal.cardinality) :
-		doesReturn (cardinality)?addEdges (end, token.makeList(), g):null ->
-		isOptional(cardinality)?end.collect(e|e).addAll(start).toList():end.toList())
+cached List[Object] processAbstractElement (Alternatives alternatives, subgraph g) :
+	processCardinality (innerProcessAltervatives (alternatives, g), alternatives.cardinality, g)
 ;
+
+cached List[Object] innerProcessAltervatives (Alternatives alternatives, subgraph g) :
+	(let startPoint = point (alternatives, "start") :
+		g.addStatement (startPoint.toNode()) ->
+		(let endPoint = point (alternatives, "end") :
+			g.addStatement (endPoint.toNode()) ->
+			alternatives.elements.forAll (e|(let element = e.processAbstractElement(g) :
+				(e!=null?
+					(g.addStatement (toEdge (startPoint, element.first())) ->
+					g.addStatement (toEdge (element.last(), endPoint)))
+				:
+					null)) ->
+				true) ->
+			list(startPoint, endPoint)))
+;
+
+//cached List[Object] processAbstractElement (NegatedToken token, subgraph g) :
+//	let result = processAbstractElement(token.terminal, g) :
+//		token.terminal.toNode().setLabel ("!" + token.terminal.toNode().getLabel()) ->
+//		result
+//;
+
+//cached List[Object] processAbstractElement (UntilToken token, subgraph g) :
+//	let result = processAbstractElement(token.terminal, g) :
+//		token.terminal.toNode().setLabel ("-> " + token.terminal.toNode().getLabel()) ->
+//		result
+//;
 
 // ignore Action elments
-cached List[Object] processAbstractElement (Action action, List[Object] start, subgraph g, String cardinality) :
-	start;
-	
-// start nodes
-
-cached List[Object] startNode (AbstractElement element) :
-	element.makeList()
-;
-
-cached List[Object] startNode (Group g) :
-	startNodes (g.elements)	
-;
-
-cached List[Object] startNodes (List[AbstractElement] elements) :
-	elements.size>0
-	?
-		(let rv = elements.first().startNode() :
-			elements.first().isOptionalElement()
-			?
-				rv.addAll(startNodes(elements.removeFirst()))
-			:	
-				rv)
-	:
-		null
-;
-
-cached List[Object] startNode (Alternatives a) :
-	a.makeList() 
+cached Object processAbstractElement (Action action, subgraph g) :
+	null
 ;
 	
+// list helpers 
+
+List[Object] list (Object start, Object end) :
+	{start,end}.toList()
+;
+
+List[Object] list (Object start) :
+	{start}.toList()
+;
+
+List[Object] list() :
+	{}
+;
+
 // rules
 
 cached toNode(AbstractRule rule) :
@@ -153,10 +165,6 @@ cached toNode(AbstractRule rule) :
 		.setFillColor (rule.getFillColor())
 ;
 
-cached toNode (Alternatives alternatives) :
-	alternatives.mapToNode()
-		.setShape ("point");
-
 String getFillColor (AbstractRule rule) :
 	"white"
 ;
@@ -165,28 +173,21 @@ String getFillColor (TerminalRule rule) :
 	"grey"
 ;
 
-String getFillColor (EnumRule rule) :
-	"yellow"
+
+cached point (Object ref) :
+	new Object
 ;
 
-Void addEndMarker (List[Object] end, subgraph g) :
-	let endMarker = new dot::node_stmt :
-		endMarker.setShape ("point") ->
-		endMarker.setName (endMarker.dotId()) ->
-		endMarker.setLabel ("rule_end") ->
-		g.addStatement(endMarker) ->
-	    g.addStatements(end.collect(e|e.toEdge(endMarker)));
-	    
+cached point (Object ref, String uniqueToken) :
+	new Object
+;	    
+
 // elements
 
-
-cached String end(Alternatives alternatives) :
-	alternatives.toString()
+cached toNode(Object element) :
+	element.mapToNode()
+		.setShape("point")
 ;
-
-cached toEndNode (Alternatives alternatives) :
-	alternatives.end().mapToNode()
-		.setShape ("point");
 
 cached toNode(AbstractElement element) :
 	element.mapToNode()
@@ -221,14 +222,6 @@ String getLabel (CharacterRange range) :
 	range.left.value + ".." + range.right.value
 ;
 
-String getLabel (UntilToken token) :
-	"->"
-;
-
-String getLabel (NegatedToken token) :
-	"!"
-;
-
 String getLabel (Wildcard wildcard) :
 	"."
 ;
@@ -245,6 +238,14 @@ node_stmt setupNode (node_stmt node, Keyword element) :
 	node.setFillColor("white")
 ;
 
+node_stmt setupNode (node_stmt node, CharacterRange element) :
+	node.setFillColor("white")
+;
+
+node_stmt setupNode (node_stmt node, AbstractNegatedToken element) :
+	node.setFillColor("white")
+;
+
 node_stmt setupNode (node_stmt node, Assignment element) :
 	node.setupNode (element.terminal)
 ;
@@ -258,15 +259,14 @@ node_stmt setupNode (node_stmt node, RuleCall element) :
 ;
 	
 cached toEdge(Object start, Object end ):
-	mapToDirectedEdge( start, end, null)
+	mapToDirectedEdge( start, end)
 		.setArrowHead("normal")
 		.setArrowTail( "none")				
 		// the higher the weight, the shorter and straighter the edge
-		.setWeight( "10000" )
 ;
 
 cached toCrossReferenceEdge(CrossReference cr, Object reference):
-	mapToDirectedEdge( cr, reference, null)
+	mapToDirectedEdge( cr, reference)
 		.setArrowHead("normal")
 		.setArrowTail( "none")	
 		.setStyle("dotted")		
@@ -274,7 +274,7 @@ cached toCrossReferenceEdge(CrossReference cr, Object reference):
 ;
 
 cached toRuleCallEdge(RuleCall rc, AbstractRule rule):
-	mapToDirectedEdge( rc, rule, null)
+	mapToDirectedEdge( rc, rule)
 		.setArrowHead("normal")
 		.setArrowTail( "none")	
 		.setStyle("dashed")		
@@ -285,21 +285,6 @@ create Keyword toEnd (AbstractRule rule) :
 	setValue("end")
 ;
 
-// utils
-
-List[Object] makeList (Object o) :
-	{}.add(o).toList()
-;
-	
-removeFirst(List c) :
-	let first = c.first() :
-		c.reject(c|c==first)
-;
-
-Boolean isOptionalElement (AbstractElement e) :
-	isOptional (e.cardinality)
-;
-
 Boolean isOptional (String cardinality) :
 	(cardinality=="*" || cardinality=="?")
 ;
@@ -307,7 +292,3 @@ Boolean isOptional (String cardinality) :
 Boolean doesReturn (String cardinality) :
 	(cardinality=="*" || cardinality=="+")
 ;
-
-Void addEdges (List[Object] start, List[Object] end, subgraph g) :
-	start.forAll (s|g.addStatements (end.collect(e|s.toEdge (e)))->true)
-;		
