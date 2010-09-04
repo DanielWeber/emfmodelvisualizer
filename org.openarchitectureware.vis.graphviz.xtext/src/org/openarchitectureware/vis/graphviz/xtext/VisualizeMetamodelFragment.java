@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.mwe.core.WorkflowFacade;
+import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
@@ -12,6 +13,7 @@ import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.generator.Naming;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * A Xtext generator fragment to transform the generated ecore model into a
@@ -21,8 +23,7 @@ import com.google.inject.Inject;
  */
 public class VisualizeMetamodelFragment extends DefaultGeneratorFragment {
 
-	@Inject
-	Naming naming;
+	Naming naming = new Naming();	
 	
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
 		super.generate (grammar, ctx);
@@ -32,18 +33,14 @@ public class VisualizeMetamodelFragment extends DefaultGeneratorFragment {
 		
 		String targetDir = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath()+"/"+naming.asPath(GrammarUtil.getNamespace(grammar));
 		
-		String wfFile = "org/openarchitectureware/vis/graphviz/xtext/callVisualizeMetamodel.mwe";
-		Map properties = new HashMap();
-		properties.put ("modelFile", modelFileName);
-		properties.put ("targetDir", targetDir);
-		properties.put ("createBatchFile", "false");
-		properties.put ("executeGraphviz", "true");
+		Injector injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
+		Mwe2Runner mweRunner = injector.getInstance(Mwe2Runner.class);
+		Map<String, String> parameters = new HashMap<String, String>();	
+		parameters.put ("targetDir", targetDir);
+		parameters.put("modelFile", modelFileName);
 		if (outputFormat!=null)
-			properties.put ("outputFormat", outputFormat);
-		Map slotContents = new HashMap();
-		
-		WorkflowFacade wf = new WorkflowFacade (wfFile, properties);
-		wf.run(slotContents);
+			parameters.put ("outputFormat", outputFormat);
+		mweRunner.run("org.openarchitectureware.vis.graphviz.ecore.VisualizeEcore", parameters);
 	}
 	
 	private String outputFormat;
