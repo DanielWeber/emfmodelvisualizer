@@ -15,11 +15,12 @@ import com.google.inject.Injector;
 public class VisualizeXtextGrammarTest {
 
 	@Test
-	public void ecoreEcoreVisualization() {
+	public void xtextGrammarVisualization() {
 		Injector injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
 		Mwe2Runner mweRunner = injector.getInstance(Mwe2Runner.class);
 		Map<String, String> parameters = new HashMap<String, String>();	
 		parameters.put ("targetDir", "src-gen/VisualizeXtextGrammar/");
+		parameters.put ("showUsedGrammars", "true");
 		mweRunner.run("org.openarchitectureware.vis.graphviz.xtext.VisualizeXtextGrammar", parameters);
 		
 		assertTrue(new File("src-gen/VisualizeXtextGrammar/org.eclipse.xtext.XtextGrammar.dot").exists());
