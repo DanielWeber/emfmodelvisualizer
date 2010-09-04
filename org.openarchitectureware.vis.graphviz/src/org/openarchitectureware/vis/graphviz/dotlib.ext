@@ -88,6 +88,9 @@ setFontSize( dot::node_stmt node, String font ):
 setFont( dot::graph g, String font ):
 	g.setProperty( "fontname", font ) -> g;
 
+mapToDirectedEdge( Object source, Object target):
+	mapToDirectedEdge(source, target, null);
+	
 mapToDirectedEdge( Object source, Object target, Object token ):
 	mapToEdge(source, target, token);
 	
