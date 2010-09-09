@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ecore Visualization (UI)
+Bundle-SymbolicName: org.openarchitectureware.vis.graphviz.ecore.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.openarchitectureware.vis.graphviz.ecore.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.emf.mwe2.launch,
+ com.google.inject;bundle-version="2.0.0",
+ org.openarchitectureware.vis.graphviz.ecore,
+ org.eclipse.emf.common
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

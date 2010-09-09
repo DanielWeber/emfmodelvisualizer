@@ -1,0 +1,32 @@
+<plugin>
+	<extension point="org.eclipse.ui.commands">
+		<category
+              id="org.openarchitectureware.vis.graphviz"
+              name="Default Category">
+        </category>
+    	<command
+        	id="org.openarchitectureware.vis.graphviz.ecore.ui.commands.VisualizeEcore"
+			categoryId="org.openarchitectureware.vis.graphviz"
+			name="Visualize with graphviz"/>
+	</extension>
+
+	<extension point="org.eclipse.ui.handlers">
+   		<handler class="org.openarchitectureware.vis.graphviz.ecore.ui.handler.VisualizeEcore"
+        commandId="org.openarchitectureware.vis.graphviz.ecore.ui.commands.VisualizeEcore"/>
+	</extension> 
+
+	<extension id="add.item" point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+	        <command commandId="org.openarchitectureware.vis.graphviz.ecore.ui.commands.VisualizeEcore">
+				<visibleWhen>
+   					<iterate operator="and" ifEmpty="false">
+      					<adapt type="org.eclipse.core.resources.IResource">
+							<test property="org.eclipse.core.resources.name" value="*.ecore"/>      					
+		      			</adapt>
+   					</iterate>
+        		</visibleWhen>	        
+	        </command>
+	     </menuContribution>
+	</extension> 
+	     
+</plugin>
