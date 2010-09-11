@@ -8,11 +8,12 @@ import java.util.Map;
 
 import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
 import org.junit.Test;
+import org.openarchitectureware.vis.CleanSrcGenDirectory;
 import org.openarchitectureware.vis.Mwe2Runner;
 
 import com.google.inject.Injector;
 
-public class VisualizeXtextGrammarTest {
+public class VisualizeXtextGrammarTest extends CleanSrcGenDirectory {
 
 	@Test
 	public void xtextGrammarVisualization() {

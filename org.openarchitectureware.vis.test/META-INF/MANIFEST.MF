@@ -10,4 +10,6 @@ Require-Bundle: org.openarchitectureware.vis.graphviz.ecore,
  org.junit,
  org.eclipse.emf.mwe2.launch;bundle-version="1.0.0",
  org.eclipse.emf.ecore;bundle-version="2.6.0",
- org.eclipse.xtext;bundle-version="1.0.0"
+ org.eclipse.xtext;bundle-version="1.0.0",
+ org.openarchitectureware.vis.graphviz.java;bundle-version="1.0.0",
+ org.openarchitectureware.vis.graphviz;bundle-version="1.0.0"

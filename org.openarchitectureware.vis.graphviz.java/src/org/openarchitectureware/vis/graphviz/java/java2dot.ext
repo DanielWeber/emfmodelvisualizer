@@ -1,0 +1,70 @@
+import dot;
+
+extension org::openarchitectureware::vis::graphviz::java::ReflectionUtil;
+extension org::openarchitectureware::vis::graphviz::dotlib;
+
+create dot::graphvizmodel classToGraphvizModel(String className) :
+	addGraph( mapToGraph(null).setName(className) ) ->
+	getClass(className).process(mapToGraph(null))
+;
+
+create dot::graphvizmodel packageToGraphvizModel(String packageName) :
+	addGraph( mapToGraph(null).setName(packageName) ) ->
+	getClasses(packageName).process(mapToGraph(null))
+;
+
+boolean isValidClass (java::lang::Class c) :
+	c.package.name!="java.lang"	
+;
+
+cached Void process(java::lang::Class c, graph g) :
+	(c.isValidClass()?
+		(c.package.process(g) ->
+		c.package.toSubGraph().addStatement(c.toNode()) ->
+		(c.superclass!=null?
+			(process(c.superclass, g) ->
+			 c.superclass.isValidClass()?g.addStatement(toSuperclassEdge(c.superclass, c)):null):null) ->
+		c.interfaces.forAll(i|i.process(g) -> i.isValidClass()?g.addStatement(toSuperclassEdge (i,c)):null -> true)):
+	null)
+;
+
+cached Void process(java::lang::Package p, graph g) :
+	g.addStatement(toSubGraph (p))
+;
+
+cached dot::subgraph toSubGraph(java::lang::Package p):
+	// creates the actual graph object
+	p.mapToSubgraph() 
+		.setName(p.name)
+		.setLabel(p.name)
+;
+
+cached dot::node_stmt toNode( java::lang::Class c ):
+	// this one creates the actual node object
+	c.mapToNode()
+		// the record shape is special, it can have
+		// several "compartments", like the UML class
+		// symbol. That's what we need here.
+		.setShape("record")
+		// sets the label, using the special { and } character
+		// do define compartments in the record shape.
+		.setLabel (c.getShortName())
+//		.setLabel( "{"+c.name+"|"+c.eAttributes.select(e|!EEnum.isInstance(e.eAttributeType)).collect(a|a.name+": "+a.eType.name).
+//			addAll(c.eReferences.select(e|e.eReferenceType.ePackage!=c.ePackage).
+//				collect(e|e.name+": "+(e.eType.ePackage.name)+"."+e.eType.name+
+//					(e.containment?"":(" \\["+e.lowerBound+".."+e.upperBound+"\\] ")))).toString("\\n")+
+//			"}" )
+		// sets the style to bold lines and filled
+		.setStyle("bold, filled")
+		// fill color, obviously
+		.setFillColor(isInterface(c.modifiers)? "blue" : (isAbstract(c.modifiers) ? "white" : "grey"))
+		// and line color.
+		.setLineColor( "black" )
+;
+
+cached dot::edge_stmt_node toSuperclassEdge(java::lang::Class super, java::lang::Class child) :
+	mapToEdge (super, child, "superclass")
+		.setArrowTail("empty")
+		.setArrowHead("none")
+		.setWeight("100")
+;

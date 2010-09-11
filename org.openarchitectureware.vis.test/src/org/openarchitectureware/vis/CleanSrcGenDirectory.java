@@ -4,11 +4,12 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.Before;
+import org.openarchitectureware.vis.graphviz.java.ReflectionUtil;
 
-public class CleanSrcGenDirectoryTest {
+public class CleanSrcGenDirectory {
 
-	public static boolean deleteDir(File dir) {
+	private boolean deleteDir(File dir) {
 	    if (dir.isDirectory()) {
 	        String[] children = dir.list();
 	        for (int i=0; i<children.length; i++) {
@@ -22,9 +23,9 @@ public class CleanSrcGenDirectoryTest {
 	    return dir.delete();
 	}
 	
-	@Test
+	@Before
 	public void cleanSrcGen() {
-		File file = new File("src-gen");
+		File file = new File("src-gen/" + ReflectionUtil.getShortName(this.getClass()));
 		if (file.exists()) {
 			deleteDir (file);
 		}

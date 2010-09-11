@@ -1,0 +1,16 @@
+import java::lang;
+
+List[Class] getClasses (String packageName) :
+	JAVA org.openarchitectureware.vis.graphviz.java.ReflectionUtil.getClasses (java.lang.String);
+	
+Class getClass (String className) :
+	JAVA org.openarchitectureware.vis.graphviz.java.ReflectionUtil.getClass (java.lang.String);
+	
+String getShortName (java::lang::Class class) :
+	JAVA org.openarchitectureware.vis.graphviz.java.ReflectionUtil.getShortName (java.lang.Class);
+
+Boolean isAbstract (Integer modifiers) :
+	JAVA org.openarchitectureware.vis.graphviz.java.ReflectionUtil.isAbstract (java.lang.Integer);
+	
+Boolean isInterface (Integer modifiers) :
+	JAVA org.openarchitectureware.vis.graphviz.java.ReflectionUtil.isInterface (java.lang.Integer);

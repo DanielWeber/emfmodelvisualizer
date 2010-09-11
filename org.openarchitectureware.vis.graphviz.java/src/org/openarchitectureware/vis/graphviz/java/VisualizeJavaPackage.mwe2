@@ -1,0 +1,14 @@
+module org.openarchitectureware.vis.graphviz.java.VisualizeJavaPackage
+
+var targetDir = "src-gen"
+var packageName
+
+Workflow {
+
+	component = @org.openarchitectureware.vis.graphviz.Model2DotFile auto-inject {
+		
+		targetDir = "${targetDir}"
+		topFunctionCallExpression="org::openarchitectureware::vis::graphviz::java::java2dot::packageToGraphvizModel('${packageName}')"		
+	}
+		
+}
