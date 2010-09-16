@@ -6,22 +6,39 @@ extension org::openarchitectureware::vis::graphviz::dotlib;
 
 create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars):
 	addGraph( grammar.toGraph(showUsedGrammars, false) )
-; 
+;
 
 create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName):
 	addGraph( grammar.toGraph(showUsedGrammars, sortRulesByName))
-; 
- 
+;
+
+create dot::graphvizmodel toDot(Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName, Boolean createSeparateRuleGraphs):
+    (createSeparateRuleGraphs ?
+       // TODO handle used grammars in this case
+       // showUsedGrammars ? addGraphs(grammar.usedGrammars.toSubgraph (showUsedGrammars, sortRulesByName)):null ->
+	   addGraphs((sortRulesByName?grammar.rules.sortBy(e|e.name):grammar.rules).toGraph())
+	   :
+	   addGraph( grammar.toGraph(showUsedGrammars, sortRulesByName) )
+    )
+;
+
+cached toGraph (AbstractRule rule) :
+	rule.mapToGraph()
+		.setName(rule.name)
+		.addStatement(let a = new attribute: a.setName("rankdir") -> a.setValue("LR") -> a)
+		.addStatement(rule.processRule(rule.mapToSubgraph()))
+;
+
 cached toGraph (Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName) :
 	grammar.mapToGraph()
 		.setName(grammar.name+"Grammar")
-		.addStatement(let a = new attribute: a.setName("rankdir") -> a.setValue("LR") -> a)	
+		.addStatement(let a = new attribute: a.setName("rankdir") -> a.setValue("LR") -> a)
 		.addStatement (grammar.toSubgraph(showUsedGrammars, sortRulesByName))
 ;
-		
+
 cached toSubgraph (Grammar grammar, Boolean showUsedGrammars, Boolean sortRulesByName) :
-	let g = grammar.mapToSubgraph() :	
-		g.setName(grammar.name) ->
+	let g = grammar.mapToSubgraph() :
+		g.setName(grammar.name)  ->
 		g.setLabel(grammar.name) ->
 		showUsedGrammars?g.addStatements (grammar.usedGrammars.toSubgraph (showUsedGrammars, sortRulesByName)):null ->
 		(sortRulesByName?grammar.rules.sortBy(e|e.name):grammar.rules).processRule(g) ->
@@ -34,21 +51,21 @@ cached processRule (AbstractRule rule, subgraph g) :
 		g.addStatement (ruleGraph) ->
 		ruleGraph.setName (rule.name) ->
 		ruleGraph.setLabel (rule.name) ->
-		ruleGraph.addStatement (rule.toNode()) ->
+		ruleGraph.addStatement (rule.startPoint().toNode()) ->
 		ruleGraph.setAttribute("style", "dotted") ->
 		(let pair = rule.alternatives.processAbstractElement (ruleGraph) :
-			ruleGraph.addStatement (toEdge (rule, pair.first())) ->
+			ruleGraph.addStatement (toEdge (rule.startPoint(), pair.first())) ->
 			(let p = point (rule) :
 				ruleGraph.addStatement (p.toNode()) ->
-				ruleGraph.addStatement (toEdge (pair.last(), p)))) 
-;	
-		
+				ruleGraph.addStatement (toEdge (pair.last(), p))))
+;
+
 List[Object] processCardinality (List[Object] elements, String cardinality, subgraph g) :
 	processCardinalityOptional(processCardinalityReturn (elements, cardinality, g), cardinality, g)
 ;
-			
+
 List[Object] processCardinalityReturn (List[Object] elements, String cardinality, subgraph g) :
-	doesReturn (cardinality) ? 
+	doesReturn (cardinality) ?
 		(let start = point (elements, "start") :
 			(let end = point (elements, "end") :
 				g.addStatement(start.toNode()) ->
@@ -57,12 +74,12 @@ List[Object] processCardinalityReturn (List[Object] elements, String cardinality
 				g.addStatement(toEdge (elements.last(), end)) ->
 				g.addStatement(toEdge (end,start)) ->
 				list (start,end)))
-	 : 
+	 :
 	 	elements
 ;
-	
+
 List[Object] processCardinalityOptional (List[Object] elements, String cardinality, subgraph g) :
-	isOptional (cardinality) ? 
+	isOptional (cardinality) ?
 		(let start = point (elements, "start") :
 			(let end = point (elements, "end") :
 				g.addStatement(start.toNode()) ->
@@ -71,7 +88,7 @@ List[Object] processCardinalityOptional (List[Object] elements, String cardinali
 				g.addStatement(toEdge (elements.last(), end)) ->
 				g.addStatement(toEdge (start,end)) ->
 				list (start,end)))
-	 : 
+	 :
 	 	elements
 ;
 
@@ -130,13 +147,13 @@ cached List[Object] processAbstractElement (AbstractNegatedToken element, subgra
  		g.addStatement (toEdge (element, r.first())) ->
  		processCardinality (list (element, r.last()), element.cardinality, g))
 ;
-	
+
 // ignore Action elments
 cached Object processAbstractElement (Action action, subgraph g) :
 	null
 ;
-	
-// list helpers 
+
+// list helpers
 
 List[Object] list (Object start, Object end) :
 	{start,end}.toList()
@@ -172,10 +189,13 @@ String getFillColor (TerminalRule rule) :
 cached point (Object ref) :
 	new Object
 ;
+cached startPoint (Object ref) :
+	new Object
+;
 
 cached point (Object ref, String uniqueToken) :
 	new Object
-;	    
+;
 
 // elements
 
@@ -192,7 +212,7 @@ cached toNode(AbstractElement element) :
 		.setupNode(element)
 ;
 
- String getLabel (NegatedToken element) :
+String getLabel (NegatedToken element) :
 	"!"
 ;
 
@@ -206,7 +226,7 @@ String getLabel (AbstractElement element) :
 ;
 
 String getLabel (Keyword keyword) :
-	keyword.value
+	"'" + keyword.value + "'"
 ;
 
 String getLabel (Assignment assignment) :
@@ -236,9 +256,11 @@ String getLabel (EnumLiteralDeclaration ld) :
 node_stmt setupNode (node_stmt node, AbstractElement element) :
 	node.setFillColor("grey")
 ;
-
+// "#7F0055"
 node_stmt setupNode (node_stmt node, Keyword element) :
-	node.setFillColor("white")
+	node.setFillColor("white")->
+	node.setAttribute("fontcolor","darkgreen")->
+    node.setFont("Courier")
 ;
 
 node_stmt setupNode (node_stmt node, CharacterRange element) :
@@ -262,29 +284,35 @@ node_stmt setupNode (node_stmt node, CrossReference element) :
 ;
 
 node_stmt setupNode (node_stmt node, RuleCall element) :
-	node.setFillColor("grey")
+	node.setFillColor("gray97")->
+	node.setAttribute("fontcolor", ruleColor(element.rule))
 ;
-	
+
+cached String ruleColor(AbstractRule this) : "black" ;
+cached String ruleColor(ParserRule   this) : "darkorchid3" ;
+cached String ruleColor(EnumRule     this) : "black" ;
+cached String ruleColor(TerminalRule this) : "blue4" ;
+
 cached toEdge(Object start, Object end ):
 	mapToDirectedEdge( start, end)
 		.setArrowHead("normal")
-		.setArrowTail( "none")				
+		.setArrowTail( "none")
 		// the higher the weight, the shorter and straighter the edge
 ;
 
 cached toCrossReferenceEdge(CrossReference cr, Object reference):
 	mapToDirectedEdge( cr, reference)
 		.setArrowHead("normal")
-		.setArrowTail( "none")	
-		.setStyle("dotted")		
+		.setArrowTail( "none")
+		.setStyle("dotted")
 		.setWeight( "1" )
 ;
 
 cached toRuleCallEdge(RuleCall rc, AbstractRule rule):
 	mapToDirectedEdge( rc, rule)
 		.setArrowHead("normal")
-		.setArrowTail( "none")	
-		.setStyle("dashed")		
+		.setArrowTail( "none")
+		.setStyle("dashed")
 		.setWeight( "1" )
 ;
 

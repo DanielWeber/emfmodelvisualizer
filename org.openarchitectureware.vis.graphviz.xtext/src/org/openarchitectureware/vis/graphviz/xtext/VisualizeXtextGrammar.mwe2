@@ -8,7 +8,7 @@ var targetDir = "src-gen"
 Workflow {
 
 	component = org.eclipse.xtext.mwe.Reader {
-		register = org.eclipse.xtext.XtextStandaloneSetup {}		
+		register = org.eclipse.xtext.XtextStandaloneSetup {}
 		useJavaClassPath = true
 		uriFilter = org.eclipse.xtext.mwe.NameBasedFilter { regularExpression = "org/eclipse/xtext/Xtext\\.xtext" }
 		validate = org.eclipse.xtext.mwe.Validator { validateAll = true }

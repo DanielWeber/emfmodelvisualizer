@@ -1,9 +1,11 @@
 module org.openarchitectureware.vis.graphviz.xtext.VisualizeGrammar
 
-var showUsedGrammars = false
-var sortRulesByName = false
+var showUsedGrammars  = false
+var sortRulesByName   = false
+var createSeparateRuleGraphs = false
 var targetDir = "src-gen"
 var inputSlot
+var outputFormat = "gif" // Forwarded to Model2DotFile
 
 /**
  * This workflow visualizes an Xtext Grammar instance
@@ -12,6 +14,6 @@ Workflow {
 
 	component = @org.openarchitectureware.vis.graphviz.Model2DotFile auto-inject {
 		topFunctionCallExpression = "org::openarchitectureware::vis::graphviz::xtext::grammar2dot::toDot
-			(${inputSlot}, ${showUsedGrammars}, ${sortRulesByName})"
+			(${inputSlot}, ${showUsedGrammars}, ${sortRulesByName}, ${createSeparateRuleGraphs})"
 	}
 }

@@ -2,3 +2,4 @@ bin/
 plugin.xml_gen
 MANIFEST.MF_gen
 .antlr-generator-*.jar
+src-gen/
